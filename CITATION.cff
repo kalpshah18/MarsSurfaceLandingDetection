@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Shah"
+  given-names: "Kalp"
+- family-names: "Mishra"
+  given-names: "Pramod"
+- family-names: "Raman"
+  given-names: "Shanmuganathan"
+title: "Single-Frame Safe-Zone Selection from Descent Imagery for Mars Landers"
+version: 1.0.0
+date-released: 2026-09-30
