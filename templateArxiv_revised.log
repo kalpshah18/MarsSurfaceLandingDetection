@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.20)  30 SEP 2026 20:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.20)  1 OCT 2026 00:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -378,24 +378,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (templateArxiv_revised.aux)
 \openout1 = `templateArxiv_revised.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -463,18 +463,18 @@ LaTeX Font Info:    ... okay on input line 69.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 69.
+Package hyperref Info: Link coloring OFF on input line 68.
 (templateArxiv_revised.out) (templateArxiv_revised.out)
 \@outlinefile=\write3
 \openout3 = `templateArxiv_revised.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 69.
-Package microtype Info: Applying patch `item' on input line 69.
-Package microtype Info: Applying patch `toc' on input line 69.
-Package microtype Info: Applying patch `eqnum' on input line 69.
-Package microtype Info: Applying patch `footnote' on input line 69.
-Package microtype Info: Applying patch `verbatim' on input line 69.
-LaTeX Info: Redefining \microtypesetup on input line 69.
+LaTeX Info: Redefining \microtypecontext on input line 68.
+Package microtype Info: Applying patch `item' on input line 68.
+Package microtype Info: Applying patch `toc' on input line 68.
+Package microtype Info: Applying patch `eqnum' on input line 68.
+Package microtype Info: Applying patch `footnote' on input line 68.
+Package microtype Info: Applying patch `verbatim' on input line 68.
+LaTeX Info: Redefining \microtypesetup on input line 68.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -526,7 +526,7 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 71.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 70.
 
 
 (C:\Users\shahk\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
@@ -535,7 +535,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (C:\Users\shahk\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 71.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 70.
 
 
 (C:\Users\shahk\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -549,122 +549,31 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-
-LaTeX Warning: Citation `golombek2012selection' on page 1 undefined on input li
-ne 85.
-
-
-LaTeX Warning: Citation `amzajerdian2013alhat' on page 1 undefined on input lin
-e 85.
-
-
-LaTeX Warning: Citation `moghe2020deep' on page 1 undefined on input line 85.
-
-
-LaTeX Warning: Citation `berger2001rad750' on page 1 undefined on input line 85
-.
-
-
-LaTeX Warning: Citation `johnson2020mars2020' on page 1 undefined on input line
- 85.
-
-
-Underfull \vbox (badness 1184) has occurred while \output is active []
-
- [1
+[1
 
 
 {C:/Users/shahk/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/shah
-k/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
+k/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}] [2] [3]
+(templateArxiv_revised.bbl
+Underfull \vbox (badness 2189) has occurred while \output is active []
 
-LaTeX Warning: Citation `amzajerdian2013alhat' on page 2 undefined on input lin
-e 92.
-
-
-LaTeX Warning: Citation `restrepo2020next' on page 2 undefined on input line 92
-.
-
-
-LaTeX Warning: Citation `moghe2020deep' on page 2 undefined on input line 92.
-
-
-LaTeX Warning: Citation `sobel1968' on page 2 undefined on input line 102.
-
-
-LaTeX Warning: Citation `shepard2001roughness' on page 2 undefined on input lin
-e 126.
-
-[2]
-
-LaTeX Warning: Citation `vandevoorde1996maximal' on page 3 undefined on input l
-ine 156.
-
-
-LaTeX Warning: Citation `sobel1968' on page 3 undefined on input line 165.
-
-
-LaTeX Warning: Citation `vandevoorde1996maximal' on page 3 undefined on input l
-ine 182.
-
-[3]
-<media/1_1_large_safe_areas.png, id=89, 722.7pt x 289.08pt>
-File: media/1_1_large_safe_areas.png Graphic file (type png)
-<use media/1_1_large_safe_areas.png>
-Package pdftex.def Info: media/1_1_large_safe_areas.png  used on input line 186
-.
-(pdftex.def)             Requested size: 375.80542pt x 150.32245pt.
-<media/2_2_large_safe_areas.png, id=91, 722.7pt x 289.08pt>
-File: media/2_2_large_safe_areas.png Graphic file (type png)
-<use media/2_2_large_safe_areas.png>
-Package pdftex.def Info: media/2_2_large_safe_areas.png  used on input line 193
-.
-(pdftex.def)             Requested size: 375.80542pt x 150.32245pt.
-<media/3_3_large_safe_areas.png, id=92, 722.7pt x 289.08pt>
-File: media/3_3_large_safe_areas.png Graphic file (type png)
-<use media/3_3_large_safe_areas.png>
-Package pdftex.def Info: media/3_3_large_safe_areas.png  used on input line 200
-.
-(pdftex.def)             Requested size: 375.80542pt x 150.32245pt.
-
-
-LaTeX Warning: Citation `otsu1979' on page 4 undefined on input line 209.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4 <./media/1_1_large_safe_areas.png>]
-
-LaTeX Warning: Citation `mcewen2007hirise' on page 5 undefined on input line 21
-2.
-
-
-LaTeX Warning: Citation `vandevoorde1996maximal' on page 5 undefined on input l
-ine 221.
-
-[5 <./media/2_2_large_safe_areas.png> <./media/3_3_large_safe_areas.png>]
-(templateArxiv_revised.bbl) [6] (templateArxiv_revised.aux)
+ [4])
+[5] (templateArxiv_revised.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `templateArxiv_revised.out' has not changed.
-(rerunfilecheck)             Checksum: D77C5DDF6B48BBEDCE00282934B73852;1967.
+(rerunfilecheck)             Checksum: C2D5EC3E0F0762BD1CAB3CD562ABD209;1717.
  ) 
 Here is how much of TeX's memory you used:
- 12826 strings out of 467871
- 204325 string characters out of 5418376
- 658415 words of memory out of 5000000
- 41295 multiletter control sequences out of 15000+600000
- 671664 words of font info for 191 fonts, out of 8000000 for 9000
+ 12768 strings out of 467871
+ 203135 string characters out of 5418376
+ 656954 words of memory out of 5000000
+ 41267 multiletter control sequences out of 15000+600000
+ 670529 words of font info for 175 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,1738b,464s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,1328b,474s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\shahk\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt
 1000.pk><C:/Users/shahk/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
 ts/cm/cmex10.pfb><C:/Users/shahk/AppData/Local/Programs/MiKTeX/fonts/type1/publ
@@ -679,9 +588,9 @@ ers/shahk/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Us
 ers/shahk/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/U
 sers/shahk/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/U
 sers/shahk/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on templateArxiv_revised.pdf (6 pages, 3083998 bytes).
+Output written on templateArxiv_revised.pdf (5 pages, 183690 bytes).
 PDF statistics:
- 213 PDF objects out of 1000 (max. 8388607)
- 44 named destinations out of 1000 (max. 500000)
- 43120 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 206 PDF objects out of 1000 (max. 8388607)
+ 38 named destinations out of 1000 (max. 500000)
+ 43105 words of extra memory for PDF output out of 51595 (max. 10000000)
 

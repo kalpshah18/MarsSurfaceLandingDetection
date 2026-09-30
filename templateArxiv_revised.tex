@@ -29,8 +29,7 @@
 
   
 %% Title
-\title{Identifying Landing Sites for Mars
-Landers}
+\title{Characterizing Single-Frame Safe-Zone Estimation for Mars Landers}
 
 \author{
   Kalp Shah \\
@@ -71,7 +70,7 @@ Landers}
 
 
 \begin{abstract}
-Safe autonomous landing on planetary surfaces requires quick, accurate decisions under tight computational limits. This paper presents a proof-of-concept classical, deterministic computer vision pipeline for identifying safe landing zones on Mars from high-resolution single-frame nadir descent imagery. The pipeline fuses gradient-based intensity edge evaluation, contour-based shadow masking, and FFT-based image texture classification into a unified hazard score. A maximal-rectangle algorithm then extracts the largest contiguous safe landing zone. Evaluated on a dataset utilizing DTM-derived proxy labels, the system achieves a proxy-label F1 score of 0.025 and IoU of 0.013. The pipeline's deterministic nature and low computational requirements (343.5 ms on a 1024x1024 image on standard host hardware) make it a potential lightweight alternative for future deployment on flight processors, though it currently struggles with hazard proximity without explicit distance penalties.
+Safe autonomous landing on planetary surfaces requires quick, accurate decisions under tight computational limits. This paper characterizes a deterministic computer vision pipeline for identifying safe landing zones from high-resolution single-frame nadir orbital-style imagery. The pipeline fuses gradient-based intensity edge evaluation, contour-based shadow masking, and FFT-based image texture classification into a unified hazard score. A maximal-rectangle algorithm then extracts the largest contiguous safe landing zone. Evaluated on a synthetic dataset utilizing DTM-derived proxy labels (safe = slope $\le$ 15 degrees), the system achieves a proxy-label F1 score of 0.025 [0.016, 0.035], which is marginally above a random baseline (0.020). The low performance is primarily due to the texture module being overly sensitive to high-frequency noise, combined with the difficulty of predicting true geometric slope purely from single-frame intensity without a dedicated shape-from-shading or photometric stereo model. The pipeline's measured execution time is 343.5 ms on a 1024x1024 image on standard host hardware. The study demonstrates the limitations of purely intensity-based thresholding for geometric hazard avoidance and underscores the need for geometric proxies.
 \end{abstract}
 
 
@@ -93,13 +92,13 @@ Autonomous planetary landing relies on robust hazard detection. Traditional syst
 
 \section{Methodology}
 \label{sec:headings}
-The proposed pipeline processes input terrain imagery through four stages to determine the optimal landing zone. It uses various techniques to independently identify steep slopes, shadows, and fine-scale roughness (texture), and then blends the information obtained from
+The proposed pipeline processes input terrain imagery through four stages to determine the optimal landing zone. It uses various techniques to independently characterize intensity gradients, shadows, and fine-scale roughness (texture), and then blends the information obtained from
 individual techniques to generate a safety map pixel-wise. The
 selection of the threshold is empirical and is derived from a
 Martian image dataset available.
 
 \subsection{Gradient Hazard Scoring}
-The first module quantifies terrain slope and roughness at the pixel level by computing the spatial gradient of the input grayscale image $I(x,y)$. Horizontal and vertical partial derivatives are obtained via the Sobel operator\cite{sobel1968} with a standard $3 \times 3$ kernel size:
+The first module quantifies intensity gradient and roughness at the pixel level by computing the spatial gradient of the input grayscale image $I(x,y)$. Horizontal and vertical partial derivatives are obtained via the Sobel operator\cite{sobel1968} with a standard $3 \times 3$ kernel size:
 \begin{equation}
     I_x = \frac{\partial I}{\partial x}, \qquad I_y = \frac{\partial I}{\partial y}.
 \end{equation}
@@ -120,7 +119,7 @@ A binary inverse threshold is applied to the input grayscale image at intensity 
 \begin{equation}
     G(x,y) \leftarrow 1.0 \quad \forall\,(x,y) \in \text{filled contour region}.
 \end{equation}
-The physical rationale is that shadows adjacent to mountains, fault scarps, and crater walls are reliable proxies for steep, unsafe terrain. By overriding the gradient score inside large dark contours, the module compensates for the low-gradient interior while preserving the spatial boundary information inherent in the contour geometry. The two key parameters, the intensity threshold $\tau = 40$ and the minimum contour area $A_{\min} = 500 pixels$, were chosen empirically to balance sensitivity and specificity under typical high-resolution descent-like imagery illumination conditions.
+The physical rationale is that shadows adjacent to mountains, fault scarps, and crater walls are reliable proxies for steep, unsafe terrain. By overriding the gradient score inside large dark contours, the module compensates for the low-gradient interior while preserving the spatial boundary information inherent in the contour geometry. The two key parameters, the intensity threshold $\tau = 40$ and the minimum contour area $A_{\min} = 500 pixels$, were chosen empirically to balance sensitivity and specificity under typical high-resolution nadir orbital-style frames at 1 m/px GSD illumination conditions.
 
 \subsection{FFT-based Texture-Energy Score}
 Surface roughness is an important terrain property that cannot be inferred from slope alone. Small, distributed hazards such as rock fields or patterned ground may lack steep macro-gradients while still presenting significant risks to lander stability. Shepard et al. \cite{shepard2001roughness} demonstrate that natural planetary terrain exhibits scale-dependent variations in surface topography. While they note that spatial methods often yield cleaner roughness parameters than power spectral methods, a localized Fourier-based analysis offers an efficient computational proxy to quantify the distribution of spatial-frequency energy as an indicator of fine-scale terrain roughness. A Fourier-based analysis is therefore used to quantify the distribution of spatial-frequency energy as an indicator of fine-scale terrain roughness.
@@ -134,7 +133,7 @@ and the texture-energy ratio is defined as
 \begin{equation}
     R = \frac{E_{\text{high}}}{E_{\text{low}} + \varepsilon},
 \end{equation}
-where $\varepsilon = 10^{-8}$ prevents division by zero. A block is classified as \emph{Rough} if $R > 1.0$ and as \emph{Smooth} otherwise. Rough terrain features, such as rock fields and small craters, produce rich high-frequency texture signatures in descent-like imagery. Conversely, smooth, safe terrain is dominated by low-frequency variations corresponding to broad brightness gradients. It must be noted that while this module serves as a proxy for topographic roughness, it fundamentally measures image texture, which can also be influenced by surface albedo variations, illumination changes, and sensor noise. Each block is mapped to a terrain safety score that has been chosen empirically after visual inspection:
+where $\varepsilon = 10^{-8}$ prevents division by zero. A block is classified as \emph{Rough} if $R > 1.0$ and as \emph{Smooth} otherwise. Rough terrain features, such as rock fields and small craters, produce rich high-frequency texture signatures in nadir orbital-style frames at 1 m/px GSD. Conversely, smooth, safe terrain is dominated by low-frequency variations corresponding to broad brightness gradients. It must be noted that while this module serves as a proxy for topographic roughness, it fundamentally measures image texture, which can also be influenced by surface albedo variations, illumination changes, and sensor noise. Each block is mapped to a terrain safety score that has been chosen empirically after visual inspection:
 \begin{equation}
     \text{terrainSafetyScore} =
     \begin{cases}
@@ -179,55 +178,23 @@ Minimum Component Area & 1500 px & Empirical (noise filtering) \\\\
 
 \section{Results}
 \label{sec:results}
-The pipeline was evaluated on representative Martian surface images containing craters, rocky terrain, and crater rims. Figure~\ref{fig:results_crater} shows the performance on a crater-dominated region. The gradient-based hazard scoring identified crater rims as high-risk. While the shadow augmentation module marked some deep shadow regions as unsafe, well-lit crater interiors that did not drop below the intensity threshold ($\tau=40$) remained marked as safe, relying solely on the gradient-based rim detection to isolate the hazard. Figure~\ref{fig:results_rocky} demonstrates the system on rocky terrain, where the FFT-based classification labeled high-frequency textured regions as rough and hazardous, restricting the safe landing zone to the smoother surfaces. The bounding box is relatively small (3,420 pixels$^2$) compared to the broader safe region because the maximal-rectangle algorithm \cite{vandevoorde1996maximal} strictly fits an axis-aligned rectangle, which is often constrained by minor hazard pixels protruding into the otherwise safe area. The FFT module's effect restricts the safe zone from expanding into rough regolith. With the DC component removed, the texture-energy ratio $R$ typically ranged from $0.05$ in featureless regions to over $1.5$ in densely rock-strewn fields. Finally, Figure~\ref{fig:results_cliff} illustrates the response near a small crater rim. The safe zone avoids the rim but is placed directly adjacent to it, illustrating the need for a proximity penalty as the placement remains risky. Across all test images, the maximal-rectangle algorithm isolated contiguous landing zones within the computed safe masks in $O(HW)$ time.
+The pipeline was evaluated on a synthetically generated dataset of 80 TEST tiles mapping 1 m/px nadir imagery to DTMs. Proxy labels were constructed using a 5m baseline where slope $> 15^\circ$ is proxy-unsafe. 
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{media/1_1_large_safe_areas.png}
-  \caption{Results on crater terrain. The yellow box indicates the largest contiguous safe landing zone. Crater rims are avoided, though well-lit crater interiors remain untriggered by the shadow mask.}
-  \label{fig:results_crater}
-\end{figure}
+\subsection{Quantitative Metrics}
+The full pipeline (v0) achieves a pixel-level macro-averaged F1 score of 0.025 [0.016, 0.035] for the safe class, with an unsafe recall of 0.935. In comparison, a random baseline (B5, matched safe fraction) achieves F1=0.020, and a local standard deviation baseline (B1) achieves F1=0.720. Gradient-only ablation (A1) yields F1=0.897. The results demonstrate that while the FFT and gradient modules correlate with rough terrain, strict static thresholding makes the pipeline overly pessimistic, rejecting the vast majority of the terrain. The Spearman correlation between the gradient hazard $G$ and true DTM slope is 0.340, confirming a moderate signal that is lost during binary thresholding. 
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{media/2_2_large_safe_areas.png}
-  \caption{Results on rocky terrain. The system avoids rough features and selects a smooth, low-texture surface. The yellow box is constrained by surrounding scattered hazards.}
-  \label{fig:results_rocky}
-\end{figure}
+\subsection{Runtime Analysis}
+The total pipeline execution time on a single thread of host hardware (Intel/AMD) for a 1024x1024 image is 343.5 ms (median over 50 runs after warm-up). The most expensive component is the FFT block processing.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{media/3_3_large_safe_areas.png}
-  \caption{Results near a small crater rim. The safe zone is located, but the yellow box is placed directly adjacent to the hazard, illustrating the need for a proximity penalty.}
-  \label{fig:results_cliff}
-\end{figure}
 
-\section{Limitations and Future Directions}
-As a proof-of-concept system, several design choices in this pipeline are intentionally simplified and represent known directions for improvement. The following subsections describe the primary limitations and the most concrete paths to addressing them.
- 
-\subsection{Thresholding and Proximity Penalties}
-All thresholds in the pipeline, such as the fixed intensity threshold $\tau = 40$ used for shadow detection, were selected through manual visual inspection. Fixed thresholds may perform inconsistently under varying solar incidence angles and across landing sites with different surface albedo characteristics. Replacing the fixed threshold with an adaptive scheme, for example, Contrast Limited Adaptive Histogram Equalization (CLAHE) followed by Otsu's thresholding \cite{otsu1979}, would substantially reduce sensitivity to illumination variation. Furthermore, the pipeline currently does not penalize landing zones that are geometrically safe but adjacent to hazardous terrain. Incorporating a distance transform applied to the binary hazard mask into the composite safe score would safely bias the landing zone selection away from hazard boundaries, such as crater rims.
-
-\subsection{Quantitative Benchmarking}
-The evaluation in this work is limited to qualitative visual inspection. Quantitative evaluation on a benchmark dataset with expert-annotated safe and unsafe zones derived from rover telemetry or geologist review would enable objective measurement of precision, recall, F1-score, and area under the ROC curve. Developing such a benchmark dataset, potentially by annotating existing high-resolution imagery from the HiRISE instrument \cite{mcewen2007hirise} or by simulation using Mars Digital Terrain Models, is an important direction for future work.
+\section{Limitations}
+This evaluation highlights several limitations. First, intensity gradients correlate only moderately with physical slope due to illumination dependence. Second, the use of proxy labels means physical safety is approximated. Third, the pipeline assumes nadir orbital-style imagery, lacking tests on oblique descent imagery. Finally, the system lacks a proximity penalty, and execution times are measured only on host hardware, not flight processors.
 
 \section{Conclusion}
-This paper presented a classical, deterministic computer
-vision pipeline for identifying safe landing zones on Mars
-from high-resolution descent-like imagery. By fusing Sobel-based
-gradient hazard scoring, contour-based shadow augmentation,
-and an FFT-based texture-energy score, the pipeline
-produces a per-pixel safety map from which the largest viable
-landing rectangle is extracted via a maximal-rectangle algorithm \cite{vandevoorde1996maximal}. Qualitative evaluation on crater, rocky-surface, and crater rim
-terrain showed that the system can avoid major
-hazards such as crater rims and deep shadowed depressions,
-while also revealing a limitation regarding hazard proximity without explicit distance penalties. Because the pipeline relies
-on no training data and uses only lightweight, deterministic
-operations, it offers a potential lightweight alternative for deployment
-on radiation-hardened flight processors, where memory and
-compute budgets can be challenging for deep learning-based approaches to accommodate.
+This paper characterized a classical, deterministic computer vision pipeline for single-frame safe-zone estimation from nadir orbital-style imagery. By fusing Sobel-based intensity gradient scoring, contour-based shadow augmentation, and an FFT-based amplitude-invariant texture-energy score, the pipeline produces a per-pixel safety map, from which the largest viable landing rectangle is extracted via a maximal-rectangle algorithm \cite{vandevoorde1996maximal}. Quantitative evaluation on a synthetic DTM proxy dataset revealed that the system achieves a proxy-label F1 score of 0.025. While the pipeline executes in 343.5 ms on host hardware, the results indicate that purely intensity-based classical thresholding struggles to reliably isolate physically safe geometric zones without explicit distance penalties or photometric priors.
 
 \section*{Acknowledgments}
+
 The authors acknowledge the Indian Institute of Technology, Gandhinagar, for providing the infrastructure and resources that supported this work.
 
 %Bibliography

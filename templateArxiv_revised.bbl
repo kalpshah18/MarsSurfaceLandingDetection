@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{1}
 
 \bibitem{golombek2012selection}
 Matthew~P Golombek, John~A Grant, D~Kipp, AR~Vasavada, RL~Kirk, RL~Fergason,
@@ -54,19 +54,5 @@ Michael~K Shepard, Robert~A Brackett, and Raymond~E Arvidson.
 David Vandevoorde.
 \newblock The maximal rectangle problem.
 \newblock {\em Dr. Dobb's Journal}, 21(4):42--43, 1998.
-
-\bibitem{otsu1979}
-Nobuyuki Otsu.
-\newblock A threshold selection method from gray-level histograms.
-\newblock {\em IEEE Transactions on Systems, Man, and Cybernetics},
-  9(1):62--66, 1979.
-
-\bibitem{mcewen2007hirise}
-Alfred~S McEwen, Eric~M Eliason, James~W Bergstrom, Nathan~T Bridges, Candice~J
-  Hansen, W~Alan Delamere, John~A Grant, Virginia~C Gulick, Kenneth~E
-  Herkenhoff, Laszlo Keszthelyi, et~al.
-\newblock Mars reconnaissance orbiter's high resolution imaging science
-  experiment (hirise).
-\newblock {\em Journal of Geophysical Research: Planets}, 112(E5):E05S02, 2007.
 
 \end{thebibliography}
