@@ -116,7 +116,7 @@ where $\mathbb{I}(\cdot)$ is the indicator function and $A_{\text{req}} = 2500\t
 \section{Experimental Results}
 
 \subsection{Unsafe-Terrain Hazard Classification}
-We designate unsafe terrain (proxy slope $> 15^\circ$) as the primary evaluation class. Table~\ref{tab:classification} summarizes precision, recall, F1, AUROC, and PR-AUC computed across the held-out test set (58,982,400 pixels total, subsampled by 10 for rank statistics).
+We designate unsafe terrain (proxy slope $> 15^\circ$) as the primary evaluation class. Table~\ref{tab:classification} summarizes precision, recall, F1, AUROC, and PR-AUC computed across the held-out test set (47,185,920 pixels total across 80 tiles, yielding 4,718,592 evaluated pixels via stride-10 subsampling for rank statistics).
 
 \begin{table}[!htb]
   \caption{Unsafe-class precision, recall, F1, AUROC, and PR-AUC pooled across held-out test pixels (prevalence = 0.095).}
