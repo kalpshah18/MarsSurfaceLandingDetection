@@ -2,14 +2,11 @@ import cv2
 import numpy as np
 
 def compute_gradient_hazard(image_gray):
-    # Convert to float32
     I = image_gray.astype(np.float32)
-    # Sobel 3x3
     Ix = cv2.Sobel(I, cv2.CV_32F, 1, 0, ksize=3, borderType=cv2.BORDER_REPLICATE)
     Iy = cv2.Sobel(I, cv2.CV_32F, 0, 1, ksize=3, borderType=cv2.BORDER_REPLICATE)
     g = np.sqrt(Ix**2 + Iy**2)
     
-    # 99th percentile over non-zero pixels
     non_zero = g[g > 0]
     if len(non_zero) > 0:
         g_p99 = np.percentile(non_zero, 99)
@@ -23,39 +20,33 @@ def compute_gradient_hazard(image_gray):
     return G
 
 def augment_shadow(image_gray, G, tau=40, a_min=500):
-    # Binary inverse threshold at tau
     _, binary = cv2.threshold(image_gray, tau, 255, cv2.THRESH_BINARY_INV)
-    
-    # External contours
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     mask = np.zeros_like(image_gray)
+    G_aug = G.copy()
     for cnt in contours:
         area = cv2.contourArea(cnt)
         if area >= a_min:
-            cv2.drawContours(mask, [cnt], 0, 255, -1) # fill interior
+            cv2.drawContours(mask, [cnt], 0, 255, -1)
             
-    G[mask == 255] = 1.0
-    return G, mask
+    G_aug[mask == 255] = 1.0
+    return G_aug, mask
 
-def compute_fft_texture(image_gray, block_size=32, r0=6):
+def compute_fft_texture_ablation(image_gray, block_size=32, r0=6):
     h, w = image_gray.shape
     texture_score = np.ones((h, w), dtype=np.float32)
     R_map = np.zeros((h, w), dtype=np.float32)
     
-    # Non-overlapping blocks
     for y in range(0, h - block_size + 1, block_size):
         for x in range(0, w - block_size + 1, block_size):
             block = image_gray[y:y+block_size, x:x+block_size].astype(np.float32)
-            # Subtract mean
             block -= np.mean(block)
             
-            # Centered 2D DFT
             dft = np.fft.fft2(block)
             dft_shift = np.fft.fftshift(dft)
             mag = np.abs(dft_shift)
             
-            # Frequencies
             cy, cx = block_size // 2, block_size // 2
             Y, X = np.ogrid[:block_size, :block_size]
             dist_sq = (X - cx)**2 + (Y - cy)**2
@@ -71,24 +62,20 @@ def compute_fft_texture(image_gray, block_size=32, r0=6):
             if R > 1.0:
                 texture_score[y:y+block_size, x:x+block_size] = 0.1
                 
-    return texture_score, R_map
+    return texture_score
 
 def maximal_rectangle(matrix):
-    # matrix is 2D binary numpy array (1 for safe, 0 for unsafe)
     if matrix.size == 0:
         return (0, 0, 0, 0)
-    
     max_area = 0
-    best_rect = (0, 0, 0, 0) # x, y, w, h
+    best_rect = (0, 0, 0, 0)
     h, w = matrix.shape
     heights = np.zeros(w, dtype=np.int32)
     
     for y in range(h):
-        # Update heights
         heights[matrix[y] == 1] += 1
         heights[matrix[y] == 0] = 0
         
-        # Largest rectangle in histogram
         stack = []
         for x in range(w + 1):
             curr_h = heights[x] if x < w else 0
@@ -101,14 +88,15 @@ def maximal_rectangle(matrix):
                     max_area = area
                     best_rect = (x - w_rect, y - h_rect + 1, w_rect, h_rect)
             stack.append(x)
-            
     return best_rect
 
-def fuse_and_select(G, texture_score, theta=0.35, min_component_area=1500):
-    s = (1.0 - G) * texture_score
+def fuse_and_select(G, texture_score=None, theta=0.35, min_component_area=1500):
+    if texture_score is not None:
+        s = (1.0 - G) * texture_score
+    else:
+        s = 1.0 - G
+        
     safe_mask = (s > theta).astype(np.uint8)
-    
-    # Connected component analysis
     num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(safe_mask, connectivity=8)
     
     filtered_safe_mask = np.zeros_like(safe_mask)
@@ -119,12 +107,18 @@ def fuse_and_select(G, texture_score, theta=0.35, min_component_area=1500):
     rect = maximal_rectangle(filtered_safe_mask)
     return s, safe_mask, filtered_safe_mask, rect
 
-def run_v0(image_gray):
+def run_v_grad(image_gray, theta=0.35, min_component_area=1500):
     G = compute_gradient_hazard(image_gray)
-    G, shadow_mask = augment_shadow(image_gray, G)
-    texture_score, R_map = compute_fft_texture(image_gray)
-    s, safe_mask, filtered_safe_mask, rect = fuse_and_select(G, texture_score)
-    return G, shadow_mask, R_map, texture_score, s, safe_mask, filtered_safe_mask, rect
+    return fuse_and_select(G, texture_score=None, theta=theta, min_component_area=min_component_area)
 
-if __name__ == "__main__":
-    pass
+def run_v_grad_shadow(image_gray, theta=0.35, min_component_area=1500, tau=40, a_min=500):
+    G = compute_gradient_hazard(image_gray)
+    G_aug, _ = augment_shadow(image_gray, G, tau=tau, a_min=a_min)
+    return fuse_and_select(G_aug, texture_score=None, theta=theta, min_component_area=min_component_area)
+
+def run_v_fft_ablation(image_gray, theta=0.35, min_component_area=1500, tau=40, a_min=500):
+    G = compute_gradient_hazard(image_gray)
+    G_aug, _ = augment_shadow(image_gray, G, tau=tau, a_min=a_min)
+    texture_score = compute_fft_texture_ablation(image_gray)
+    return fuse_and_select(G_aug, texture_score=texture_score, theta=theta, min_component_area=min_component_area)
+
