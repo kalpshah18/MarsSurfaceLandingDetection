@@ -1,16 +1,41 @@
+# Characterizing the Operational Bounds of Single-Frame 2D Hazard Detection for Autonomous Planetary Landers
 
-## Description:
+Code, results and arXiv paper (`Mars_Landing_Paper_ARXIV_Style_updated/`) for a deterministic,
+single-frame hazard detector for planetary landing: a Sobel gradient hazard score, morphological
+shadow augmentation, and maximal-rectangle landing-box selection. It is evaluated against
+slope-derived proxy labels (unsafe: slope > 15 deg over 5 m) on 80 held-out synthetic Martian
+tiles from sites geographically disjoint from development.
 
-1. Template for the Perception, Robotics and Intelligent Machines (PRIME) research group, Université de Moncton, Canada (templatePRIME.tex)
-https://primeai.ca/
+Shadow augmentation corrects an inverted gradient response in shadowed craters (AUROC 0.350 ->
+0.796). Rather than testing one fixed lander footprint, the paper treats the required footprint
+side L as an operating parameter. The selected regions are small and elongated. At L = 25 m,
+68.8% of tiles meet the area requirement, but only 7.5% yield a region that contains a 25 m
+square with at most 5% unsafe terrain. That safe landing rate reaches 50% only up to L = 9 m,
+never exceeds 60% (rocky-terrain boxes and most crater boxes exceed the 5% tolerance), and is
+zero above 31 m, including the 50 m large-lander case. Single-frame 2D sensing is therefore usable
+alone only for footprints of order 10 m; beyond that it is a low-cost cueing or fallback stage
+for 3D sensors.
 
-2. Can be used as Arxiv Template (see templateArxiv.tex).
+## Reproduce
 
-Adapted by Moulay Akhloufi using the Arxiv style of George Kour available at https://github.com/kourgeorge/arxiv-style (last accessed: April 2021)
+Requires the synthetic tiles in `data/synthetic/` (git-ignored) and `pip install -r requirements.txt`.
 
-George Kour Arxiv style is provided under a MIT License (Copyright (c) 2020 George Kour; Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions)
+```bash
+bash run_all.sh
+```
 
-## Instructions
-1. For PRIME AI paper, use templatePRIME.tex with PRIMEarxiv.sty
-2. For Arxiv paper, use templateArxiv.tex with PRIMEarxiv.sty
-3. Remove the other template if not needed
+This runs the unit tests and `compute_final_metrics.py` (Tables 1-2). It then runs the footprint sweep:
+
+```bash
+python export_per_tile_boxes.py      # results/per_tile_boxes.csv (same boxes as Table 2)
+python run_footprint_sweep.py        # results/footprint_sweep*.json, Tables 3-4 rows, L*
+python generate_figures.py footprint # media/fig_footprint_envelope.pdf
+```
+
+`run_footprint_sweep.py` aborts unless L = 50 m reproduces Table 2 exactly. See `CLAIMS.md` for
+the source of every number in the paper, and `DECISIONS.md` / `REPORT.md` for methodology
+decisions and known issues.
+
+The paper is built with `pdflatex -> bibtex -> pdflatex -> pdflatex` on `templateArxiv.tex`.
+Its LaTeX style is the PRIME arXiv template by Moulay Akhloufi, adapted from George Kour's
+arxiv-style (MIT License).
