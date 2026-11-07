@@ -16,15 +16,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{multirow}
-\usepackage{xcolor}
 \graphicspath{{media/}}     % organize your images and other figures under media/ folder
-
-% ---------------------------------------------------------------------------
-% PLACEHOLDER MACRO: every \tbd{...} marks a number that must be computed from
-% the per-tile evaluation outputs (see compute_footprint_sweep.py) before
-% submission. Search this file for "\tbd" to find all of them.
-% ---------------------------------------------------------------------------
-\newcommand{\tbd}[1]{\textcolor{red}{\textbf{[#1]}}}
 
 %Header
 \pagestyle{fancy}
@@ -60,7 +52,7 @@
 
 
 \begin{abstract}
-Onboard hazard detection for planetary landing must run on radiation-hardened processors with tight compute and memory budgets. Single-frame 2D optical sensing is the simplest and cheapest sensing option available, but the conditions under which it is sufficient have not been clearly established. We characterize the operational bounds of a deterministic, single-frame hazard detection pipeline built on image intensity gradients and morphological shadow augmentation, evaluated against slope-derived proxy labels (unsafe: slope $>15^\circ$) on geographically disjoint Martian test sites. Raw intensity gradients produce an inverted hazard response in shadowed crater bowls (AUROC 0.350), a failure mode we trace to vanishing gradients under single-direction illumination. Shadow augmentation corrects this inversion (AUROC 0.796, PR-AUC 0.559, nearly six times the 0.095 chance level), and the front-end runs in 74.0~ms at native resolution with under 16~MB of peak memory. We then treat the lander footprint requirement as an explicit operating parameter rather than a fixed constant. For a $25\text{ m} \times 25\text{ m}$ requirement, the pipeline returns a qualifying landing region on \tbd{X}\% of held-out tiles (\tbd{Y}\% with at most 5\% unsafe terrain inside the region), whereas no tile supports a $50\text{ m} \times 50\text{ m}$ requirement, and no candidate region exceeds 1,612~m$^2$ (about $40\text{ m} \times 40\text{ m}$). Single-frame 2D sensing therefore has a usable operating envelope for small-footprint vehicles and as a low-cost cueing stage for 3D sensors, and we quantify where that envelope ends.
+Onboard hazard detection for planetary landing must run on radiation-hardened processors with tight compute and memory budgets. Single-frame 2D optical sensing is the simplest and cheapest sensing option available, but the conditions under which it is sufficient have not been clearly established. We characterize the operational bounds of a deterministic, single-frame hazard detection pipeline built on image intensity gradients and morphological shadow augmentation, evaluated against slope-derived proxy labels (unsafe: slope $>15^\circ$) on geographically disjoint Martian test sites. Raw intensity gradients produce an inverted hazard response in shadowed crater bowls (AUROC 0.350), a failure mode we trace to vanishing gradients under single-direction illumination. Shadow augmentation corrects this inversion (AUROC 0.796, PR-AUC 0.559, nearly six times the 0.095 chance level), and the front-end runs in 74.0~ms at native resolution with under 16~MB of peak memory. We then treat the lander footprint requirement as an explicit operating parameter rather than a fixed constant. For a $25\text{ m} \times 25\text{ m}$ requirement, the selected region meets the area requirement on 68.8\% of held-out tiles, but because the regions are elongated, only 7.5\% of tiles yield a region that contains a $25\text{ m} \times 25\text{ m}$ square with at most 5\% unsafe terrain. This safe landing rate reaches 50\% only for footprints up to 9~m, never exceeds 60\% at any footprint because every rocky-terrain region and 12 of 20 crater regions exceed the 5\% tolerance, and is zero above 31~m; no tile supports a $50\text{ m} \times 50\text{ m}$ requirement. Single-frame 2D sensing therefore has a narrow operating envelope, limited to footprints of order 10~m, and beyond it is better suited as a low-cost cueing stage for 3D sensors; we quantify where that envelope ends.
 \end{abstract}
 
 
@@ -136,7 +128,7 @@ where $f_{\text{unsafe}}(B)$ is the fraction of proxy-unsafe pixels inside $B$ a
 \begin{figure*}[!t]
   \centering
   \includegraphics[width=\textwidth]{fig_qualitative_crater.pdf}
-  \caption{Qualitative progression on an illustrative crater test tile (\texttt{crater\_2\_0}). (a) Monocular input image rendered under Lambertian illumination showing a prominent crater bowl and deep shadow. (b) DTM-derived ground-truth slope with the proxy-unsafe boundary ($>15^\circ$) marked in dashed cyan. (c) Raw Sobel gradient hazard $G(x,y)$, showing near-zero gradient inside the shadowed crater bowl, which causes a false-safe prediction. (d) Morphological shadow mask extracted at $\tau = 40$. (e) Augmented hazard map with the shadow region forced to 1.0. (f) Landing box selection comparison: unaugmented $V_{\text{grad}}$ places its landing box entirely inside the hazardous crater bowl (red solid box, 100\% unsafe), whereas $V_{\text{grad+shadow}}$ rejects the shadowed hazard and relocates the candidate box to benign terrain outside the rim (green dashed box, 0\% unsafe). Section~\ref{sec:envelope} quantifies how often such relocations yield usable sites as a function of the required footprint.}
+  \caption{Qualitative progression on an illustrative crater test tile (\texttt{crater\_2\_0}). (a) Monocular input image rendered under Lambertian illumination showing a prominent crater bowl and deep shadow. (b) DTM-derived ground-truth slope with the proxy-unsafe boundary ($>15^\circ$) marked in dashed cyan. (c) Raw Sobel gradient hazard $G(x,y)$, showing near-zero gradient inside the shadowed crater bowl, which causes a false-safe prediction. (d) Morphological shadow mask extracted at $\tau = 40$. (e) Augmented hazard map with the shadow region forced to 1.0. (f) Landing box selection comparison: unaugmented $V_{\text{grad}}$ places its landing box entirely inside the hazardous crater bowl (red solid box, 100\% unsafe), whereas $V_{\text{grad+shadow}}$ rejects the shadowed hazard and relocates the candidate box to benign terrain outside the rim (green dashed box, 0\% unsafe). This tile is one of 8 of the 20 crater test tiles on which the $V_{\text{grad+shadow}}$ box contains no proxy-unsafe pixels; on the other 12 it remains at least 89\% unsafe. Section~\ref{sec:envelope} quantifies how often the selected regions yield usable sites as a function of the required footprint.}
   \label{fig:qualitative}
 \end{figure*}
 
@@ -171,7 +163,7 @@ We designate unsafe terrain (proxy slope $> 15^\circ$) as the primary evaluation
 Table~\ref{tab:box} reports the geometry and hazard composition of the extracted maximal rectangles across the 80 held-out test tiles, with Footprint OK evaluated at the large-lander requirement $L = 50$~m ($A_{\text{req}} = 2{,}500$ pixels).
 
 \begin{table}[!htb]
-  \caption{Landing box evaluation metrics on held-out test tiles ($768 \times 768$ pixels, 589,824~$\text{m}^2$) at the large-lander requirement $L = 50$~m.}
+  \caption{Landing box evaluation metrics on held-out test tiles ($768 \times 768$ pixels, 589,824~$\text{m}^2$) at the large-lander requirement $L = 50$~m. Frac Unsafe is the fraction of proxy-unsafe pixels inside the box, averaged over all 80 tiles (both methods return a box on every tile); the 40 smooth and dune tiles contain no proxy-unsafe pixels and contribute 0 to this average.}
   \label{tab:box}
   \centering
   \small
@@ -186,14 +178,14 @@ Table~\ref{tab:box} reports the geometry and hazard composition of the extracted
   \end{tabular}
 \end{table}
 
-At $L = 50$~m, $V_{\text{grad+shadow}}$ finds a candidate box on every tile, but the mean box area is 744 pixels (0.13\% of the tile) and the largest box on any test tile is 1,612 pixels, below the 2,500-pixel requirement; Footprint OK is therefore 0.0\%. The apparent 25.0\% Footprint OK of $V_{\text{grad}}$ is not a usable result: its boxes enclose 28.7\% unsafe terrain on average, because the inverted response steers them into untextured crater interiors (Fig.~\ref{fig:qualitative}f). The behaviour of $V_{\text{grad+shadow}}$ is conservative rather than dangerous: shadow and texture suppression fragment the safe mask into small regions, so the method under-reports usable area instead of over-reporting it. Whether those smaller regions are usable depends on the vehicle, which we examine next.
+At $L = 50$~m, $V_{\text{grad+shadow}}$ finds a candidate box on every tile, but the mean box area is 744 pixels (0.13\% of the tile) and the largest box on any test tile is 1,612 pixels, below the 2,500-pixel requirement; Footprint OK is therefore 0.0\%. The apparent 25.0\% Footprint OK of $V_{\text{grad}}$ is not a usable result: its boxes enclose 28.7\% unsafe terrain averaged over all 80 tiles and 99.96\% on the 20 crater tiles, because the inverted response steers them into untextured crater interiors (Fig.~\ref{fig:qualitative}f). $V_{\text{grad+shadow}}$ is conservative on benign terrain but not on hazardous terrain. On smooth and dune tiles, which contain no proxy-unsafe pixels, gradient and shadow suppression fragment the safe mask into small regions, so the method under-reports usable area. On the 40 crater and rocky tiles, however, its boxes contain 37.1\% unsafe terrain on average (the 18.6\% in Table~\ref{tab:box} includes the 40 hazard-free tiles): every rocky-tile box is 11--19\% unsafe, and 12 of the 20 crater boxes are at least 89\% unsafe. Whether the remaining regions are usable depends on the vehicle, which we examine next.
 
 \subsection{Operating Envelope Across Footprint Requirements}
 \label{sec:envelope}
 Table~\ref{tab:envelope} reports Footprint OK, Square Fit, and Safe Landing (Section~\ref{sec:footprint}) as the required footprint side $L$ is varied.
 
 \begin{table}[!htb]
-  \caption{Fraction of held-out test tiles (out of 80) yielding a qualifying landing region as a function of required footprint side $L$. Safe Landing requires Square Fit and at most $\epsilon = 5\%$ unsafe pixels inside the box. Red entries are to be filled from per-tile outputs.}
+  \caption{Fraction of held-out test tiles (out of 80) yielding a qualifying landing region as a function of required footprint side $L$. Safe Landing requires Square Fit and at most $\epsilon = 5\%$ unsafe pixels inside the box. Tiles without a qualifying box count as failures.}
   \label{tab:envelope}
   \centering
   \small
@@ -204,22 +196,29 @@ Table~\ref{tab:envelope} reports Footprint OK, Square Fit, and Safe Landing (Sec
     \cmidrule(lr){3-5} \cmidrule(lr){6-7}
     $L$ (m) & $A_{\text{req}}$ (px) & Footprint OK & Square Fit & Safe Landing & Footprint OK & Safe Landing \\
     \midrule
-    20 & 400   & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
-    25 & 625   & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
-    30 & 900   & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
-    35 & 1,225 & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
-    40 & 1,600 & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
-    50 & 2,500 & 0.000 & 0.000 & 0.000 & 0.250 & \tbd{--} \\
+    20 & 400   & 0.963 & 0.237 & 0.212 & 0.963 & 0.163 \\
+    25 & 625   & 0.688 & 0.075 & 0.075 & 0.688 & 0.037 \\
+    30 & 900   & 0.188 & 0.013 & 0.013 & 0.250 & 0.000 \\
+    35 & 1,225 & 0.100 & 0.000 & 0.000 & 0.250 & 0.000 \\
+    40 & 1,600 & 0.013 & 0.000 & 0.000 & 0.250 & 0.000 \\
+    50 & 2,500 & 0.000 & 0.000 & 0.000 & 0.250 & 0.000 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-Two bounds follow directly from Table~\ref{tab:box}. Since the largest $V_{\text{grad+shadow}}$ box contains 1,612 pixels, no requirement with $L \ge 41$~m can be met on any test tile, which fixes the upper edge of the operating envelope at approximately $40$~m. Since the mean box area (744 pixels) exceeds $A_{\text{req}}(25) = 625$ pixels, a non-trivial fraction of tiles necessarily meets the $25$~m area requirement. At $L = 25$~m, $V_{\text{grad+shadow}}$ yields a qualifying region on \tbd{X}\% of tiles, and \tbd{Y}\% of tiles yield a region that both fits a $25\text{ m} \times 25\text{ m}$ square and contains at most 5\% unsafe terrain. \tbd{Describe the trend from 20 m to 40 m once filled, e.g. where Safe Landing falls below 50\%.}
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.62\textwidth]{fig_footprint_envelope.pdf}
+  \caption{Fraction of the 80 held-out test tiles meeting each footprint criterion as the required footprint side $L$ varies in 1~m steps (Table~\ref{tab:envelope} lists selected values). Footprint OK tests box area alone; Square Fit additionally requires the box to contain an $L \times L$ square; Safe Landing further requires at most 5\% proxy-unsafe pixels inside the box. The grey region marks $L > 31$~m, where no $V_{\text{grad+shadow}}$ box contains an $L \times L$ square, and the dashed line marks the 50~m large-lander requirement. The $V_{\text{grad+shadow}}$ safe landing rate starts at 0.60 at $L = 5$~m, because contaminated rocky and crater boxes fail at every footprint, and falls below 0.5 above 9~m.}
+  \label{fig:envelope}
+\end{figure}
 
-Table~\ref{tab:terrain} breaks the $L = 25$~m result down by terrain type. Smooth plains and dunes contain no proxy-unsafe pixels, so any box found there is safe and the only question is whether texture-driven fragmentation leaves a large enough region. Crater and rocky tiles test whether the selected region actually avoids hazards.
+Two bounds follow from the box geometry. Since the largest $V_{\text{grad+shadow}}$ box contains 1,612 pixels, no area requirement with $L \ge 41$~m can be met on any test tile. The square-fit bound is tighter: the boxes are elongated (the 1,612-pixel box measures $26 \times 62$ pixels), and the largest short side $\min(w, h)$ of any box is 31 pixels, so Square Fit and Safe Landing are zero for every $L \ge 32$~m. At $L = 25$~m, $V_{\text{grad+shadow}}$ meets the area requirement on 68.8\% of tiles, but only 7.5\% of tiles yield a region that both fits a $25\text{ m} \times 25\text{ m}$ square and contains at most 5\% unsafe terrain; the entire gap is due to elongation, since every box that fits a 25~m square is also within the contamination tolerance. Over the full sweep (Fig.~\ref{fig:envelope}), the safe landing rate falls from 21.2\% at 20~m to 1.3\% at 30~m and reaches 50\% only for $L \le 9$~m. It never exceeds 60\% at any footprint, because the boxes on all 20 rocky tiles and on 12 of the 20 crater tiles exceed the 5\% tolerance regardless of their size. $V_{\text{grad}}$ has a higher Footprint OK for $L \ge 30$~m, but none of those boxes is safe: its safe landing rate is at or below that of $V_{\text{grad+shadow}}$ at every $L$ in Table~\ref{tab:envelope} and is zero from 28~m.
+
+Table~\ref{tab:terrain} breaks the $L = 25$~m result down by terrain type. Smooth plains and dunes contain no proxy-unsafe pixels, so any box found there is safe and the only question is whether texture-driven fragmentation leaves a large enough region. Crater and rocky tiles test whether the selected region actually avoids hazards. On rocky terrain it does not: every rocky-tile box contains 11--19\% unsafe pixels, so the rocky safe landing rate is zero at every footprint. On crater terrain the outcome is bimodal: 8 of the 20 boxes contain no unsafe pixels and 12 are at least 89\% unsafe, which gives the mean of 0.594; the three crater boxes that fit a 25~m square are all clean. Smooth tiles are hazard-free, yet none yields a 25~m square (the largest short side is 21~m); dune tiles do so on 15\%.
 
 \begin{table}[!htb]
-  \caption{Per-terrain results for $V_{\text{grad+shadow}}$ at $L = 25$~m (20 test tiles per terrain type).}
+  \caption{Per-terrain results for $V_{\text{grad+shadow}}$ at $L = 25$~m (20 test tiles per terrain type). Mean Box Area and Frac Unsafe are averaged over the 20 tiles of each terrain type.}
   \label{tab:terrain}
   \centering
   \small
@@ -227,10 +226,10 @@ Table~\ref{tab:terrain} breaks the $L = 25$~m result down by terrain type. Smoot
     \toprule
     Terrain & Mean Box Area (px) & Frac Unsafe & Square Fit (25 m) & Safe Landing (25 m) \\
     \midrule
-    Crater & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
-    Rocky  & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
-    Smooth & \tbd{--} & 0.000 & \tbd{--} & \tbd{--} \\
-    Dunes  & \tbd{--} & 0.000 & \tbd{--} & \tbd{--} \\
+    Crater & 1,133 & 0.594 & 0.150 & 0.150 \\
+    Rocky  & 445 & 0.148 & 0.000 & 0.000 \\
+    Smooth & 675 & 0.000 & 0.000 & 0.000 \\
+    Dunes  & 726 & 0.000 & 0.150 & 0.150 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -260,28 +259,28 @@ Front-end feature extraction completes in under 100~ms at native resolution (74.
 \section{Discussion: Where Single-Frame 2D Sensing Fits}
 The results define a usable operating envelope for single-frame 2D hazard detection rather than a binary verdict on it.
 
-\textbf{Small-footprint vehicles.} For footprint requirements up to roughly \tbd{L$^*$}~m, the pipeline returns hazard-free landing regions on a substantial fraction of tiles (Table~\ref{tab:envelope}). Compact landers, rotorcraft, and vehicles with small touchdown dispersion fall inside this envelope and could use a camera-only hazard map, with no additional sensor hardware.
+\textbf{Small-footprint vehicles.} For footprint requirements up to 9~m, the pipeline returns a region that fits the footprint with at most 5\% unsafe terrain on at least half of the tiles (Fig.~\ref{fig:envelope}). The envelope is narrow: at 20~m and 25~m the rate falls to 21.2\% and 7.5\% (Table~\ref{tab:envelope}). Only vehicles whose required clear footprint, including touchdown dispersion, is of order 10~m, such as small rotorcraft, fall inside it and could use a camera-only hazard map with no additional sensor hardware; compact landers that need 20--25~m largely do not.
 
 \textbf{Cueing for 3D sensors.} With AUROC 0.796 and PR-AUC 0.559, the augmented hazard map ranks terrain well above chance at very low cost. On vehicles that do carry lidar or stereo, it can act as a pre-filter that directs the 3D sensor toward the most promising regions, reducing the area that must be scanned at full resolution.
 
 \textbf{Degraded-mode fallback.} Because the front-end needs only a camera, under 100~ms, and under 16~MB, it is a candidate fallback when a primary 3D sensor degrades or fails.
 
-\textbf{Outside the envelope.} For large landers requiring footprints of $\sim$40--50~m or more, single-frame 2D sensing alone does not deliver usable sites in our evaluation, and direct 3D measurement remains necessary.
+\textbf{Outside the envelope.} Above 31~m no selected region can contain the footprint, and between 20~m and 31~m the safe landing rate is at most 21.2\%. For these footprints, including the 50~m large-lander requirement, single-frame 2D sensing alone does not deliver usable sites in our evaluation, and direct 3D measurement remains necessary.
 
 \subsection{Limitations}
 The operating envelope above is bounded by several intrinsic limitations of single-frame 2D hazard estimation:
 \begin{enumerate}
     \item \textbf{Tilt and Shading Ambiguities:} Monocular intensity statistics cannot distinguish uniformly sloped, planar surfaces from level plains because both yield near-zero intensity gradients.
     \item \textbf{Illumination Sensitivity:} Shading depends on solar incidence and phase angles. Slopes oriented perpendicular to incident light can appear deceptively bright, while benign dips can cast sharp shadows. All results here use a single illumination geometry (azimuth $45^\circ$, elevation $30^\circ$), and the envelope is expected to shift with sun angle.
-    \item \textbf{Footprint Fragmentation:} Conservative shadow and gradient thresholding fragments safe zones into irregular patches, which is what limits the method to smaller footprints.
-    \item \textbf{Residual Contamination:} Averaged over the test set, candidate boxes still contain 18.6\% unsafe terrain at the maximal-rectangle selection; usability at a given footprint must be judged with the Safe Landing criterion rather than box size alone.
+    \item \textbf{Footprint Fragmentation:} Conservative shadow and gradient thresholding fragments safe zones into irregular, elongated patches whose largest inscribed square is much smaller than their area suggests, which is what limits the method to small footprints.
+    \item \textbf{Residual Contamination:} Averaged over all 80 test tiles, $V_{\text{grad+shadow}}$ boxes contain 18.6\% unsafe terrain. Because the 40 smooth and dune tiles contain no proxy-unsafe pixels, this average understates the problem on hazardous terrain: over the 40 crater and rocky tiles the mean is 37.1\%, every rocky box exceeds the 5\% tolerance, and 12 of 20 crater boxes are at least 89\% unsafe. The maximal-rectangle step uses only the binary safe mask, not the hazard score within it, so usability at a given footprint must be judged with the Safe Landing criterion rather than box size alone.
     \item \textbf{Proxy Label Fidelity:} Synthetic renders and DTM-derived labels approximate real terrain and do not capture small-scale rock distributions or soil strength required for landing gear certification. Validation on real orbital imagery is needed.
 \end{enumerate}
 
 \section{Conclusion}
 This study characterizes the operational bounds of single-frame, intensity-based hazard detection for planetary landing, using unsafe terrain as the primary evaluation class and strict geographic separation between development and test terrain. Raw intensity gradients invert in shadowed craters (AUROC 0.350, PR-AUC 0.088); a lightweight shadow augmentation step corrects this, reaching AUROC 0.796 and PR-AUC 0.559, with a front-end that runs in 74.0~ms using under 16~MB of memory.
 
-Treating the lander footprint as an operating parameter shows that the usefulness of 2D optical sensing depends strongly on vehicle size. At a $25\text{ m} \times 25\text{ m}$ requirement, the pipeline returns a safe landing region on \tbd{Y}\% of held-out tiles, while no tile supports a $50\text{ m} \times 50\text{ m}$ requirement and the envelope ends at approximately $40$~m. Single-frame 2D sensing is therefore a simple, low-cost option for small-footprint vehicles and a practical cueing or fallback stage for 3D sensors, while large landers continue to require direct 3D measurement. Future work will extend the envelope along the illumination axis, evaluate on real HiRISE imagery, and investigate footprint-aware site selection that targets the vehicle's required footprint directly rather than the maximal rectangle.
+Treating the lander footprint as an operating parameter shows that the usefulness of 2D optical sensing depends strongly on vehicle size. The safe landing rate reaches 50\% only for footprints up to 9~m, falls to 7.5\% at a $25\text{ m} \times 25\text{ m}$ requirement, and is zero above 31~m; no tile supports a $50\text{ m} \times 50\text{ m}$ requirement, and on rocky terrain no selected region meets the 5\% contamination tolerance at any footprint. Single-frame 2D sensing is therefore a simple, low-cost option only for vehicles with footprints of order 10~m, and otherwise a cueing or fallback stage for 3D sensors, while larger vehicles continue to require direct 3D measurement. Future work will extend the envelope along the illumination axis, evaluate on real HiRISE imagery, and investigate footprint-aware site selection that targets the vehicle's required footprint directly rather than the maximal rectangle.
 
 \section*{Acknowledgments}
 The authors acknowledge the Indian Institute of Technology Gandhinagar for providing computational resources and infrastructure in support of this research.
