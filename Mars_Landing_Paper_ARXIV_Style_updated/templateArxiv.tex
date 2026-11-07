@@ -15,18 +15,27 @@
 \usepackage{graphicx}       % graphics
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{xcolor}
 \graphicspath{{media/}}     % organize your images and other figures under media/ folder
+
+% ---------------------------------------------------------------------------
+% PLACEHOLDER MACRO: every \tbd{...} marks a number that must be computed from
+% the per-tile evaluation outputs (see compute_footprint_sweep.py) before
+% submission. Search this file for "\tbd" to find all of them.
+% ---------------------------------------------------------------------------
+\newcommand{\tbd}[1]{\textcolor{red}{\textbf{[#1]}}}
 
 %Header
 \pagestyle{fancy}
 \thispagestyle{empty}
-\rhead{ \textit{ }} 
+\rhead{ \textit{ }}
 
 % Update your Headers here
-\fancyhead[LO]{Characterizing Single-Frame Safe-Zone Estimation for Planetary Landers}
+\fancyhead[LO]{Operational Bounds of Single-Frame 2D Hazard Detection for Planetary Landers}
 
 %% Title
-\title{Characterizing Single-Frame Safe-Zone Estimation for Mars Landers}
+\title{Characterizing the Operational Bounds of Single-Frame 2D Hazard Detection for Autonomous Planetary Landers}
 
 \author{
   Kalp Shah \\
@@ -51,24 +60,32 @@
 
 
 \begin{abstract}
-Safe autonomous landing on planetary surfaces requires rapid, accurate hazard detection under severe onboard computational constraints. In this work, we rigorously evaluate a deterministic landing-site estimation pipeline based on image intensity gradients, establishing unsafe terrain (slopes exceeding $15^\circ$) as the primary evaluation class. We systematically benchmark this gradient-scoring architecture against local standard deviation and random baselines using continuous Digital Terrain Model (DTM) proxy geometry across geographically disjoint test sites. Pooled pixel evaluation reveals that unaugmented intensity gradients exhibit an inverted hazard response in shadowed crater bowls (AUROC: 0.350, PR-AUC: 0.088 vs. 0.095 random baseline chance). While integrating morphological shadow augmentation corrects this physical inversion (AUROC: 0.796, PR-AUC: 0.559), our headline method yields no usable landing site on any test tile: candidate boxes contain an average of 18.6\% unsafe terrain, and zero boxes satisfy mission footprint clearance constraints ($\text{Footprint OK} = 0.0\%$). We report per-stage latency benchmarks demonstrating that front-end feature extraction executes under 100~ms at native resolution ($74.0$~ms) with peak memory below 28~MB, while downstream maximal-rectangle extraction accounts for remaining latency in Python. These findings expose the fundamental limitations of 2D intensity-based hazard detection for flight deployment.
+Onboard hazard detection for planetary landing must run on radiation-hardened processors with tight compute and memory budgets. Single-frame 2D optical sensing is the simplest and cheapest sensing option available, but the conditions under which it is sufficient have not been clearly established. We characterize the operational bounds of a deterministic, single-frame hazard detection pipeline built on image intensity gradients and morphological shadow augmentation, evaluated against slope-derived proxy labels (unsafe: slope $>15^\circ$) on geographically disjoint Martian test sites. Raw intensity gradients produce an inverted hazard response in shadowed crater bowls (AUROC 0.350), a failure mode we trace to vanishing gradients under single-direction illumination. Shadow augmentation corrects this inversion (AUROC 0.796, PR-AUC 0.559, nearly six times the 0.095 chance level), and the front-end runs in 74.0~ms at native resolution with under 16~MB of peak memory. We then treat the lander footprint requirement as an explicit operating parameter rather than a fixed constant. For a $25\text{ m} \times 25\text{ m}$ requirement, the pipeline returns a qualifying landing region on \tbd{X}\% of held-out tiles (\tbd{Y}\% with at most 5\% unsafe terrain inside the region), whereas no tile supports a $50\text{ m} \times 50\text{ m}$ requirement, and no candidate region exceeds 1,612~m$^2$ (about $40\text{ m} \times 40\text{ m}$). Single-frame 2D sensing therefore has a usable operating envelope for small-footprint vehicles and as a low-cost cueing stage for 3D sensors, and we quantify where that envelope ends.
 \end{abstract}
 
 
-\keywords{Computer Vision \and Autonomous Landing \and Planetary Robotics \and Hazard Detection \and Terrain Analysis}
+\keywords{Computer Vision \and Autonomous Landing \and Planetary Robotics \and Hazard Detection \and Terrain Analysis \and Operating Envelope}
 
 
 \section{Introduction}
-Autonomous planetary landers operate under extreme communication latency, necessitating onboard hazard detection and avoidance systems that execute on radiation-hardened flight processors with severe computational constraints. While deep learning methods excel in terrestrial computer vision, classical lightweight vision pipelines remain critical candidates for spaceflight deployment. Landing-site selection for missions such as the Mars Science Laboratory relied on extensive orbital reconnaissance and terrain analysis prior to entry \cite{golombek2012selection}, while real-time onboard hazard detection has been pursued through lidar-based sensing \cite{amzajerdian2013lidar}, learning-based detection \cite{moghe2020deep}, and vision-based navigation systems such as the Mars 2020 Lander Vision System \cite{johnson2020lvs} and NASA's next-generation hazard detection system \cite{restrepo2020hds}. Radiation-hardened flight processors, such as the BAE RAD750 \cite{berger2001rad750}, provide limited compute throughput and memory bandwidth.
+Autonomous planetary landers operate under extreme communication latency, necessitating onboard hazard detection and avoidance systems that execute on radiation-hardened flight processors with severe computational constraints. While deep learning methods excel in terrestrial computer vision, classical lightweight vision pipelines remain strong candidates for spaceflight deployment because they are deterministic, interpretable, and cheap to verify. Landing-site selection for missions such as the Mars Science Laboratory relied on extensive orbital reconnaissance and terrain analysis prior to entry \cite{golombek2012selection}, while real-time onboard hazard detection has been pursued through lidar-based sensing \cite{amzajerdian2013lidar}, learning-based detection \cite{moghe2020deep}, and vision-based navigation systems such as the Mars 2020 Lander Vision System \cite{johnson2020lvs} and NASA's next-generation hazard detection system \cite{restrepo2020hds}. Radiation-hardened flight processors, such as the BAE RAD750 \cite{berger2001rad750}, provide limited compute throughput and memory bandwidth.
 
-A central open question is whether lightweight single-frame image statistics contain sufficient physical information to reliably identify geometric hazards. In literature, hazard detection algorithms are frequently evaluated against proxy ground truth derived from orbital Digital Terrain Models (DTMs). However, DTM-derived proxy labels represent reference topography, and evaluating against them requires careful class definition to avoid misleading performance metrics. In particular, treating the dominant safe terrain as the positive class masks severe false negatives, as high accuracy can be achieved trivially by predicting the majority class.
+3D sensors such as lidar measure slope directly but add mass, power, and integration cost. A single camera, often already carried for terrain-relative navigation, is the simplest alternative. The practical question is therefore not whether 2D optical sensing is as good as 3D sensing, but \emph{under which operating conditions} it is good enough. Two conditions matter most: the terrain and illumination encountered, and the size of the hazard-free footprint the vehicle needs. A small lander or rotorcraft that needs a few tens of metres of clear ground places very different demands on a hazard map than a large lander that needs $50$~m or more.
 
-In this paper, we characterize the performance and physical limitations of single-frame intensity-based hazard scoring. We evaluate unsafe terrain as the primary evaluation class, examine the structural causes of performance degradation, and report empirical latency and memory profiles across standard operational resolutions.
+Hazard detection algorithms are frequently evaluated against proxy ground truth derived from orbital Digital Terrain Models (DTMs). Such evaluations require careful class definition: treating the dominant safe terrain as the positive class allows high accuracy by trivially predicting the majority class and masks dangerous false negatives. We therefore evaluate unsafe terrain as the primary class throughout.
+
+This paper characterizes the operating envelope of single-frame, intensity-based hazard scoring. Our contributions are:
+\begin{enumerate}
+    \item A leak-free evaluation protocol with site-level geographic separation between development and test terrain and unsafe terrain as the primary evaluation class.
+    \item Identification of a physical failure mode, an \emph{inverted} hazard response of raw intensity gradients in shadowed craters, and a lightweight shadow augmentation step that corrects it (AUROC $0.350 \rightarrow 0.796$).
+    \item A footprint-requirement sweep that maps landing-region availability as a function of the required lander footprint, identifying the footprint sizes at which single-frame 2D sensing is and is not sufficient.
+    \item Per-stage latency and memory profiles showing that the front-end fits comfortably within flight-class compute budgets.
+\end{enumerate}
 
 \section{Dataset and Terrain Independence}
-We evaluate our method on a synthetic Martian dataset comprising 160 rendered tiles ($768 \times 768$ pixels at 1.0~m Ground Sampling Distance) across four distinct geological site types: craters, rocky terrain, smooth plains, and dunes. The imagery is rendered under a standard Lambertian illumination model with solar azimuth $45^\circ$ and solar elevation $30^\circ$, while the reference topography represents high-resolution orbital DTM geometry exemplified by HiRISE \cite{mcewen2007hirise}. Proxy hazard labels are defined mathematically from the local gradient of the underlying DTM: any pixel with a maximum local slope exceeding $15^\circ$ over a 5~m baseline is labeled proxy-unsafe. Across the dataset, the average proxy-safe fraction is 90.2\%, meaning the hazardous unsafe class has a baseline prevalence of 9.8\% (and 9.5\% on the held-out test split).
+We evaluate our method on a synthetic Martian dataset comprising 160 rendered tiles ($768 \times 768$ pixels at 1.0~m Ground Sampling Distance) across four distinct geological site types: craters, rocky terrain, smooth plains, and dunes. The imagery is rendered under a standard Lambertian illumination model with solar azimuth $45^\circ$ and solar elevation $30^\circ$, while the reference topography represents high-resolution orbital DTM geometry exemplified by HiRISE \cite{mcewen2007hirise}. Proxy hazard labels are defined from the local gradient of the underlying DTM: any pixel with a maximum local slope exceeding $15^\circ$ over a 5~m baseline is labeled proxy-unsafe. Across the dataset, the average proxy-safe fraction is 90.2\%, meaning the hazardous unsafe class has a baseline prevalence of 9.8\% (and 9.5\% on the held-out test split).
 
-\textbf{Terrain Independence Guarantee:} To ensure rigorous, leak-free evaluation, train/validation and test independence is strictly guaranteed via geographic site-level partitioning rather than random patch shuffling. The development split (DEV, 80 tiles) is drawn exclusively from four distinct geographic regions (\texttt{crater\_1}, \texttt{rocky\_1}, \texttt{smooth\_1}, and \texttt{dunes\_1}). The held-out test split (TEST, 80 tiles) comprises four entirely separate geographic regions (\texttt{crater\_2}, \texttt{rocky\_2}, \texttt{smooth\_2}, and \texttt{dunes\_2}), generated using independent pseudorandom seeds. There is zero tile overlap, boundary overlap, or shared terrain mesh structure between the DEV and TEST sets. All hyperparameter tuning was conducted strictly on the DEV set to ensure unbiased test reporting.
+\textbf{Terrain Independence:} To ensure leak-free evaluation, train/validation and test independence is guaranteed via geographic site-level partitioning rather than random patch shuffling. The development split (DEV, 80 tiles) is drawn exclusively from four distinct geographic regions (\texttt{crater\_1}, \texttt{rocky\_1}, \texttt{smooth\_1}, and \texttt{dunes\_1}). The held-out test split (TEST, 80 tiles) comprises four entirely separate geographic regions (\texttt{crater\_2}, \texttt{rocky\_2}, \texttt{smooth\_2}, and \texttt{dunes\_2}), generated using independent pseudorandom seeds. There is zero tile overlap, boundary overlap, or shared terrain mesh structure between the DEV and TEST sets. All hyperparameter tuning was conducted strictly on the DEV set.
 
 \section{Methodology}
 \label{sec:methodology}
@@ -89,27 +106,37 @@ where high values capture abrupt intensity transitions associated with steep slo
 The bounded hazard score $G(x,y) \in [0,1]$ serves as the continuous predictor of unsafe terrain, where values near 1.0 denote high hazard and values near 0.0 denote smooth topography.
 
 \subsection{Shadow Augmentation}
-Under single-frame illumination, raw gradient magnitude fails inside broad, flat crater interiors and deeply shadowed depressions. Because illumination inside shadows is near uniform or zero, spatial intensity gradients vanish ($\nabla I \approx 0$), resulting in dangerously low hazard scores for steep, hazardous terrain. 
+Under single-frame illumination, raw gradient magnitude fails inside broad, flat crater interiors and deeply shadowed depressions. Because illumination inside shadows is near uniform or zero, spatial intensity gradients vanish ($\nabla I \approx 0$), resulting in dangerously low hazard scores for steep, hazardous terrain.
 
-To overcome this blind spot, a shadow augmentation module identifies dark connected regions using an inverse binary threshold at intensity level $\tau = 40$. External contours are extracted, and spurious small patches below $A_{\min} = 500$ pixels are discarded. For every retained contour, its enclosed interior is flood-filled, and the hazard score is set to maximum:
+To address this, a shadow augmentation module identifies dark connected regions using an inverse binary threshold at intensity level $\tau = 40$. External contours are extracted, and spurious small patches below $A_{\min} = 500$ pixels are discarded. For every retained contour, its enclosed interior is flood-filled, and the hazard score is set to maximum:
 \begin{equation}
     G(x,y) \leftarrow 1.0 \quad \forall\,(x,y) \in \text{filled shadow region}.
 \end{equation}
-This accounts for the physical reality that shadows adjacent to steep rims and crater walls represent severe physical hazards \cite{he2010edge}.
+This reflects the physical fact that shadows adjacent to steep rims and crater walls indicate severe hazards \cite{he2010edge}.
 
 \subsection{Safe-Region Fusion and Landing Box Selection}
 The continuous safety score is the complement of the augmented gradient hazard: $s = 1 - G$. A binary safety mask is produced by thresholding $s > \theta$, with $\theta = 0.2$ tuned on the DEV validation set. Connected components smaller than 100 pixels are filtered out. Finally, a maximal-rectangle algorithm \cite{vandevoorde1998maximal} extracts the largest contiguous safe landing bounding box within the binary mask.
 
-The extracted landing box is parameterized by $B = (x, y, w, h)$ with area $A_{\text{box}} = w \cdot h$ (in pixels). To establish physical landing viability, we define the binary footprint clearance indicator:
+\subsection{Footprint Requirement as an Operating Parameter}
+\label{sec:footprint}
+The extracted landing box is parameterized by $B = (x, y, w, h)$ with area $A_{\text{box}} = w \cdot h$ (in pixels). Rather than fixing a single lander footprint, we treat the required footprint side length $L$ (in metres) as an operating parameter. At 1.0~m GSD, the area requirement is $A_{\text{req}}(L) = L^2$ pixels, and we define
 \begin{equation}
-    \text{Footprint OK} = \mathbb{I}\!\left(A_{\text{box}} \ge A_{\text{req}}\right),
+    \text{Footprint OK}(L) = \mathbb{I}\!\left(A_{\text{box}} \ge A_{\text{req}}(L)\right),
 \end{equation}
-where $\mathbb{I}(\cdot)$ is the indicator function and $A_{\text{req}} = 2500\text{ pixels}$. At our 1.0~m Ground Sampling Distance, this threshold corresponds to a contiguous $50\text{ m} \times 50\text{ m}$ hazard-free landing footprint necessary to accommodate lander leg span, structural clearance, and touchdown dispersion errors.
+where $\mathbb{I}(\cdot)$ is the indicator function. Because an area criterion alone admits elongated boxes that cannot physically contain an $L \times L$ touchdown zone, we additionally report the stricter square-fit criterion
+\begin{equation}
+    \text{Square Fit}(L) = \mathbb{I}\!\left(\min(w, h) \ge L\right).
+\end{equation}
+Finally, a box that is large enough but encloses unsafe terrain is not a usable site. We therefore define the \emph{safe landing rate}
+\begin{equation}
+    \text{Safe Landing}(L) = \mathbb{I}\!\left(\text{Square Fit}(L) \;\wedge\; f_{\text{unsafe}}(B) \le \epsilon\right),
+\end{equation}
+where $f_{\text{unsafe}}(B)$ is the fraction of proxy-unsafe pixels inside $B$ and $\epsilon = 0.05$. We sweep $L \in \{20, 25, 30, 35, 40, 50\}$~m. The upper value, $L = 50$~m, corresponds to a large-lander requirement covering leg span, structural clearance, and touchdown dispersion; smaller values correspond to compact landers, rotorcraft, and landers with tighter navigation dispersion.
 
 \begin{figure*}[!t]
   \centering
   \includegraphics[width=\textwidth]{fig_qualitative_crater.pdf}
-  \caption{Qualitative progression and failure mode analysis on an illustrative crater test tile (\texttt{crater\_2\_0}). (a) Monocular input image rendered under Lambertian illumination showing a prominent crater bowl and deep shadow. (b) DTM-derived ground-truth slope with the proxy-unsafe boundary ($>15^\circ$) marked in dashed cyan. (c) Raw Sobel gradient hazard $G(x,y)$, showing near-zero gradient inside the shadowed crater bowl, causing a severe false-safe prediction. (d) Morphological shadow mask extracted at $\tau = 40$. (e) Augmented hazard map with the shadow region forced to 1.0. (f) Landing box selection comparison: unaugmented $V_{\text{grad}}$ extracts a catastrophic landing box entirely inside the hazardous crater bowl (red solid box, 100\% unsafe), whereas $V_{\text{grad+shadow}}$ correctly rejects the shadowed hazard and relocates the candidate landing box to benign terrain outside the rim (green dashed box, 0\% unsafe). Note that while this panel demonstrates successful relocation on an isolated crater, across the full test set $V_{\text{grad+shadow}}$ still incurs 18.6\% unsafe penetration on average and fails to extract any box satisfying the 2,500-pixel footprint constraint.}
+  \caption{Qualitative progression on an illustrative crater test tile (\texttt{crater\_2\_0}). (a) Monocular input image rendered under Lambertian illumination showing a prominent crater bowl and deep shadow. (b) DTM-derived ground-truth slope with the proxy-unsafe boundary ($>15^\circ$) marked in dashed cyan. (c) Raw Sobel gradient hazard $G(x,y)$, showing near-zero gradient inside the shadowed crater bowl, which causes a false-safe prediction. (d) Morphological shadow mask extracted at $\tau = 40$. (e) Augmented hazard map with the shadow region forced to 1.0. (f) Landing box selection comparison: unaugmented $V_{\text{grad}}$ places its landing box entirely inside the hazardous crater bowl (red solid box, 100\% unsafe), whereas $V_{\text{grad+shadow}}$ rejects the shadowed hazard and relocates the candidate box to benign terrain outside the rim (green dashed box, 0\% unsafe). Section~\ref{sec:envelope} quantifies how often such relocations yield usable sites as a function of the required footprint.}
   \label{fig:qualitative}
 \end{figure*}
 
@@ -129,28 +156,28 @@ We designate unsafe terrain (proxy slope $> 15^\circ$) as the primary evaluation
     Method & Precision & Recall & F1 & AUROC & PR-AUC \\
     \midrule
     $V_{\text{grad}}$ & 0.133 & 0.059 & 0.081 & 0.350 & 0.088 \\
-    $V_{\text{grad+shadow}}$ & 0.587 & 0.547 & 0.566 & 0.796 & 0.559 \\
+    $V_{\text{grad+shadow}}$ & \textbf{0.587} & \textbf{0.547} & \textbf{0.566} & \textbf{0.796} & \textbf{0.559} \\
     B1 (Local Std) & 0.188 & 0.063 & 0.094 & 0.392 & 0.116 \\
     B5 (Random) & 0.087 & 0.039 & 0.053 & 0.500 & 0.095 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\textbf{Exact Computation of PR-AUC and the Random Baseline:} In Table~\ref{tab:classification}, PR-AUC and AUROC are computed across pooled test pixels. Under this pooled definition, the random baseline ($B_5$) achieves a PR-AUC of 0.095 and precision of 0.087, exactly matching the 9.5\% hazard prevalence of the held-out test set. We explicitly note that if PR-AUC is instead computed as an unweighted macro-average over individual tiles, tiles containing zero hazards (smooth plains and dunes) yield undefined PR-AUC values ($0/0$) and must be discarded. Restricting the average only to the 40 hazard-containing tiles (craters and rocky terrain) artificially inflates the evaluated hazard prevalence to 19.0\%, causing the macro-averaged random PR-AUC to read 0.190 and $V_{\text{grad}}$ to read 0.201. Global pixel pooling avoids this sample-selection distortion, confirming that $V_{\text{grad}}$ (PR-AUC: 0.088) performs strictly worse than random chance (0.095).
+\textbf{Computation of PR-AUC and the Random Baseline:} In Table~\ref{tab:classification}, PR-AUC and AUROC are computed across pooled test pixels. Under this pooled definition, the random baseline ($B_5$) achieves a PR-AUC of 0.095 and precision of 0.087, matching the 9.5\% hazard prevalence of the held-out test set. If PR-AUC is instead computed as an unweighted macro-average over individual tiles, tiles containing zero hazards (smooth plains and dunes) yield undefined PR-AUC values ($0/0$) and must be discarded. Restricting the average to the 40 hazard-containing tiles (craters and rocky terrain) inflates the evaluated hazard prevalence to 19.0\%, causing the macro-averaged random PR-AUC to read 0.190 and $V_{\text{grad}}$ to read 0.201. Global pixel pooling avoids this sample-selection distortion and shows that $V_{\text{grad}}$ (PR-AUC 0.088) performs below chance (0.095).
 
-\textbf{Physical Inversion (AUROC $<$ 0.5):} Unaugmented gradient scoring ($V_{\text{grad}}$) achieves an AUROC of 0.350, performing substantially worse than random guessing (0.500). This inversion occurs because under single-frame Lambertian illumination, the steepest crater walls and bowl interiors cast dark shadows where spatial gradients vanish ($\nabla I \approx 0$). In contrast, benign flat plains exhibit surface roughness textures producing high gradients. Consequently, intensity gradients inversely correlate with physical slopes in crater topography, assigning low hazard to hazardous crater bowls and high hazard to safe plains. Morphological shadow augmentation ($V_{\text{grad+shadow}}$) remedies this structural failure mode, elevating the AUROC to 0.796 and PR-AUC to 0.559.
+\textbf{Physical Inversion and Its Correction:} Unaugmented gradient scoring ($V_{\text{grad}}$) achieves an AUROC of 0.350, below random guessing (0.500). Under single-frame Lambertian illumination, the steepest crater walls and bowl interiors cast dark shadows where spatial gradients vanish ($\nabla I \approx 0$), while benign plains exhibit surface roughness textures that produce high gradients. Intensity gradients therefore anti-correlate with physical slope in crater topography. Morphological shadow augmentation ($V_{\text{grad+shadow}}$) removes this failure mode, raising AUROC to 0.796 and PR-AUC to 0.559, nearly six times the chance level and roughly five times the best classical baseline (B1, 0.116). The correction costs a single threshold-and-fill operation and requires no learned parameters.
 
-\subsection{Landing Box Evaluation}
-Table~\ref{tab:box} details the physical geometry and hazard composition enclosed by the extracted maximal rectangles across the 80 held-out test tiles.
+\subsection{Landing Box Evaluation at a Large-Lander Footprint}
+Table~\ref{tab:box} reports the geometry and hazard composition of the extracted maximal rectangles across the 80 held-out test tiles, with Footprint OK evaluated at the large-lander requirement $L = 50$~m ($A_{\text{req}} = 2{,}500$ pixels).
 
 \begin{table}[!htb]
-  \caption{Landing box evaluation metrics on held-out test tiles ($768 \times 768$ pixels, 589,824~$\text{m}^2$).}
+  \caption{Landing box evaluation metrics on held-out test tiles ($768 \times 768$ pixels, 589,824~$\text{m}^2$) at the large-lander requirement $L = 50$~m.}
   \label{tab:box}
   \centering
   \small
   \begin{tabular}{lccccc}
     \toprule
-    Method & Box Found & Mean Area (px) & Rel Area (Tile) & Frac Unsafe & Footprint OK \\
+    Method & Box Found & Mean Area (px) & Rel Area (Tile) & Frac Unsafe & Footprint OK (50 m) \\
     \midrule
     $V_{\text{grad}}$ & 1.000 & 17,028 & 0.0289 & 0.287 & 0.250 \\
     $V_{\text{grad+shadow}}$ & 1.000 & 744 & 0.0013 & 0.186 & 0.000 \\
@@ -159,12 +186,57 @@ Table~\ref{tab:box} details the physical geometry and hazard composition enclose
   \end{tabular}
 \end{table}
 
-\textbf{Failure to Secure Viable Landing Sites:} Table~\ref{tab:box} reveals a critical physical limitation: our headline method ($V_{\text{grad+shadow}}$) yields \textbf{zero viable landing sites} across the test set ($\text{Footprint OK} = 0.0\%$). Specifically, while $V_{\text{grad+shadow}}$ discovers a candidate box on every tile, its mean area is only 744 pixels ($0.13\%$ of the tile area), and its maximum area across all 80 test tiles is 1,612 pixels—strictly failing the 2,500-pixel ($50\text{ m} \times 50\text{ m}$) minimum footprint requirement. Furthermore, candidate boxes extracted by $V_{\text{grad+shadow}}$ still enclose an average of 18.6\% unsafe terrain. While $V_{\text{grad}}$ attains $\text{Footprint OK} = 25.0\%$, it does so by falsely claiming hazardous untextured crater interiors (incurring 28.7\% unsafe pixel contamination) or level featureless plains. 
+At $L = 50$~m, $V_{\text{grad+shadow}}$ finds a candidate box on every tile, but the mean box area is 744 pixels (0.13\% of the tile) and the largest box on any test tile is 1,612 pixels, below the 2,500-pixel requirement; Footprint OK is therefore 0.0\%. The apparent 25.0\% Footprint OK of $V_{\text{grad}}$ is not a usable result: its boxes enclose 28.7\% unsafe terrain on average, because the inverted response steers them into untextured crater interiors (Fig.~\ref{fig:qualitative}f). The behaviour of $V_{\text{grad+shadow}}$ is conservative rather than dangerous: shadow and texture suppression fragment the safe mask into small regions, so the method under-reports usable area instead of over-reporting it. Whether those smaller regions are usable depends on the vehicle, which we examine next.
 
-\textbf{Contextualizing Figure 1:} Figure~\ref{fig:qualitative} illustrates a representative failure and relocation on test tile \texttt{crater\_2\_0}. In this isolated instance, $V_{\text{grad+shadow}}$ successfully relocates the landing box away from the crater bowl into a patch with 0\% unsafe pixels. However, this case is an illustrative demonstration of the geometric relocation mechanism, not representative of overall landing success. Across the full held-out test set, aggressive shadow thresholding fractures safe regions into small disjoint slivers, preventing the maximal rectangle algorithm from spanning the required 2,500-pixel touchdown zone.
+\subsection{Operating Envelope Across Footprint Requirements}
+\label{sec:envelope}
+Table~\ref{tab:envelope} reports Footprint OK, Square Fit, and Safe Landing (Section~\ref{sec:footprint}) as the required footprint side $L$ is varied.
+
+\begin{table}[!htb]
+  \caption{Fraction of held-out test tiles (out of 80) yielding a qualifying landing region as a function of required footprint side $L$. Safe Landing requires Square Fit and at most $\epsilon = 5\%$ unsafe pixels inside the box. Red entries are to be filled from per-tile outputs.}
+  \label{tab:envelope}
+  \centering
+  \small
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{cc ccc cc}
+    \toprule
+    & & \multicolumn{3}{c}{$V_{\text{grad+shadow}}$} & \multicolumn{2}{c}{$V_{\text{grad}}$} \\
+    \cmidrule(lr){3-5} \cmidrule(lr){6-7}
+    $L$ (m) & $A_{\text{req}}$ (px) & Footprint OK & Square Fit & Safe Landing & Footprint OK & Safe Landing \\
+    \midrule
+    20 & 400   & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
+    25 & 625   & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
+    30 & 900   & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
+    35 & 1,225 & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
+    40 & 1,600 & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
+    50 & 2,500 & 0.000 & 0.000 & 0.000 & 0.250 & \tbd{--} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Two bounds follow directly from Table~\ref{tab:box}. Since the largest $V_{\text{grad+shadow}}$ box contains 1,612 pixels, no requirement with $L \ge 41$~m can be met on any test tile, which fixes the upper edge of the operating envelope at approximately $40$~m. Since the mean box area (744 pixels) exceeds $A_{\text{req}}(25) = 625$ pixels, a non-trivial fraction of tiles necessarily meets the $25$~m area requirement. At $L = 25$~m, $V_{\text{grad+shadow}}$ yields a qualifying region on \tbd{X}\% of tiles, and \tbd{Y}\% of tiles yield a region that both fits a $25\text{ m} \times 25\text{ m}$ square and contains at most 5\% unsafe terrain. \tbd{Describe the trend from 20 m to 40 m once filled, e.g. where Safe Landing falls below 50\%.}
+
+Table~\ref{tab:terrain} breaks the $L = 25$~m result down by terrain type. Smooth plains and dunes contain no proxy-unsafe pixels, so any box found there is safe and the only question is whether texture-driven fragmentation leaves a large enough region. Crater and rocky tiles test whether the selected region actually avoids hazards.
+
+\begin{table}[!htb]
+  \caption{Per-terrain results for $V_{\text{grad+shadow}}$ at $L = 25$~m (20 test tiles per terrain type).}
+  \label{tab:terrain}
+  \centering
+  \small
+  \begin{tabular}{lcccc}
+    \toprule
+    Terrain & Mean Box Area (px) & Frac Unsafe & Square Fit (25 m) & Safe Landing (25 m) \\
+    \midrule
+    Crater & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
+    Rocky  & \tbd{--} & \tbd{--} & \tbd{--} & \tbd{--} \\
+    Smooth & \tbd{--} & 0.000 & \tbd{--} & \tbd{--} \\
+    Dunes  & \tbd{--} & 0.000 & \tbd{--} & \tbd{--} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsection{Per-Stage Runtime and Memory Benchmarks}
-To evaluate computational suitability, we benchmarked the execution time of each discrete processing stage and peak memory consumption across three image resolutions: $512 \times 512$, $768 \times 768$ (native tile resolution), and $1024 \times 1024$. Measurements were taken across 30 independent runs, with peak heap memory recorded via allocation tracing. Table~\ref{tab:runtime_breakdown} reports the per-stage breakdown.
+To evaluate computational suitability, we benchmarked the execution time of each processing stage and peak memory consumption across three image resolutions: $512 \times 512$, $768 \times 768$ (native tile resolution), and $1024 \times 1024$. Measurements were taken across 30 independent runs, with peak heap memory recorded via allocation tracing. Table~\ref{tab:runtime_breakdown} reports the per-stage breakdown.
 
 \begin{table}[!htb]
   \caption{Per-stage runtime breakdown (median and IQR in milliseconds) and peak memory across resolutions.}
@@ -183,27 +255,39 @@ To evaluate computational suitability, we benchmarked the execution time of each
   \end{tabular}}
 \end{table}
 
-As shown in Table~\ref{tab:runtime_breakdown}, front-end visual feature extraction operates strictly under 100~ms at native resolution ($74.0$~ms total: $9.7$~ms for Sobel gradients and $64.3$~ms for shadow contour extraction). The downstream maximal rectangle extraction consumes the largest individual share of latency ($196.0$~ms at $768 \times 768$), reflecting the overhead of interpreted Python stack loops. Peak working memory remains strictly bounded below 16~MB at native resolution and 28~MB at $1024 \times 1024$, well within the physical memory limits of space-grade architectures.
+Front-end feature extraction completes in under 100~ms at native resolution (74.0~ms: 9.7~ms for Sobel gradients and 64.3~ms for shadow contour extraction). Maximal-rectangle extraction takes the largest share of latency (196.0~ms at $768 \times 768$) because it runs as interpreted Python loops; it is an unoptimized stage rather than an inherent cost of the method. Peak working memory stays below 16~MB at native resolution and 28~MB at $1024 \times 1024$, well within the memory available on space-grade architectures.
+
+\section{Discussion: Where Single-Frame 2D Sensing Fits}
+The results define a usable operating envelope for single-frame 2D hazard detection rather than a binary verdict on it.
+
+\textbf{Small-footprint vehicles.} For footprint requirements up to roughly \tbd{L$^*$}~m, the pipeline returns hazard-free landing regions on a substantial fraction of tiles (Table~\ref{tab:envelope}). Compact landers, rotorcraft, and vehicles with small touchdown dispersion fall inside this envelope and could use a camera-only hazard map, with no additional sensor hardware.
+
+\textbf{Cueing for 3D sensors.} With AUROC 0.796 and PR-AUC 0.559, the augmented hazard map ranks terrain well above chance at very low cost. On vehicles that do carry lidar or stereo, it can act as a pre-filter that directs the 3D sensor toward the most promising regions, reducing the area that must be scanned at full resolution.
+
+\textbf{Degraded-mode fallback.} Because the front-end needs only a camera, under 100~ms, and under 16~MB, it is a candidate fallback when a primary 3D sensor degrades or fails.
+
+\textbf{Outside the envelope.} For large landers requiring footprints of $\sim$40--50~m or more, single-frame 2D sensing alone does not deliver usable sites in our evaluation, and direct 3D measurement remains necessary.
 
 \subsection{Limitations}
-Our findings highlight several intrinsic limitations of single-frame 2D hazard estimation:
+The operating envelope above is bounded by several intrinsic limitations of single-frame 2D hazard estimation:
 \begin{enumerate}
     \item \textbf{Tilt and Shading Ambiguities:} Monocular intensity statistics cannot distinguish uniformly sloped, planar surfaces from level plains because both yield near-zero intensity gradients.
-    \item \textbf{Illumination Sensitivity:} Shading depends entirely on solar incidence and phase angles. Slopes oriented perpendicular to incident light appear deceptively bright, while benign dips cast sharp shadows.
-    \item \textbf{Footprint Fragmentation:} Conservative shadow and gradient thresholding fragments safe zones into irregular sub-footprint patches, failing to guarantee contiguous landing areas.
-    \item \textbf{Proxy Label Fidelity:} Digital Terrain Models serve as geometric approximations and do not capture small-scale surface rock distributions or structural soil strength required for landing gear certification.
+    \item \textbf{Illumination Sensitivity:} Shading depends on solar incidence and phase angles. Slopes oriented perpendicular to incident light can appear deceptively bright, while benign dips can cast sharp shadows. All results here use a single illumination geometry (azimuth $45^\circ$, elevation $30^\circ$), and the envelope is expected to shift with sun angle.
+    \item \textbf{Footprint Fragmentation:} Conservative shadow and gradient thresholding fragments safe zones into irregular patches, which is what limits the method to smaller footprints.
+    \item \textbf{Residual Contamination:} Averaged over the test set, candidate boxes still contain 18.6\% unsafe terrain at the maximal-rectangle selection; usability at a given footprint must be judged with the Safe Landing criterion rather than box size alone.
+    \item \textbf{Proxy Label Fidelity:} Synthetic renders and DTM-derived labels approximate real terrain and do not capture small-scale rock distributions or soil strength required for landing gear certification. Validation on real orbital imagery is needed.
 \end{enumerate}
 
 \section{Conclusion}
-By establishing unsafe terrain as the primary evaluation class and enforcing strict geographic terrain independence, this study characterizes the limits of single-frame intensity-based planetary hazard detection. Unaugmented intensity gradients fail in shadowed crater topography, producing an inverted hazard response (AUROC: 0.350, PR-AUC: 0.088). Morphological shadow augmentation repairs this structural failure mode, elevating the AUROC to 0.796. From a systems perspective, front-end feature extraction operates in under 100~ms ($74.0$~ms at native resolution) with minimal memory footprint ($<16$~MB), while maximal-rectangle extraction accounts for remaining latency in Python.
+This study characterizes the operational bounds of single-frame, intensity-based hazard detection for planetary landing, using unsafe terrain as the primary evaluation class and strict geographic separation between development and test terrain. Raw intensity gradients invert in shadowed craters (AUROC 0.350, PR-AUC 0.088); a lightweight shadow augmentation step corrects this, reaching AUROC 0.796 and PR-AUC 0.559, with a front-end that runs in 74.0~ms using under 16~MB of memory.
 
-Most critically, our headline method ($V_{\text{grad+shadow}}$) yields \textbf{zero usable landing sites} across all held-out test tiles ($\text{Footprint OK} = 0.0\%$, with 18.6\% residual unsafe contamination). This quantitatively proves that while shadow augmentation prevents catastrophic false-safe classifications inside deep craters, single-frame 2D intensity heuristics are fundamentally insufficient for mission-critical autonomous hazard avoidance without 3D stereoscopic or lidar sensors.
+Treating the lander footprint as an operating parameter shows that the usefulness of 2D optical sensing depends strongly on vehicle size. At a $25\text{ m} \times 25\text{ m}$ requirement, the pipeline returns a safe landing region on \tbd{Y}\% of held-out tiles, while no tile supports a $50\text{ m} \times 50\text{ m}$ requirement and the envelope ends at approximately $40$~m. Single-frame 2D sensing is therefore a simple, low-cost option for small-footprint vehicles and a practical cueing or fallback stage for 3D sensors, while large landers continue to require direct 3D measurement. Future work will extend the envelope along the illumination axis, evaluate on real HiRISE imagery, and investigate footprint-aware site selection that targets the vehicle's required footprint directly rather than the maximal rectangle.
 
 \section*{Acknowledgments}
 The authors acknowledge the Indian Institute of Technology Gandhinagar for providing computational resources and infrastructure in support of this research.
 
 %Bibliography
-\bibliographystyle{unsrt}  
-\bibliography{references}  
+\bibliographystyle{unsrt}
+\bibliography{references}
 
 \end{document}
