@@ -1,7 +1,16 @@
 import unittest
 import numpy as np
 import cv2
-from pipeline import compute_gradient_hazard, augment_shadow, compute_fft_texture, maximal_rectangle
+from pipeline import compute_gradient_hazard, augment_shadow, maximal_rectangle
+from footprint_metrics import EPSILON, footprint_ok, square_fit, safe_landing, rates
+
+# The FFT texture module was removed from the headline pipeline; pipeline.py now
+# only exposes compute_fft_texture_ablation, which does not return the R map
+# that test_fft_texture checks. That test is skipped rather than rewritten.
+try:
+    from pipeline import compute_fft_texture
+except ImportError:
+    compute_fft_texture = None
 
 def brute_force_maximal_rectangle(matrix):
     if matrix.size == 0: return (0, 0, 0, 0)
@@ -48,6 +57,8 @@ class TestPipeline(unittest.TestCase):
         G_cb = compute_gradient_hazard(cb)
         self.assertTrue(np.max(G_cb) > 0.9) # High gradient at edges
 
+    @unittest.skipIf(compute_fft_texture is None,
+                     'compute_fft_texture no longer exists in pipeline.py (FFT module is an ablation only)')
     def test_fft_texture(self):
         # White noise
         np.random.seed(42)
@@ -104,6 +115,69 @@ class TestPipeline(unittest.TestCase):
         slope_deg = np.degrees(slope_rad)
         
         self.assertAlmostEqual(np.mean(slope_deg), expected_slope, places=1)
+
+class TestFootprintCriteria(unittest.TestCase):
+    def test_epsilon_fixed(self):
+        self.assertEqual(EPSILON, 0.05)
+
+    def test_square_box_passes_all(self):
+        self.assertTrue(footprint_ok(25, 25, 25))
+        self.assertTrue(square_fit(25, 25, 25))
+        self.assertTrue(safe_landing(25, 25, 0.0, 25))
+
+    def test_one_pixel_short_fails(self):
+        self.assertFalse(footprint_ok(24, 26, 25))   # 624 < 625
+        self.assertFalse(square_fit(24, 40, 25))
+        self.assertFalse(safe_landing(24, 40, 0.0, 25))
+
+    def test_elongated_box_passes_area_fails_square_fit(self):
+        # 10 x 100 = 1000 px >= 25^2 = 625, but cannot hold a 25 x 25 square.
+        self.assertTrue(footprint_ok(10, 100, 25))
+        self.assertFalse(square_fit(10, 100, 25))
+        self.assertFalse(square_fit(100, 10, 25))
+        self.assertFalse(safe_landing(10, 100, 0.0, 25))
+
+    def test_frac_unsafe_exactly_epsilon_passes(self):
+        self.assertTrue(safe_landing(30, 30, 0.05, 25))
+        self.assertTrue(safe_landing(30, 30, EPSILON, 25))
+
+    def test_frac_unsafe_just_above_epsilon_fails(self):
+        self.assertFalse(safe_landing(30, 30, 0.05 + 1e-9, 25))
+        self.assertFalse(safe_landing(30, 30, 0.051, 25))
+
+    def test_epsilon_from_pixel_counts(self):
+        # 45 unsafe pixels in a 30 x 30 box is exactly 5%.
+        frac = 45 / (30 * 30)
+        self.assertTrue(safe_landing(30, 30, frac, 25))
+        self.assertFalse(safe_landing(30, 30, 46 / (30 * 30), 25))
+
+    def test_no_box(self):
+        self.assertFalse(footprint_ok(0, 0, 1))
+        self.assertFalse(square_fit(0, 0, 1))
+        self.assertFalse(safe_landing(0, 0, float('nan'), 1))
+        self.assertFalse(safe_landing(40, 40, float('nan'), 25))
+
+    def test_rates_denominator_is_all_tiles(self):
+        boxes = [
+            {'w': 30, 'h': 30, 'frac_unsafe': 0.0},          # passes all three
+            {'w': 10, 'h': 100, 'frac_unsafe': 0.0},         # area only
+            {'w': 30, 'h': 30, 'frac_unsafe': 0.5},          # area + square, unsafe
+            {'w': 0, 'h': 0, 'frac_unsafe': float('nan')},   # no box
+        ]
+        r = rates(boxes, 25)
+        self.assertEqual(r, {'footprint_ok': 0.75, 'square_fit': 0.5, 'safe_landing': 0.25})
+
+    def test_safe_landing_implies_square_fit_implies_footprint_ok(self):
+        rng = np.random.default_rng(0)
+        for _ in range(500):
+            w, h = (int(v) for v in rng.integers(0, 60, 2))
+            fu = float(rng.random())
+            L = int(rng.integers(1, 60))
+            if safe_landing(w, h, fu, L):
+                self.assertTrue(square_fit(w, h, L))
+            if square_fit(w, h, L):
+                self.assertTrue(footprint_ok(w, h, L))
+
 
 if __name__ == '__main__':
     unittest.main()
