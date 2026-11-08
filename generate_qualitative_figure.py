@@ -1,3 +1,4 @@
+import json
 import os
 import cv2
 import numpy as np
@@ -21,11 +22,15 @@ def generate_figure():
     G = compute_gradient_hazard(ori)
     
     # 2. Shadow augmentation
-    G_shadow, shadow_mask = augment_shadow(ori, G.copy(), tau=40, a_min=500)
-    
+    # Same configuration as the evaluated pipeline (results/best_config.json).
+    with open('results/best_config.json') as f:
+        cfg = json.load(f)
+    gs_cfg, g_cfg = cfg['V_grad_shadow'], cfg['V_grad']
+    G_shadow, shadow_mask = augment_shadow(ori, G.copy(), tau=gs_cfg['tau'], a_min=gs_cfg['a_min'])
+
     # 3. Pipelines & Rectangles
-    s_g, mask_g, _, rect_g = run_v_grad(ori, theta=0.2, min_component_area=100)
-    s_gs, mask_gs, _, rect_gs = run_v_grad_shadow(ori, tau=40, a_min=500, theta=0.2, min_component_area=100)
+    s_g, mask_g, _, rect_g = run_v_grad(ori, **g_cfg)
+    s_gs, mask_gs, _, rect_gs = run_v_grad_shadow(ori, **gs_cfg)
     
     # Setup Figure (2 rows x 3 columns)
     fig, axes = plt.subplots(2, 3, figsize=(12, 7.8), dpi=300)
@@ -40,7 +45,7 @@ def generate_figure():
     
     # (b) DTM Slope (Ground Truth)
     im_slope = axes[0, 1].imshow(slope_deg, cmap='inferno', vmin=0, vmax=35)
-    axes[0, 1].contour(unsafe, levels=[0.5], colors=['cyan'], linewidths=1.2, linestyles='--')
+    axes[0, 1].contour(unsafe, levels=[0.5], colors=['cyan'], linewidths=2.4, linestyles='--')
     axes[0, 1].set_title('(b) DTM Slope & True Hazard', fontsize=11, fontweight='bold', pad=6)
     axes[0, 1].text(0.04, 0.06, 'Cyan: Slope > 15°\n(True Hazardous Region)', transform=axes[0, 1].transAxes,
                     color='cyan', fontsize=8.5, bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7))
@@ -59,15 +64,15 @@ def generate_figure():
     
     # (d) Shadow Mask
     axes[1, 0].imshow(shadow_mask, cmap='gray')
-    axes[1, 0].set_title(r'(d) Detected Shadow Mask ($\tau=40$)', fontsize=11, fontweight='bold', pad=6)
-    axes[1, 0].text(0.04, 0.06, 'Morphological Contours\nArea Filter ($A_{min} \geq 500$ px)', transform=axes[1, 0].transAxes,
+    axes[1, 0].set_title(r'(d) Detected Shadow Mask ($\tau=%d$)' % gs_cfg['tau'], fontsize=11, fontweight='bold', pad=6)
+    axes[1, 0].text(0.04, 0.06, 'Morphological Contours\n' + r'Area Filter ($A_{min} \geq %d$ px)' % gs_cfg['a_min'], transform=axes[1, 0].transAxes,
                     color='lime', fontsize=8.5, bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7))
     axes[1, 0].axis('off')
     
     # (e) Final Augmented Hazard
     im_aug = axes[1, 1].imshow(G_shadow, cmap='viridis', vmin=0, vmax=1)
     axes[1, 1].set_title('(e) Augmented Hazard Map', fontsize=11, fontweight='bold', pad=6)
-    axes[1, 1].text(0.04, 0.06, 'Shadow Overridden:\n$G(x,y) \leftarrow 1.0$', transform=axes[1, 1].transAxes,
+    axes[1, 1].text(0.04, 0.06, 'Shadow Overridden:\n' + r'$G(x,y) \leftarrow 1.0$', transform=axes[1, 1].transAxes,
                     color='white', fontsize=8.5, bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7))
     cbar3 = fig.colorbar(im_aug, ax=axes[1, 1], fraction=0.046, pad=0.04)
     cbar3.set_label('Augmented Hazard Score', fontsize=8.5)
@@ -87,7 +92,28 @@ def generate_figure():
         axes[1, 2].add_patch(rect_box_gs)
         
     axes[1, 2].set_title('(f) Landing Box Selection', fontsize=11, fontweight='bold', pad=6)
-    axes[1, 2].text(0.04, 0.06, 'Red Solid: $V_{grad}$ (100% unsafe!)\nGreen Dashed: $V_{grad+shadow}$ (0% unsafe)',
+    # Zoomed inset so the small V_grad+shadow box is visible at print size.
+    if wgs > 0 and hgs > 0:
+        # Matplotlib's native inset API (axes_grid1's inset_locator misplaced the colorbar
+        # images in the PDF output).
+        ins = axes[1, 2].inset_axes([0.02, 0.56, 0.42, 0.42])
+        ins.imshow(ori, cmap='gray')
+        half = max(wgs, hgs)
+        H_img, W_img = ori.shape
+        # Keep the zoom window inside the image so no blank margin appears.
+        cx = min(max(xgs + wgs / 2, half), W_img - half)
+        cy = min(max(ygs + hgs / 2, half), H_img - half)
+        ins.set_xlim(cx - half, cx + half)
+        ins.set_ylim(cy + half, cy - half)
+        ins.add_patch(patches.Rectangle((xgs, ygs), wgs, hgs, linewidth=2.0, edgecolor='#00FF66',
+                                        facecolor='none', linestyle='--'))
+        ins.set_xticks([])
+        ins.set_yticks([])
+        for sp in ins.spines.values():
+            sp.set_edgecolor('#00FF66')
+            sp.set_linewidth(1.5)
+        axes[1, 2].indicate_inset_zoom(ins, edgecolor='#00FF66', linewidth=1.0, alpha=1.0)
+    axes[1, 2].text(0.04, 0.06, 'Red: $V_{grad}$ (100% unsafe)\nGreen: $V_{grad+shadow}$ (0% unsafe)',
                     transform=axes[1, 2].transAxes, color='white', fontsize=8.5,
                     bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7))
     axes[1, 2].axis('off')

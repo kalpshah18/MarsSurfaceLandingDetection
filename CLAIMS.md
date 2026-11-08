@@ -32,8 +32,8 @@ Table 2.
 ## Tables 1 and 2 (unchanged in this revision)
 
 Produced by `python compute_final_metrics.py` (printed to stdout; it writes no file).
-Configuration `results/best_config.json` (V_grad+shadow: tau = 60, a_min = 100; see REPORT.md
-for the mismatch with the tau = 40, A_min = 500 stated in Section 3.2).
+Configuration `results/best_config.json` (V_grad+shadow: tau = 60, a_min = 100, as now stated in
+Section 4.2 of the paper; Figure 1 is generated with the same configuration).
 
 | Claim | Value | Source |
 | :--- | :--- | :--- |
@@ -43,9 +43,19 @@ for the mismatch with the tau = 40, A_min = 500 stated in Section 3.2).
 | Table 2 box metrics (L = 50 m) | see Table 2 | `compute_final_metrics.py` stdout; re-checked by `run_footprint_sweep.py` |
 | Frac Unsafe averaged over tiles with a box (all 80 here) | 0.186 / 0.287 | `compute_final_metrics.py` (`dropna().mean()`) |
 
-## Runtime (Table 5, unchanged)
+| Evaluated pixels 4,718,640 (every 10th pixel per tile, raster order) | 4718640 | `classification.n_pixels_evaluated` | `results/review/analyses.json` |
+| B5 precision 0.087 explained by per-tile rate copied from V_grad | expected 0.0870 | `classification.b5.expected_precision_from_per_tile_rates` | `results/review/analyses.json` |
+| Unsafe crater boxes contain no shadow pixels, mean slope 26.3 deg | 0.0, 26.3 | `crater_diagnosis.bad_boxes_mean_frac_shadow`, `.bad_boxes_mean_slope_deg` | `results/review/analyses.json` |
+| No 20 m safe square exists on any rocky tile | 0.0 for L >= 20 | `avail_terrain.rocky` | `results/review/analyses.json` |
+| Table 4 CIs; 25 m Safe Landing CI 2.5-13.8% | see table | `by_method.grad_shadow.<terrain>.ci95`; `ci95.grad_shadow.25` | `results/footprint_sweep_by_terrain.json`, `results/footprint_sweep.json` |
 
-`measure_runtime_memory.py` -> `results/runtime_memory.json`.
+## Runtime and memory (Table 5)
+
+`python benchmark_stages.py` -> `results/review/benchmark_stages.json`: all 80 TEST tiles, 5 timed
+runs each after warm-up, single-threaded OpenCV, i5-12450H, Windows 11, Python 3.12.4, OpenCV
+4.9.0. Front-end 14.1 ms = sum of Sobel (9.0), shadow (0.9) and threshold + filter (4.2) medians at
+768 x 768; peak RSS increase 28.1-29.9 MB; Python heap (tracemalloc) 6.9 / 15.6 / 27.8 MB. The
+earlier Table 5 values (74.0 ms, under 16 MB) had no generating script and are superseded.
 
 ## Superseded claims
 

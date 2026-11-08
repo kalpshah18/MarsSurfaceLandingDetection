@@ -110,6 +110,22 @@ def sanity_check(by_method):
     print('Sanity check passed: L = 50 reproduces Table 2 exactly.')
 
 
+def boot_ci(values, n=2000, seed=0):
+    """Percentile 95% bootstrap CI of the mean, resampling tiles."""
+    import numpy as np
+    v = np.asarray(values, dtype=float)
+    v = v[~np.isnan(v)]
+    rng = np.random.default_rng(seed)
+    means = v[rng.integers(0, len(v), size=(n, len(v)))].mean(axis=1)
+    return [float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))]
+
+
+def indicators(boxes, L):
+    from footprint_metrics import safe_landing, square_fit
+    return ([float(square_fit(b['w'], b['h'], L)) for b in boxes],
+            [float(safe_landing(b['w'], b['h'], b['frac_unsafe'], L)) for b in boxes])
+
+
 def largest_L(boxes, threshold=0.5):
     best = None
     for L in LSTAR_RANGE:
@@ -138,6 +154,10 @@ def main():
         for L in FINE_L:
             sweep['fine'][m][str(L)] = rates(by_method[m], L)
         sweep['L_star'][m] = largest_L(by_method[m])
+        sweep.setdefault('ci95', {})[m] = {}
+        for L in TABLE_L:
+            sq_i, sl_i = indicators(by_method[m], L)
+            sweep['ci95'][m][str(L)] = {'square_fit': boot_ci(sq_i), 'safe_landing': boot_ci(sl_i)}
     gs_lstar = sweep['L_star']['grad_shadow']
     if gs_lstar is None:
         sweep['L_star_note'] = 'No L in 1..60 reaches Safe Landing >= 0.5 for grad_shadow; see fine curve.'
@@ -157,6 +177,13 @@ def main():
                 'safe_landing': r['safe_landing'],
                 'footprint_ok': r['footprint_ok'],
                 'fine_safe_landing': {str(L): rates(rows, L)['safe_landing'] for L in FINE_L},
+            }
+            sq_i, sl_i = indicators(rows, TERRAIN_L)
+            terrain['by_method'][m][t]['ci95'] = {
+                'mean_area': boot_ci([b['area_px'] for b in rows]),
+                'mean_frac_unsafe': boot_ci([b['frac_unsafe'] for b in rows]),
+                'square_fit': boot_ci(sq_i),
+                'safe_landing': boot_ci(sl_i),
             }
         hz = [b for b in by_method[m] if b['terrain'] in ('crater', 'rocky')]
         terrain['by_method'][m]['crater+rocky'] = {
@@ -180,8 +207,11 @@ def main():
     print(f'\n% Table 4 rows (grad_shadow, L = {TERRAIN_L} m): Terrain & Mean area & Frac Unsafe & Square Fit & Safe Landing')
     for t in TERRAINS:
         d = terrain['by_method']['grad_shadow'][t]
-        print(f"    {t.capitalize()} & {d['mean_area']:,.0f} & {d['mean_frac_unsafe']:.3f} & "
-              f"{d['square_fit']:.3f} & {d['safe_landing']:.3f} \\\\")
+        ci = d['ci95']
+        print(f"    {t.capitalize()} & {d['mean_area']:,.0f} & {d['mean_frac_unsafe']:.3f} "
+              f"[{ci['mean_frac_unsafe'][0]:.3f}, {ci['mean_frac_unsafe'][1]:.3f}] & "
+              f"{d['square_fit']:.3f} [{ci['square_fit'][0]:.2f}, {ci['square_fit'][1]:.2f}] & "
+              f"{d['safe_landing']:.3f} [{ci['safe_landing'][0]:.2f}, {ci['safe_landing'][1]:.2f}] \\\\")
 
     print(f"\n% L* (largest integer L in 1..60 with grad_shadow Safe Landing >= 0.5): {gs_lstar}")
     print(f"% L* for grad: {sweep['L_star']['grad']}")
