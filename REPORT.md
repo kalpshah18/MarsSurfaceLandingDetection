@@ -72,3 +72,81 @@ A_min = 500. No hyperparameter was changed in this revision.
   results are reproducible only from an existing local copy of the dataset.
 - `update_paper_numbers.py`, `rewrite_paper.py`, `revise_paper.py`, `clean_banned_terms.py`
   rewrote earlier drafts with the old framing; they now exit immediately.
+
+## Reviewer-response analyses (2026-11-08)
+
+Scripts: `run_review_analyses.py`, `run_review_sweeps.py {sens,sun,sunphys}`,
+`benchmark_stages.py` (helpers in `review_common.py`). Outputs in `results/review/`.
+No pipeline code or hyperparameter was changed; all sweeps are reporting only.
+
+### Finding that invalidates the paper's central claims
+`generate_synthetic.py` clamps every crater pixel deeper than 10 m to intensity <= 30
+(`ori[z < -10] = min(ori, 30)`), independent of the sun. Crater walls have constant slope 0.5
+(26.6 deg), below the 30 deg sun elevation, so physically the bowl casts almost no shadow (2-4% of a
+crater tile, ray-marched) and the sun-facing deep wall is bright (mean ~109 vs 28 when painted).
+87.6% of proxy-unsafe crater pixels lie inside the painted region, so the shadow step is reading a
+painted depth label. Re-rendering TEST from the stored DTMs with the same Lambertian model but no
+painting and ray-marched cast shadows (`sun_sweep_physical.json`):
+
+| sun (az 45) | grad AUROC | grad+shadow AUROC | grad+shadow PR-AUC | hazard-tile Safe Landing |
+|---|---|---|---|---|
+| 15 deg | 0.370 | 0.514 | 0.099 | 0.00 |
+| 30 deg (paper) | 0.500 | 0.614 | 0.222 | 0.00 |
+| 45 deg | 0.495 | 0.495 | 0.103 | 0.00 |
+| 60 deg | 0.489 | 0.489 | 0.100 | 0.00 |
+
+Both the "inverted response" (AUROC 0.350) and its "correction" (0.796) depend on the painted
+region. Without it, raw gradient is at chance and shadow augmentation adds 0.11 AUROC at 30 deg and
+nothing at 45-60 deg. Consistent with this, tau = 20 fails (AUROC 0.400) while tau = 40-80 are
+equivalent (0.793-0.800): any tau above the painted value 30 works.
+
+### Other review points, as computed
+- Hazard-bearing tiles (point 1): V_grad+shadow max-rectangle Safe Landing is at most 20% (8/40) at
+  any L; false-safe site rate 57% at L = 10 m, 78% at 5 m. Rocky: 0% at every L.
+- Rocky tiles have no L x L square with <= 5% unsafe pixels anywhere for L >= 20 m (label-based
+  check, `avail_terrain`), so "no site" is the correct answer there and Safe Landing cannot credit it.
+- Square selector (point 2): largest inscribed square on the same mask raises 25 m Safe Landing from
+  0.075 to 0.35 overall and crater from 0.15 to 0.90; largest square side 36 m (vs 31 m short side).
+  Min-hazard L x L square picks lit crater floor for L <= 15 m (crater Safe Landing 0).
+- Inversion mechanism (point 3): the 12 unsafe crater boxes contain 0% shadow pixels, mean slope
+  26.3 deg, mean intensity 180, mean depth 4.9 m (above the 10 m painting line). Among lit crater
+  pixels, raw G ranks unsafe below safe (AUROC 0.450).
+- Shadow-only (point 4): pooled AUROC 0.746 / PR-AUC 0.537 / F1 0.658 (vs 0.796 / 0.559 / 0.566);
+  within-tile crater AUROC 0.923 vs 0.914. It finds a safe site on 100% of crater, smooth and dune
+  tiles at every L up to 60 m and a false-safe site on 100% of rocky tiles.
+- theta dominates the envelope: lsquare Safe Landing at 25 m is 0.75 / 0.35 / 0.01 / 0.00 for
+  theta = 0.1 / 0.2 / 0.3 / 0.4.
+- Painted-shadow sun sweep: azimuth has no effect (symmetric bowls, sun-independent painting);
+  elevation 15 deg drops AUROC to 0.633.
+- B5 precision 0.087 < prevalence 0.095 is explained: B5's per-tile flag rate copies V_grad's, which
+  is lowest on crater tiles (2.8%) where prevalence is highest (corr -0.27); the weighted expectation is
+  0.0870, observed 0.0872. Not a sampling bug.
+- Evaluated pixel count is 4,718,640 (ceil(589,824/10) x 80, 1-D stride 10), not 4,718,592.
+  A 10 x 10 grid gives AUROC 0.795 / PR-AUC 0.544 for grad+shadow (vs 0.796 / 0.559).
+- Within-tile AUROC on hazard-bearing tiles: grad+shadow 0.756 [0.706, 0.807], grad 0.380,
+  shadow-only 0.712, B1 0.336. Rocky: grad+shadow 0.597, shadow-only 0.500.
+- Table 5's per-stage numbers have no generating script in the repo; they match benchmarks on
+  random-noise images (`results/complexity.json`). `benchmark_stages.py` re-measures on TEST tiles.
+- B1 has no Table 2 box because `compute_final_metrics.py` hard-codes its box to (0,0,0,0).
+
+### Related work checked
+- Huertas, Cheng & Madison, "Passive imaging based multi-cue hazard detection for spacecraft safe
+  landing", IEEE Aerospace Conf. 2006 (NTRS 20060044143). The review's "Matthies" is incorrect.
+- Golombek, Huertas, Marlow & McGrane, JGR 113, E00A09 (2008), doi:10.1029/2007JE003065.
+- Li, Jiang & Tao, "Guidance Summary and Assessment of the Chang'e-3 Powered Descent and Landing",
+  J. Spacecraft & Rockets 53(2):258-277 (2016), doi:10.2514/1.A33208.
+- Chandrayaan-3 LHDAC: no technical publication found, only news coverage. Not citable yet.
+- Runtime on TEST tiles (`results/review/benchmark_stages.json`; i5-12450H laptop CPU, Windows 11,
+  Python 3.12.4, OpenCV 4.9.0 single-threaded, median [IQR] ms over 80 tiles x 5): at 768 x 768,
+  Sobel 9.0 [8.0-10.0], shadow 0.9 [0.7-12.4], threshold+components 4.2 [0.7-7.8] (by subtraction,
+  noisy), rectangle 193.0 [189.2-196.5], total 210.1 [205.0-230.1]. Peak RSS increase about 29 MB at
+  every size, against a tracemalloc peak of 15.6 MB at 768. The paper's "under 16 MB" is the
+  tracemalloc figure and omits native OpenCV buffers. No flight-processor scaling was measured.
+
+### Decisions needed from the authors (not taken here)
+1. Given the painted-shadow artifact, whether to (a) re-run everything on physically rendered data
+   (`run_review_sweeps.py sunphys` is a starting point), (b) move to real HiRISE ORI + DTM pairs, or
+   (c) reframe the paper as a negative/methodological result about synthetic evaluation.
+2. Whether to adopt the largest-inscribed-square selector as the headline selector (contradicts the
+   earlier instruction not to change the headline method).
+3. Whether the outcome taxonomy should credit correct rejection (rocky tiles have no safe 25 m site).
