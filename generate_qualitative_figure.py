@@ -39,7 +39,7 @@ def generate_figure():
     # (a) Input Image
     axes[0, 0].imshow(ori, cmap='gray')
     axes[0, 0].set_title('(a) Input Monocular Image', fontsize=11, fontweight='bold', pad=6)
-    axes[0, 0].text(0.04, 0.06, 'Lambertian Render\nCrater + Deep Shadow', transform=axes[0, 0].transAxes,
+    axes[0, 0].text(0.04, 0.06, 'Lambertian Render\nCrater floor >10 m deep rendered dark', transform=axes[0, 0].transAxes,
                     color='white', fontsize=8.5, bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7))
     axes[0, 0].axis('off')
     
