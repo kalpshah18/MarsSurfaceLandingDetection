@@ -252,3 +252,15 @@ Meridiani 0.72, Arcadia 0.58.
   real DEV 0.661. Site selection 0.80 / 0.68 at 20 / 50 m vs random null 0.78 / 0.73.
 - Runtime (768): front-end 28.5 ms (gradient 13.5, shadow 1.3, brightness 9.9, threshold 3.8),
   RSS +30 MB.
+
+## Photometric robustness (2026-11-17, in paper Section 5.6 / Table 7)
+`run_photometric_robustness.py`: TEST re-rendered (baseline reproduces stored images exactly) with skylight
+a = 0.1..1.0, Lunar-Lambert L = 0.5 / 1.0, smooth and two-tone albedo at 10-30%, and a combined model.
+Frozen V_full: skylight and Lunar-Lambert do not hurt (AUROC 0.866-0.882); albedo does: 10% -> ~0.82,
+20% -> 0.70-0.73, 30% -> 0.60-0.67, below V_grad+shadow from 20%; Safe Landing at 100 m 10-61%.
+`run_albedo_fix.py`: larger brightness window and selection on mixed-albedo DEV (k = 51, phi = 20,
+tau = 20). Pre-stated criterion: V_full >= V_grad+shadow on every albedo variant, baseline within 0.02,
+envelope kept. Result: FAILED only on two-tone albedo at 30% (0.670 vs 0.687); baseline 0.853, envelope
+kept; recovers 0.754-0.837 under albedo. Per the authors' instruction the main pipeline is unchanged and
+the fix is reported as a mitigation in the robustness section; abstract, limitations and conclusion state
+the albedo sensitivity.

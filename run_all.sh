@@ -31,11 +31,15 @@ python run_crater_diagnosis.py
 echo "Gradient-normalization ablation (Table 5)"
 python run_normalization_study.py
 
+echo "Photometric robustness (Table 7): skylight, albedo variation, Lunar-Lambert; albedo-robust selection"
+python run_photometric_robustness.py
+python run_albedo_fix.py
+
 echo "Review analyses and sun-angle sweep (Table 6)"
 python run_review_analyses.py
 python run_review_sweeps.py sunphys
 
-echo "Real HiRISE evaluation (Tables 8-9); needs the tiles from hirise_download.py and"
+echo "Real HiRISE evaluation (Tables 9-10); needs the tiles from hirise_download.py and"
 echo "hirise_make_tiles.py under HIRISE_DATA_DIR (about 4.4 GB, outside the repo)"
 if [ -n "$HIRISE_DATA_DIR" ]; then python hirise_eval_v2.py; else echo "HIRISE_DATA_DIR not set; skipped"; fi
 
