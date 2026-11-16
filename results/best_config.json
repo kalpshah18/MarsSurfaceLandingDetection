@@ -1,16 +1,24 @@
 {
     "V_grad": {
-        "theta": 0.2,
+        "theta": 0.05,
         "min_component_area": 100
     },
     "V_grad_shadow": {
         "tau": 60,
-        "a_min": 100,
-        "theta": 0.2,
+        "a_min": 500,
+        "theta": 0.05,
         "min_component_area": 100
     },
+    "V_bright": {
+        "tau": 60,
+        "a_min": 500,
+        "theta": 0.05,
+        "min_component_area": 100,
+        "phi_deg": 10.0,
+        "ksize": 15
+    },
     "V_fft_ablation": {
-        "theta": 0.2,
+        "theta": 0.05,
         "min_component_area": 100,
         "tau": 40,
         "a_min": 500

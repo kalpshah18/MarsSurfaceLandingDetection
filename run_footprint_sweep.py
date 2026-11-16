@@ -29,19 +29,21 @@ BOXES_PATH = os.path.join('results', 'per_tile_boxes.csv')
 SWEEP_PATH = os.path.join('results', 'footprint_sweep.json')
 TERRAIN_PATH = os.path.join('results', 'footprint_sweep_by_terrain.json')
 
-TABLE_L = [20, 25, 30, 35, 40, 50]
-FINE_L = list(range(5, 61))
-LSTAR_RANGE = range(1, 61)
+TABLE_L = [20, 25, 30, 40, 50, 100]
+FINE_L = list(range(5, 201))
+LSTAR_RANGE = range(1, 201)
 TERRAIN_L = 25
 TERRAINS = ['crater', 'rocky', 'smooth', 'dunes']
-METHODS = ['grad_shadow', 'grad']
+METHODS = ['bright', 'grad_shadow', 'grad']
 N_TEST = 80
 
-# Table 2 values (paper, Section 4.2) that L = 50 must reproduce.
-TABLE2 = {
-    'grad_shadow': {'footprint_ok': 0.000, 'mean_area': 744, 'max_area': 1612, 'frac_unsafe': 0.186},
-    'grad': {'footprint_ok': 0.250, 'mean_area': 17028, 'frac_unsafe': 0.287},
-}
+# Table 2 values that L = 50 must reproduce, as written by compute_final_metrics.py.
+def load_table2(path=os.path.join('results', 'final_metrics.json')):
+    with open(path) as f:
+        b = json.load(f)['boxes']
+    return {m: {'footprint_ok': round(b[k]['footprint_ok_50'], 3), 'mean_area': round(b[k]['mean_area']),
+                'max_area': b[k]['max_area'], 'frac_unsafe': round(b[k]['frac_unsafe'], 3)}
+            for m, k in (('bright', 'V_bright'), ('grad_shadow', 'V_grad_shadow'), ('grad', 'V_grad'))}
 
 
 def load_boxes(path=BOXES_PATH):
@@ -90,7 +92,7 @@ def sanity_check(by_method):
     for m in METHODS:
         if len(by_method[m]) != N_TEST:
             problems.append(f'{m}: expected {N_TEST} tiles, got {len(by_method[m])}')
-    for m, ref in TABLE2.items():
+    for m, ref in load_table2().items():
         s = box_summary(by_method[m])
         r50 = rates(by_method[m], 50)
         got = {
@@ -198,26 +200,26 @@ def main():
         json.dump(terrain, f, indent=2)
     print(f'Wrote {SWEEP_PATH} and {TERRAIN_PATH}')
 
-    print('\n% Table 3 rows: L & A_req & GS FootprintOK & GS SquareFit & GS SafeLanding & G FootprintOK & G SafeLanding')
+    print('\n% Table 3 rows: L & A_req & V_full FootprintOK & SquareFit & SafeLanding & V_grad FootprintOK & SafeLanding')
     for L in TABLE_L:
-        gs, g = sweep['table'][str(L)]['grad_shadow'], sweep['table'][str(L)]['grad']
+        gs, g = sweep['table'][str(L)]['bright'], sweep['table'][str(L)]['grad']
         print(f"    {L} & {L*L:,} & {gs['footprint_ok']:.3f} & {gs['square_fit']:.3f} & "
               f"{gs['safe_landing']:.3f} & {g['footprint_ok']:.3f} & {g['safe_landing']:.3f} \\\\")
 
-    print(f'\n% Table 4 rows (grad_shadow, L = {TERRAIN_L} m): Terrain & Mean area & Frac Unsafe & Square Fit & Safe Landing')
+    print(f'\n% Table 4 rows (V_full, L = {TERRAIN_L} m): Terrain & Mean area & Frac Unsafe & Square Fit & Safe Landing')
     for t in TERRAINS:
-        d = terrain['by_method']['grad_shadow'][t]
+        d = terrain['by_method']['bright'][t]
         ci = d['ci95']
         print(f"    {t.capitalize()} & {d['mean_area']:,.0f} & {d['mean_frac_unsafe']:.3f} "
               f"[{ci['mean_frac_unsafe'][0]:.3f}, {ci['mean_frac_unsafe'][1]:.3f}] & "
               f"{d['square_fit']:.3f} [{ci['square_fit'][0]:.2f}, {ci['square_fit'][1]:.2f}] & "
               f"{d['safe_landing']:.3f} [{ci['safe_landing'][0]:.2f}, {ci['safe_landing'][1]:.2f}] \\\\")
 
-    print(f"\n% L* (largest integer L in 1..60 with grad_shadow Safe Landing >= 0.5): {gs_lstar}")
-    print(f"% L* for grad: {sweep['L_star']['grad']}")
-    print('\n% Fine sweep, grad_shadow (L: FO / SQ / SL):')
+    print(f"\n% L* (largest integer L in {LSTAR_RANGE.start}..{LSTAR_RANGE.stop - 1} with Safe Landing >= 0.5): "
+          f"{sweep['L_star']}")
+    print('\n% Fine sweep, V_full (L: FO / SQ / SL):')
     for L in FINE_L:
-        r = sweep['fine']['grad_shadow'][str(L)]
+        r = sweep['fine']['bright'][str(L)]
         print(f"%   {L:2d}: {r['footprint_ok']:.3f} / {r['square_fit']:.3f} / {r['safe_landing']:.3f}")
 
 

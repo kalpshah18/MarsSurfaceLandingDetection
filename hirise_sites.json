@@ -1,0 +1,86 @@
+{
+ "source": "HiRISE PDS DTMCUMINDEX.TAB (hirise-pds.lpl.arizona.edu/PDS/INDEX)",
+ "ortho_rule": "RED_C (1 m) orthoimage of the left stereo observation, which shares the DTM grid",
+ "sites": [
+  {
+   "site": "gale",
+   "split": "DEV",
+   "dtm_product": "DTEEC_023957_1755_024023_1755_U01",
+   "description": "MSL landing site in Gale Crater",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_023900_023999/ESP_023957_1755_ESP_024023_1755/DTEEC_023957_1755_024023_1755_U01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_023900_023999/ESP_023957_1755_ESP_024023_1755/ESP_023957_1755_RED_C_01_ORTHO.JP2",
+   "min_lat": -4.7014,
+   "min_lon": 137.429
+  },
+  {
+   "site": "elysium_insight",
+   "split": "DEV",
+   "dtm_product": "DTEEC_034862_1835_035139_1835_U01",
+   "description": "InSight mission candidate landing site",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_034800_034899/ESP_034862_1835_ESP_035139_1835/DTEEC_034862_1835_035139_1835_U01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_034800_034899/ESP_034862_1835_ESP_035139_1835/ESP_034862_1835_RED_C_01_ORTHO.JP2",
+   "min_lat": 3.0852,
+   "min_lon": 137.2196
+  },
+  {
+   "site": "holden",
+   "split": "DEV",
+   "dtm_product": "DTEEC_019612_1535_019678_1535_U01",
+   "description": "Candidate MSL landing site in Holden Crater",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_019600_019699/ESP_019612_1535_ESP_019678_1535/DTEEC_019612_1535_019678_1535_U01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_019600_019699/ESP_019612_1535_ESP_019678_1535/ESP_019612_1535_RED_C_01_ORTHO.JP2",
+   "min_lat": -26.6456,
+   "min_lon": 325.222
+  },
+  {
+   "site": "mawrth",
+   "split": "DEV",
+   "dtm_product": "DTEEC_015985_2040_016262_2040_U01",
+   "description": "Possible MSL landing site in Mawrth Vallis",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_015900_015999/ESP_015985_2040_ESP_016262_2040/DTEEC_015985_2040_016262_2040_U01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_015900_015999/ESP_015985_2040_ESP_016262_2040/ESP_015985_2040_RED_C_01_ORTHO.JP2",
+   "min_lat": 23.6872,
+   "min_lon": 341.035
+  },
+  {
+   "site": "jezero",
+   "split": "TEST",
+   "dtm_product": "DTEEC_045994_1985_046060_1985_U01",
+   "description": "Candidate landing site for 2020 mission in Jezero Crater",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_045900_045999/ESP_045994_1985_ESP_046060_1985/DTEEC_045994_1985_046060_1985_U01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_045900_045999/ESP_045994_1985_ESP_046060_1985/ESP_045994_1985_RED_C_01_ORTHO.JP2",
+   "min_lat": 18.3053,
+   "min_lon": 77.3834
+  },
+  {
+   "site": "eberswalde",
+   "split": "TEST",
+   "dtm_product": "DTEEC_016065_1560_016210_1560_U01",
+   "description": "Potential MSL landing site in Eberswalde Crater",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_016000_016099/ESP_016065_1560_ESP_016210_1560/DTEEC_016065_1560_016210_1560_U01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_016000_016099/ESP_016065_1560_ESP_016210_1560/ESP_016065_1560_RED_C_01_ORTHO.JP2",
+   "min_lat": -24.106,
+   "min_lon": 326.829
+  },
+  {
+   "site": "arcadia_starship",
+   "split": "TEST",
+   "dtm_product": "DTEEC_060719_2200_060785_2200_A01",
+   "description": "Candidate landing site for SpaceX Starship in Arcadia region",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_060700_060799/ESP_060719_2200_ESP_060785_2200/DTEEC_060719_2200_060785_2200_A01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_060700_060799/ESP_060719_2200_ESP_060785_2200/ESP_060719_2200_RED_C_01_ORTHO.JP2",
+   "min_lat": 39.6827,
+   "min_lon": 195.5473
+  },
+  {
+   "site": "meridiani_dunes",
+   "split": "TEST",
+   "dtm_product": "DTEEC_027443_1815_028142_1815_A01",
+   "description": "Sinus Meridiani dune changes",
+   "dtm_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_027400_027499/ESP_027443_1815_ESP_028142_1815/DTEEC_027443_1815_028142_1815_A01.IMG",
+   "ortho_url": "https://hirise-pds.lpl.arizona.edu/PDS/DTM/ESP/ORB_027400_027499/ESP_027443_1815_ESP_028142_1815/ESP_027443_1815_RED_C_01_ORTHO.JP2",
+   "min_lat": 1.5382,
+   "min_lon": 8.3578
+  }
+ ]
+}

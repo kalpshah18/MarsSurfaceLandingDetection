@@ -2,123 +2,123 @@
  "note": "TEST tiles re-rendered from stored DTMs with Lambertian shading and ray-marched cast shadows; NO painted crater shadow",
  "config": {
   "tau": 60,
-  "a_min": 100,
-  "theta": 0.2,
+  "a_min": 500,
+  "theta": 0.05,
   "min_component_area": 100
  },
  "runs": [
   {
    "azimuth": 45,
    "elevation": 15,
-   "crater_mean_cast_shadow_frac": 0.13251224093967012,
+   "crater_mean_cast_shadow_frac": 0.10931421915690102,
    "grad": {
-    "auroc": 0.3696056046532011,
-    "prauc": 0.08350905718096703,
+    "auroc": 0.5909950024468958,
+    "prauc": 0.13409977065105563,
     "all": {
-     "maxrect_safe_10": 0.3875,
+     "maxrect_safe_10": 0.75,
      "maxrect_safe_10_ci": [
-      0.2875,
-      0.5
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_10": 0.4125,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.0,
+     "lsquare_safe_10": 0.7375,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.6375,
+      0.825
      ],
-     "lsquare_falsesafe_10": 0.5,
+     "lsquare_falsesafe_10": 0.0125,
      "laware_safe_10": 0.5,
      "laware_safe_10_ci": [
       0.3875,
       0.6
      ],
-     "laware_falsesafe_10": 0.5,
-     "maxrect_safe_20": 0.1625,
+     "laware_falsesafe_10": 0.25,
+     "maxrect_safe_20": 0.75,
      "maxrect_safe_20_ci": [
-      0.0875,
-      0.25
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.45,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.7375,
      "lsquare_safe_20_ci": [
-      0.3375,
-      0.55
+      0.6375,
+      0.825
      ],
-     "lsquare_falsesafe_20": 0.2625,
-     "laware_safe_20": 0.45,
+     "lsquare_falsesafe_20": 0.0125,
+     "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
-      0.3375,
-      0.55
+      0.3875,
+      0.6
      ],
-     "laware_falsesafe_20": 0.2625,
-     "maxrect_safe_25": 0.1,
+     "laware_falsesafe_20": 0.25,
+     "maxrect_safe_25": 0.75,
      "maxrect_safe_25_ci": [
-      0.0375,
-      0.1625
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.25,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.7375,
      "lsquare_safe_25_ci": [
-      0.1625,
-      0.35
+      0.6375,
+      0.825
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.25,
+     "lsquare_falsesafe_25": 0.0125,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.1625,
-      0.35
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.5,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_10": 0.825,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.0,
+     "lsquare_safe_10": 0.475,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.325,
+      0.625
      ],
-     "lsquare_falsesafe_10": 1.0,
+     "lsquare_falsesafe_10": 0.025,
      "laware_safe_10": 0.0,
      "laware_safe_10_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_10": 1.0,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.5,
+     "maxrect_safe_20": 0.5,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.475,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.325,
+      0.625
      ],
-     "lsquare_falsesafe_20": 0.525,
+     "lsquare_falsesafe_20": 0.025,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_20": 0.525,
-     "maxrect_safe_25": 0.0,
+     "laware_falsesafe_20": 0.5,
+     "maxrect_safe_25": 0.5,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.475,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.325,
+      0.625
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.025,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
@@ -128,234 +128,350 @@
     }
    },
    "grad_shadow": {
-    "auroc": 0.5143226917048495,
-    "prauc": 0.09924219073921783,
+    "auroc": 0.6097276119961612,
+    "prauc": 0.10275659792563795,
     "all": {
-     "maxrect_safe_10": 0.2,
+     "maxrect_safe_10": 0.5,
      "maxrect_safe_10_ci": [
-      0.1125,
-      0.2875
+      0.39968750000000003,
+      0.6125
      ],
-     "maxrect_falsesafe_10": 0.25,
-     "lsquare_safe_10": 0.25,
+     "maxrect_falsesafe_10": 0.0,
+     "lsquare_safe_10": 0.5,
      "lsquare_safe_10_ci": [
-      0.1625,
-      0.35
+      0.39968750000000003,
+      0.6125
      ],
-     "lsquare_falsesafe_10": 0.25,
-     "laware_safe_10": 0.25,
+     "lsquare_falsesafe_10": 0.0,
+     "laware_safe_10": 0.425,
      "laware_safe_10_ci": [
-      0.1625,
-      0.35
+      0.325,
+      0.5375
      ],
-     "laware_falsesafe_10": 0.25,
-     "maxrect_safe_20": 0.125,
+     "laware_falsesafe_10": 0.075,
+     "maxrect_safe_20": 0.5,
      "maxrect_safe_20_ci": [
-      0.0625,
-      0.2
+      0.39968750000000003,
+      0.6125
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.25,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.5,
      "lsquare_safe_20_ci": [
-      0.1625,
-      0.35
+      0.39968750000000003,
+      0.6125
      ],
-     "lsquare_falsesafe_20": 0.25,
-     "laware_safe_20": 0.25,
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.425,
      "laware_safe_20_ci": [
-      0.1625,
-      0.35
+      0.325,
+      0.5375
      ],
-     "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.1,
+     "laware_falsesafe_20": 0.075,
+     "maxrect_safe_25": 0.5,
      "maxrect_safe_25_ci": [
-      0.0375,
-      0.1625
+      0.39968750000000003,
+      0.6125
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.25,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.5,
      "lsquare_safe_25_ci": [
-      0.1625,
-      0.35
+      0.39968750000000003,
+      0.6125
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.25,
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.425,
      "laware_safe_25_ci": [
-      0.1625,
-      0.35
+      0.325,
+      0.5375
      ],
-     "laware_falsesafe_25": 0.25
+     "laware_falsesafe_25": 0.075
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.5,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_10": 0.5,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.0,
+     "lsquare_safe_10": 0.5,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "lsquare_falsesafe_10": 0.5,
-     "laware_safe_10": 0.0,
+     "lsquare_falsesafe_10": 0.0,
+     "laware_safe_10": 0.35,
      "laware_safe_10_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "laware_falsesafe_10": 0.5,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.15,
+     "maxrect_safe_20": 0.5,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.5,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "lsquare_falsesafe_20": 0.5,
-     "laware_safe_20": 0.0,
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.35,
      "laware_safe_20_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "laware_falsesafe_20": 0.15,
+     "maxrect_safe_25": 0.5,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.5,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "lsquare_falsesafe_25": 0.5,
-     "laware_safe_25": 0.0,
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.35,
      "laware_safe_25_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "laware_falsesafe_25": 0.5
+     "laware_falsesafe_25": 0.15
+    }
+   },
+   "bright": {
+    "auroc": 0.6329323800680359,
+    "prauc": 0.10761550042212811,
+    "all": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "maxrect_falsesafe_10": 0.0,
+     "lsquare_safe_10": 0.5,
+     "lsquare_safe_10_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "lsquare_falsesafe_10": 0.0,
+     "laware_safe_10": 0.5,
+     "laware_safe_10_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "laware_falsesafe_10": 0.0,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.5,
+     "lsquare_safe_20_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.5,
+     "lsquare_safe_25_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.39968750000000003,
+      0.6125
+     ],
+     "laware_falsesafe_25": 0.0
+    },
+    "hazard_bearing": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_10": 0.0,
+     "lsquare_safe_10": 0.5,
+     "lsquare_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_10": 0.0,
+     "laware_safe_10": 0.5,
+     "laware_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_10": 0.0,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.5,
+     "lsquare_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.5,
+     "lsquare_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_25": 0.0
     }
    }
   },
   {
    "azimuth": 45,
    "elevation": 30,
-   "crater_mean_cast_shadow_frac": 0.03832439846462674,
+   "crater_mean_cast_shadow_frac": 0.007944488525390625,
    "grad": {
-    "auroc": 0.5003481092043159,
-    "prauc": 0.10710490121795922,
+    "auroc": 0.6874822280844309,
+    "prauc": 0.15024863360891136,
     "all": {
-     "maxrect_safe_10": 0.4,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.3,
-      0.5
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.375,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.0625,
+     "lsquare_safe_10": 0.675,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_10": 0.5,
-     "laware_safe_10": 0.5125,
+     "lsquare_falsesafe_10": 0.25,
+     "laware_safe_10": 0.5,
      "laware_safe_10_ci": [
-      0.4,
-      0.625
-     ],
-     "laware_falsesafe_10": 0.4875,
-     "maxrect_safe_20": 0.1625,
-     "maxrect_safe_20_ci": [
-      0.0875,
-      0.25
-     ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
-     "lsquare_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "laware_falsesafe_10": 0.425,
+     "maxrect_safe_20": 0.725,
+     "maxrect_safe_20_ci": [
+      0.625,
+      0.8128124999999983
+     ],
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.675,
+     "lsquare_safe_20_ci": [
+      0.575,
+      0.775
+     ],
+     "lsquare_falsesafe_20": 0.075,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0375,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0875
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.125,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.675,
      "lsquare_safe_25_ci": [
-      0.05,
-      0.2
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.125,
+     "lsquare_falsesafe_25": 0.075,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.05,
-      0.2
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.75,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.125,
+     "lsquare_safe_10": 0.35,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_10": 1.0,
-     "laware_safe_10": 0.025,
+     "lsquare_falsesafe_10": 0.5,
+     "laware_safe_10": 0.0,
      "laware_safe_10_ci": [
       0.0,
-      0.075
+      0.0
      ],
-     "laware_falsesafe_10": 0.975,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.85,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.35,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.15,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.35,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.15,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
@@ -365,234 +481,350 @@
     }
    },
    "grad_shadow": {
-    "auroc": 0.6141176124849194,
-    "prauc": 0.22215522761141596,
+    "auroc": 0.743230950609304,
+    "prauc": 0.20561314144641493,
     "all": {
-     "maxrect_safe_10": 0.4,
+     "maxrect_safe_10": 0.75,
      "maxrect_safe_10_ci": [
-      0.3,
-      0.5
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_10": 0.4125,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.0375,
+     "lsquare_safe_10": 0.7125,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.6125,
+      0.8125
      ],
-     "lsquare_falsesafe_10": 0.5,
+     "lsquare_falsesafe_10": 0.2125,
      "laware_safe_10": 0.5,
      "laware_safe_10_ci": [
       0.3875,
       0.6
      ],
-     "laware_falsesafe_10": 0.5,
-     "maxrect_safe_20": 0.1625,
+     "laware_falsesafe_10": 0.425,
+     "maxrect_safe_20": 0.75,
      "maxrect_safe_20_ci": [
-      0.0875,
-      0.25
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.7125,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.6125,
+      0.8125
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "lsquare_falsesafe_20": 0.0375,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0375,
+     "maxrect_safe_25": 0.75,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0875
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.125,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.7125,
      "lsquare_safe_25_ci": [
-      0.05,
-      0.2
+      0.6125,
+      0.8125
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.125,
+     "lsquare_falsesafe_25": 0.0375,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.05,
-      0.2
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.5,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_10": 0.825,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.075,
+     "lsquare_safe_10": 0.425,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.275,
+      0.575
      ],
-     "lsquare_falsesafe_10": 1.0,
+     "lsquare_falsesafe_10": 0.425,
      "laware_safe_10": 0.0,
      "laware_safe_10_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_10": 1.0,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.85,
+     "maxrect_safe_20": 0.5,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.425,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.275,
+      0.575
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.075,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.5,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.425,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.275,
+      0.575
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.075,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_25": 0.5
+    }
+   },
+   "bright": {
+    "auroc": 0.866332852284517,
+    "prauc": 0.3156865233404531,
+    "all": {
+     "maxrect_safe_10": 0.75,
+     "maxrect_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_10": 0.0375,
+     "lsquare_safe_10": 0.75,
+     "lsquare_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "lsquare_falsesafe_10": 0.175,
+     "laware_safe_10": 0.75,
+     "laware_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_10": 0.175,
+     "maxrect_safe_20": 0.75,
+     "maxrect_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.75,
+     "lsquare_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.75,
+     "laware_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.75,
+     "maxrect_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.75,
+     "lsquare_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.75,
+     "laware_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_25": 0.0
+    },
+    "hazard_bearing": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_10": 0.075,
+     "lsquare_safe_10": 0.5,
+     "lsquare_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_10": 0.35,
+     "laware_safe_10": 0.5,
+     "laware_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_10": 0.35,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.5,
+     "lsquare_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.5,
+     "lsquare_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_25": 0.0
     }
    }
   },
   {
    "azimuth": 45,
    "elevation": 45,
-   "crater_mean_cast_shadow_frac": 0.0004519992404513889,
+   "crater_mean_cast_shadow_frac": 8.053249782986111e-06,
    "grad": {
-    "auroc": 0.4950794855196907,
-    "prauc": 0.10330627441045422,
+    "auroc": 0.6890662419426447,
+    "prauc": 0.15062998338999592,
     "all": {
-     "maxrect_safe_10": 0.3875,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.2875,
-      0.48781249999999826
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.375,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.075,
+     "lsquare_safe_10": 0.675,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_10": 0.5,
-     "laware_safe_10": 0.5375,
+     "lsquare_falsesafe_10": 0.325,
+     "laware_safe_10": 0.5,
      "laware_safe_10_ci": [
-      0.425,
-      0.6375
-     ],
-     "laware_falsesafe_10": 0.4625,
-     "maxrect_safe_20": 0.1375,
-     "maxrect_safe_20_ci": [
-      0.0625,
-      0.2125
-     ],
-     "maxrect_falsesafe_20": 0.275,
-     "lsquare_safe_20": 0.5,
-     "lsquare_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "lsquare_falsesafe_20": 0.275,
+     "laware_falsesafe_10": 0.5,
+     "maxrect_safe_20": 0.725,
+     "maxrect_safe_20_ci": [
+      0.625,
+      0.8128124999999983
+     ],
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.675,
+     "lsquare_safe_20_ci": [
+      0.575,
+      0.775
+     ],
+     "lsquare_falsesafe_20": 0.075,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "laware_falsesafe_20": 0.275,
-     "maxrect_safe_25": 0.0625,
+     "laware_falsesafe_20": 0.25,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0125,
-      0.125
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.2125,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.675,
      "lsquare_safe_25_ci": [
-      0.125,
-      0.3
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.2125,
+     "lsquare_falsesafe_25": 0.075,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.125,
-      0.3
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.75,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.15,
+     "lsquare_safe_10": 0.35,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_10": 1.0,
-     "laware_safe_10": 0.075,
+     "lsquare_falsesafe_10": 0.65,
+     "laware_safe_10": 0.0,
      "laware_safe_10_ci": [
       0.0,
-      0.175
+      0.0
      ],
-     "laware_falsesafe_10": 0.925,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 1.0,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.55,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.35,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_20": 0.55,
+     "lsquare_falsesafe_20": 0.15,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_20": 0.55,
-     "maxrect_safe_25": 0.0,
+     "laware_falsesafe_20": 0.5,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.35,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.15,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
@@ -602,119 +834,235 @@
     }
    },
    "grad_shadow": {
-    "auroc": 0.4950794855196907,
-    "prauc": 0.10330627441045422,
+    "auroc": 0.6907628960892314,
+    "prauc": 0.15237395819128538,
     "all": {
-     "maxrect_safe_10": 0.3875,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.2875,
-      0.48781249999999826
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.375,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.075,
+     "lsquare_safe_10": 0.675,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_10": 0.5,
-     "laware_safe_10": 0.5375,
+     "lsquare_falsesafe_10": 0.325,
+     "laware_safe_10": 0.5,
      "laware_safe_10_ci": [
-      0.425,
-      0.6375
-     ],
-     "laware_falsesafe_10": 0.4625,
-     "maxrect_safe_20": 0.1375,
-     "maxrect_safe_20_ci": [
-      0.0625,
-      0.2125
-     ],
-     "maxrect_falsesafe_20": 0.275,
-     "lsquare_safe_20": 0.5,
-     "lsquare_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "lsquare_falsesafe_20": 0.275,
+     "laware_falsesafe_10": 0.5,
+     "maxrect_safe_20": 0.725,
+     "maxrect_safe_20_ci": [
+      0.625,
+      0.8128124999999983
+     ],
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.675,
+     "lsquare_safe_20_ci": [
+      0.575,
+      0.775
+     ],
+     "lsquare_falsesafe_20": 0.075,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "laware_falsesafe_20": 0.275,
-     "maxrect_safe_25": 0.0625,
+     "laware_falsesafe_20": 0.25,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0125,
-      0.125
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.2125,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.675,
      "lsquare_safe_25_ci": [
-      0.125,
-      0.3
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.2125,
+     "lsquare_falsesafe_25": 0.075,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.125,
-      0.3
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.75,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.15,
+     "lsquare_safe_10": 0.35,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_10": 1.0,
-     "laware_safe_10": 0.075,
+     "lsquare_falsesafe_10": 0.65,
+     "laware_safe_10": 0.0,
      "laware_safe_10_ci": [
       0.0,
-      0.175
+      0.0
      ],
-     "laware_falsesafe_10": 0.925,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 1.0,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.55,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.35,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_20": 0.55,
+     "lsquare_falsesafe_20": 0.15,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_20": 0.55,
-     "maxrect_safe_25": 0.0,
+     "laware_falsesafe_20": 0.5,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.35,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.15,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_25": 0.5
+    }
+   },
+   "bright": {
+    "auroc": 0.8775156288820519,
+    "prauc": 0.32611842244497274,
+    "all": {
+     "maxrect_safe_10": 0.75,
+     "maxrect_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_10": 0.05,
+     "lsquare_safe_10": 0.7375,
+     "lsquare_safe_10_ci": [
+      0.6375,
+      0.8375
+     ],
+     "lsquare_falsesafe_10": 0.2625,
+     "laware_safe_10": 0.75,
+     "laware_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_10": 0.25,
+     "maxrect_safe_20": 0.75,
+     "maxrect_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.7375,
+     "lsquare_safe_20_ci": [
+      0.6375,
+      0.8375
+     ],
+     "lsquare_falsesafe_20": 0.0125,
+     "laware_safe_20": 0.75,
+     "laware_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.75,
+     "maxrect_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.7375,
+     "lsquare_safe_25_ci": [
+      0.6375,
+      0.8375
+     ],
+     "lsquare_falsesafe_25": 0.0125,
+     "laware_safe_25": 0.75,
+     "laware_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_25": 0.0
+    },
+    "hazard_bearing": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_10": 0.1,
+     "lsquare_safe_10": 0.475,
+     "lsquare_safe_10_ci": [
+      0.3,
+      0.625
+     ],
+     "lsquare_falsesafe_10": 0.525,
+     "laware_safe_10": 0.5,
+     "laware_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_10": 0.5,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.475,
+     "lsquare_safe_20_ci": [
+      0.3,
+      0.625
+     ],
+     "lsquare_falsesafe_20": 0.025,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.475,
+     "lsquare_safe_25_ci": [
+      0.3,
+      0.625
+     ],
+     "lsquare_falsesafe_25": 0.025,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_25": 0.0
     }
    }
   },
@@ -723,350 +1071,466 @@
    "elevation": 60,
    "crater_mean_cast_shadow_frac": 0.0,
    "grad": {
-    "auroc": 0.48851614183066927,
-    "prauc": 0.09986421646231697,
+    "auroc": 0.6910523058721029,
+    "prauc": 0.15326989426130716,
     "all": {
-     "maxrect_safe_10": 0.4,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.3,
-      0.5
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.475,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.2125,
+     "lsquare_safe_10": 0.6625,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_10": 0.5,
+     "lsquare_falsesafe_10": 0.3375,
      "laware_safe_10": 0.525,
      "laware_safe_10_ci": [
       0.4125,
-      0.625
+      0.6253124999999983
      ],
      "laware_falsesafe_10": 0.475,
-     "maxrect_safe_20": 0.15,
+     "maxrect_safe_20": 0.725,
      "maxrect_safe_20_ci": [
-      0.075,
-      0.225
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_20": 0.4375,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.6625,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.0875,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.1,
+     "laware_falsesafe_20": 0.25,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0375,
-      0.175
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.35,
-     "lsquare_safe_25": 0.2625,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.6625,
      "lsquare_safe_25_ci": [
-      0.175,
-      0.3625
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_25": 0.5,
-     "laware_safe_25": 0.2625,
+     "lsquare_falsesafe_25": 0.0875,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.175,
-      0.3625
+      0.3875,
+      0.6
      ],
-     "laware_falsesafe_25": 0.5
+     "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.95,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.425,
+     "lsquare_safe_10": 0.325,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_10": 1.0,
+     "lsquare_falsesafe_10": 0.675,
      "laware_safe_10": 0.05,
      "laware_safe_10_ci": [
       0.0,
       0.125
      ],
      "laware_falsesafe_10": 0.95,
-     "maxrect_safe_20": 0.0,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.875,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.325,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_20": 1.0,
+     "lsquare_falsesafe_20": 0.175,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_20": 1.0,
-     "maxrect_safe_25": 0.0,
+     "laware_falsesafe_20": 0.5,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.7,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.325,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_25": 1.0,
+     "lsquare_falsesafe_25": 0.175,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_25": 1.0
+     "laware_falsesafe_25": 0.5
     }
    },
    "grad_shadow": {
-    "auroc": 0.48851614183066927,
-    "prauc": 0.09986421646231697,
+    "auroc": 0.6910523058721029,
+    "prauc": 0.15326989426130716,
     "all": {
-     "maxrect_safe_10": 0.4,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.3,
-      0.5
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.475,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.2125,
+     "lsquare_safe_10": 0.6625,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_10": 0.5,
+     "lsquare_falsesafe_10": 0.3375,
      "laware_safe_10": 0.525,
      "laware_safe_10_ci": [
       0.4125,
-      0.625
+      0.6253124999999983
      ],
      "laware_falsesafe_10": 0.475,
-     "maxrect_safe_20": 0.15,
+     "maxrect_safe_20": 0.725,
      "maxrect_safe_20_ci": [
-      0.075,
-      0.225
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_20": 0.4375,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.6625,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.0875,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.1,
+     "laware_falsesafe_20": 0.25,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0375,
-      0.175
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.35,
-     "lsquare_safe_25": 0.2625,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.6625,
      "lsquare_safe_25_ci": [
-      0.175,
-      0.3625
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_25": 0.5,
-     "laware_safe_25": 0.2625,
+     "lsquare_falsesafe_25": 0.0875,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.175,
-      0.3625
+      0.3875,
+      0.6
      ],
-     "laware_falsesafe_25": 0.5
+     "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.95,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.425,
+     "lsquare_safe_10": 0.325,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_10": 1.0,
+     "lsquare_falsesafe_10": 0.675,
      "laware_safe_10": 0.05,
      "laware_safe_10_ci": [
       0.0,
       0.125
      ],
      "laware_falsesafe_10": 0.95,
-     "maxrect_safe_20": 0.0,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.875,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.325,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_20": 1.0,
+     "lsquare_falsesafe_20": 0.175,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_20": 1.0,
-     "maxrect_safe_25": 0.0,
+     "laware_falsesafe_20": 0.5,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.7,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.325,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_25": 1.0,
+     "lsquare_falsesafe_25": 0.175,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_25": 1.0
+     "laware_falsesafe_25": 0.5
+    }
+   },
+   "bright": {
+    "auroc": 0.8789829373137151,
+    "prauc": 0.3500127812203273,
+    "all": {
+     "maxrect_safe_10": 0.75,
+     "maxrect_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_10": 0.1875,
+     "lsquare_safe_10": 0.7375,
+     "lsquare_safe_10_ci": [
+      0.6375,
+      0.8375
+     ],
+     "lsquare_falsesafe_10": 0.2625,
+     "laware_safe_10": 0.7875,
+     "laware_safe_10_ci": [
+      0.7,
+      0.875
+     ],
+     "laware_falsesafe_10": 0.2125,
+     "maxrect_safe_20": 0.75,
+     "maxrect_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.7375,
+     "lsquare_safe_20_ci": [
+      0.6375,
+      0.8375
+     ],
+     "lsquare_falsesafe_20": 0.0125,
+     "laware_safe_20": 0.75,
+     "laware_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.75,
+     "maxrect_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.7375,
+     "lsquare_safe_25_ci": [
+      0.6375,
+      0.8375
+     ],
+     "lsquare_falsesafe_25": 0.0125,
+     "laware_safe_25": 0.75,
+     "laware_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_25": 0.0
+    },
+    "hazard_bearing": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_10": 0.375,
+     "lsquare_safe_10": 0.475,
+     "lsquare_safe_10_ci": [
+      0.3,
+      0.625
+     ],
+     "lsquare_falsesafe_10": 0.525,
+     "laware_safe_10": 0.575,
+     "laware_safe_10_ci": [
+      0.425,
+      0.725
+     ],
+     "laware_falsesafe_10": 0.425,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.475,
+     "lsquare_safe_20_ci": [
+      0.3,
+      0.625
+     ],
+     "lsquare_falsesafe_20": 0.025,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.475,
+     "lsquare_safe_25_ci": [
+      0.3,
+      0.625
+     ],
+     "lsquare_falsesafe_25": 0.025,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_25": 0.0
     }
    }
   },
   {
    "azimuth": 135,
    "elevation": 30,
-   "crater_mean_cast_shadow_frac": 0.03824742635091146,
+   "crater_mean_cast_shadow_frac": 0.00794491238064236,
    "grad": {
-    "auroc": 0.5014050205580732,
-    "prauc": 0.10837217991603174,
+    "auroc": 0.7037555073210959,
+    "prauc": 0.15410000788266343,
     "all": {
-     "maxrect_safe_10": 0.4,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.2875,
-      0.5
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.425,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.0875,
+     "lsquare_safe_10": 0.675,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_10": 0.5,
+     "lsquare_falsesafe_10": 0.275,
      "laware_safe_10": 0.5125,
      "laware_safe_10_ci": [
       0.4,
       0.6125
      ],
-     "laware_falsesafe_10": 0.4875,
-     "maxrect_safe_20": 0.1375,
+     "laware_falsesafe_10": 0.4375,
+     "maxrect_safe_20": 0.725,
      "maxrect_safe_20_ci": [
-      0.0625,
-      0.2125
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.675,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "lsquare_falsesafe_20": 0.075,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0375,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0875
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.0875,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.675,
      "lsquare_safe_25_ci": [
-      0.025,
-      0.15
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.0875,
+     "lsquare_falsesafe_25": 0.075,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.025,
-      0.15
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.85,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.175,
+     "lsquare_safe_10": 0.35,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_10": 1.0,
+     "lsquare_falsesafe_10": 0.55,
      "laware_safe_10": 0.025,
      "laware_safe_10_ci": [
       0.0,
       0.075
      ],
-     "laware_falsesafe_10": 0.975,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.875,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.35,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.15,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.35,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.15,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
@@ -1076,234 +1540,350 @@
     }
    },
    "grad_shadow": {
-    "auroc": 0.6148981059490615,
-    "prauc": 0.2245147758641038,
+    "auroc": 0.7564005280296294,
+    "prauc": 0.20936041007153017,
     "all": {
-     "maxrect_safe_10": 0.4,
+     "maxrect_safe_10": 0.75,
      "maxrect_safe_10_ci": [
-      0.2875,
-      0.5
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_10": 0.45,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.0625,
+     "lsquare_safe_10": 0.725,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.625,
+      0.825
      ],
-     "lsquare_falsesafe_10": 0.5,
+     "lsquare_falsesafe_10": 0.225,
      "laware_safe_10": 0.5125,
      "laware_safe_10_ci": [
       0.4,
       0.6125
      ],
-     "laware_falsesafe_10": 0.4875,
-     "maxrect_safe_20": 0.1375,
+     "laware_falsesafe_10": 0.4375,
+     "maxrect_safe_20": 0.75,
      "maxrect_safe_20_ci": [
-      0.0625,
-      0.2125
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.725,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.625,
+      0.825
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "lsquare_falsesafe_20": 0.025,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0375,
+     "maxrect_safe_25": 0.75,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0875
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.0875,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.725,
      "lsquare_safe_25_ci": [
-      0.025,
-      0.15
+      0.625,
+      0.825
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.0875,
+     "lsquare_falsesafe_25": 0.025,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.025,
-      0.15
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.5,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_10": 0.9,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.125,
+     "lsquare_safe_10": 0.45,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "lsquare_falsesafe_10": 1.0,
+     "lsquare_falsesafe_10": 0.45,
      "laware_safe_10": 0.025,
      "laware_safe_10_ci": [
       0.0,
       0.075
      ],
-     "laware_falsesafe_10": 0.975,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.875,
+     "maxrect_safe_20": 0.5,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.45,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.05,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.5,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.45,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.05,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_25": 0.5
+    }
+   },
+   "bright": {
+    "auroc": 0.8679703566922548,
+    "prauc": 0.3177147328885028,
+    "all": {
+     "maxrect_safe_10": 0.75,
+     "maxrect_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_10": 0.0625,
+     "lsquare_safe_10": 0.7375,
+     "lsquare_safe_10_ci": [
+      0.6375,
+      0.825
+     ],
+     "lsquare_falsesafe_10": 0.2125,
+     "laware_safe_10": 0.75,
+     "laware_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_10": 0.2,
+     "maxrect_safe_20": 0.75,
+     "maxrect_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.7375,
+     "lsquare_safe_20_ci": [
+      0.6375,
+      0.825
+     ],
+     "lsquare_falsesafe_20": 0.0125,
+     "laware_safe_20": 0.75,
+     "laware_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.75,
+     "maxrect_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.7375,
+     "lsquare_safe_25_ci": [
+      0.6375,
+      0.825
+     ],
+     "lsquare_falsesafe_25": 0.0125,
+     "laware_safe_25": 0.75,
+     "laware_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_25": 0.0
+    },
+    "hazard_bearing": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_10": 0.125,
+     "lsquare_safe_10": 0.475,
+     "lsquare_safe_10_ci": [
+      0.325,
+      0.625
+     ],
+     "lsquare_falsesafe_10": 0.425,
+     "laware_safe_10": 0.5,
+     "laware_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_10": 0.4,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.475,
+     "lsquare_safe_20_ci": [
+      0.325,
+      0.625
+     ],
+     "lsquare_falsesafe_20": 0.025,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.475,
+     "lsquare_safe_25_ci": [
+      0.325,
+      0.625
+     ],
+     "lsquare_falsesafe_25": 0.025,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_25": 0.0
     }
    }
   },
   {
    "azimuth": 225,
    "elevation": 30,
-   "crater_mean_cast_shadow_frac": 0.03802973429361979,
+   "crater_mean_cast_shadow_frac": 0.007939402262369789,
    "grad": {
-    "auroc": 0.5024974501491873,
-    "prauc": 0.10892282229001404,
+    "auroc": 0.7110269514415453,
+    "prauc": 0.15527224963251157,
     "all": {
-     "maxrect_safe_10": 0.3875,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.2875,
-      0.5
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.3625,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.075,
+     "lsquare_safe_10": 0.675,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.575,
+      0.775
      ],
-     "lsquare_falsesafe_10": 0.5,
-     "laware_safe_10": 0.5,
+     "lsquare_falsesafe_10": 0.225,
+     "laware_safe_10": 0.5125,
      "laware_safe_10_ci": [
-      0.3875,
-      0.6
+      0.4,
+      0.6128124999999983
      ],
-     "laware_falsesafe_10": 0.5,
-     "maxrect_safe_20": 0.125,
+     "laware_falsesafe_10": 0.3875,
+     "maxrect_safe_20": 0.725,
      "maxrect_safe_20_ci": [
-      0.0625,
-      0.2
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.6625,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "lsquare_falsesafe_20": 0.0875,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0125,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0375
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.025,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.6625,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0625
+      0.5625,
+      0.7625
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.025,
+     "lsquare_falsesafe_25": 0.0875,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.0,
-      0.0625
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.725,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.15,
+     "lsquare_safe_10": 0.35,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.2,
+      0.5
      ],
-     "lsquare_falsesafe_10": 1.0,
-     "laware_safe_10": 0.0,
+     "lsquare_falsesafe_10": 0.45,
+     "laware_safe_10": 0.025,
      "laware_safe_10_ci": [
       0.0,
-      0.0
+      0.075
      ],
-     "laware_falsesafe_10": 1.0,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.775,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.325,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.175,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.325,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.175,
+      0.475
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.175,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
@@ -1313,234 +1893,350 @@
     }
    },
    "grad_shadow": {
-    "auroc": 0.6151378999650278,
-    "prauc": 0.22386393090982082,
+    "auroc": 0.7612371572490463,
+    "prauc": 0.20890509695033743,
     "all": {
-     "maxrect_safe_10": 0.3875,
+     "maxrect_safe_10": 0.75,
      "maxrect_safe_10_ci": [
-      0.2875,
-      0.5
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_10": 0.4125,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.05,
+     "lsquare_safe_10": 0.725,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.625,
+      0.825
      ],
-     "lsquare_falsesafe_10": 0.5,
-     "laware_safe_10": 0.5,
+     "lsquare_falsesafe_10": 0.175,
+     "laware_safe_10": 0.5125,
      "laware_safe_10_ci": [
-      0.3875,
-      0.6
+      0.4,
+      0.6128124999999983
      ],
-     "laware_falsesafe_10": 0.5,
-     "maxrect_safe_20": 0.125,
+     "laware_falsesafe_10": 0.3875,
+     "maxrect_safe_20": 0.75,
      "maxrect_safe_20_ci": [
-      0.0625,
-      0.2
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.7125,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.6125,
+      0.8125
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "lsquare_falsesafe_20": 0.0375,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0125,
+     "maxrect_safe_25": 0.75,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0375
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.025,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.7125,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0625
+      0.6125,
+      0.8125
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.025,
+     "lsquare_falsesafe_25": 0.0375,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.0,
-      0.0625
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.5,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_10": 0.825,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.1,
+     "lsquare_safe_10": 0.45,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "lsquare_falsesafe_10": 1.0,
-     "laware_safe_10": 0.0,
+     "lsquare_falsesafe_10": 0.35,
+     "laware_safe_10": 0.025,
      "laware_safe_10_ci": [
       0.0,
-      0.0
+      0.075
      ],
-     "laware_falsesafe_10": 1.0,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.775,
+     "maxrect_safe_20": 0.5,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.425,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.275,
+      0.575
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.075,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.5,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.425,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.275,
+      0.575
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.075,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_25": 0.5
+    }
+   },
+   "bright": {
+    "auroc": 0.8683829044161148,
+    "prauc": 0.3168657871855194,
+    "all": {
+     "maxrect_safe_10": 0.75,
+     "maxrect_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_10": 0.05,
+     "lsquare_safe_10": 0.7625,
+     "lsquare_safe_10_ci": [
+      0.6625,
+      0.85
+     ],
+     "lsquare_falsesafe_10": 0.1375,
+     "laware_safe_10": 0.7625,
+     "laware_safe_10_ci": [
+      0.6625,
+      0.85
+     ],
+     "laware_falsesafe_10": 0.1375,
+     "maxrect_safe_20": 0.75,
+     "maxrect_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.75,
+     "lsquare_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.75,
+     "laware_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.75,
+     "maxrect_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.75,
+     "lsquare_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.75,
+     "laware_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_25": 0.0
+    },
+    "hazard_bearing": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_10": 0.1,
+     "lsquare_safe_10": 0.525,
+     "lsquare_safe_10_ci": [
+      0.375,
+      0.675
+     ],
+     "lsquare_falsesafe_10": 0.275,
+     "laware_safe_10": 0.525,
+     "laware_safe_10_ci": [
+      0.375,
+      0.675
+     ],
+     "laware_falsesafe_10": 0.275,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.5,
+     "lsquare_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_20": 0.0,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.5,
+     "lsquare_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "lsquare_falsesafe_25": 0.0,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_25": 0.0
     }
    }
   },
   {
    "azimuth": 315,
    "elevation": 30,
-   "crater_mean_cast_shadow_frac": 0.038120778401692715,
+   "crater_mean_cast_shadow_frac": 0.00794219970703125,
    "grad": {
-    "auroc": 0.5009397745004036,
-    "prauc": 0.1080826834747965,
+    "auroc": 0.6968585489581223,
+    "prauc": 0.1526138504305688,
     "all": {
-     "maxrect_safe_10": 0.4375,
+     "maxrect_safe_10": 0.725,
      "maxrect_safe_10_ci": [
-      0.3375,
-      0.55
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_10": 0.425,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.0875,
+     "lsquare_safe_10": 0.6875,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.5875,
+      0.7875
      ],
-     "lsquare_falsesafe_10": 0.5,
-     "laware_safe_10": 0.525,
+     "lsquare_falsesafe_10": 0.2,
+     "laware_safe_10": 0.5,
      "laware_safe_10_ci": [
-      0.4125,
-      0.625
-     ],
-     "laware_falsesafe_10": 0.475,
-     "maxrect_safe_20": 0.15,
-     "maxrect_safe_20_ci": [
-      0.075,
-      0.2375
-     ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
-     "lsquare_safe_20_ci": [
       0.3875,
       0.6
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "laware_falsesafe_10": 0.3875,
+     "maxrect_safe_20": 0.725,
+     "maxrect_safe_20_ci": [
+      0.625,
+      0.8128124999999983
+     ],
+     "maxrect_falsesafe_20": 0.025,
+     "lsquare_safe_20": 0.6875,
+     "lsquare_safe_20_ci": [
+      0.5875,
+      0.7875
+     ],
+     "lsquare_falsesafe_20": 0.0625,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.725,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.625,
+      0.8128124999999983
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.075,
+     "maxrect_falsesafe_25": 0.025,
+     "lsquare_safe_25": 0.6875,
      "lsquare_safe_25_ci": [
-      0.025,
-      0.1375
+      0.5875,
+      0.7875
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.075,
+     "lsquare_falsesafe_25": 0.0625,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.025,
-      0.1375
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.45,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_10": 0.85,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.175,
+     "lsquare_safe_10": 0.375,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.225,
+      0.525
      ],
-     "lsquare_falsesafe_10": 1.0,
-     "laware_safe_10": 0.05,
+     "lsquare_falsesafe_10": 0.4,
+     "laware_safe_10": 0.0,
      "laware_safe_10_ci": [
       0.0,
-      0.125
+      0.0
      ],
-     "laware_falsesafe_10": 0.95,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.775,
+     "maxrect_safe_20": 0.45,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.05,
+     "lsquare_safe_20": 0.375,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.225,
+      0.525
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.125,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.45,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.05,
+     "lsquare_safe_25": 0.375,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.225,
+      0.525
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.125,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
@@ -1550,119 +2246,235 @@
     }
    },
    "grad_shadow": {
-    "auroc": 0.6136834866055146,
-    "prauc": 0.22238734990207232,
+    "auroc": 0.7508084710609361,
+    "prauc": 0.2079291832040534,
     "all": {
-     "maxrect_safe_10": 0.4375,
+     "maxrect_safe_10": 0.75,
      "maxrect_safe_10_ci": [
-      0.3375,
-      0.55
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_10": 0.425,
-     "lsquare_safe_10": 0.5,
+     "maxrect_falsesafe_10": 0.05,
+     "lsquare_safe_10": 0.725,
      "lsquare_safe_10_ci": [
-      0.3875,
-      0.6
+      0.625,
+      0.8128124999999983
      ],
-     "lsquare_falsesafe_10": 0.5,
+     "lsquare_falsesafe_10": 0.15,
      "laware_safe_10": 0.5,
      "laware_safe_10_ci": [
       0.3875,
       0.6
      ],
-     "laware_falsesafe_10": 0.5,
-     "maxrect_safe_20": 0.15,
+     "laware_falsesafe_10": 0.375,
+     "maxrect_safe_20": 0.75,
      "maxrect_safe_20_ci": [
-      0.075,
-      0.2375
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_20": 0.25,
-     "lsquare_safe_20": 0.5,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.725,
      "lsquare_safe_20_ci": [
-      0.3875,
-      0.6
+      0.625,
+      0.8128124999999983
      ],
-     "lsquare_falsesafe_20": 0.25,
+     "lsquare_falsesafe_20": 0.025,
      "laware_safe_20": 0.5,
      "laware_safe_20_ci": [
       0.3875,
       0.6
      ],
      "laware_falsesafe_20": 0.25,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.75,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.65,
+      0.8375
      ],
-     "maxrect_falsesafe_25": 0.25,
-     "lsquare_safe_25": 0.075,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.725,
      "lsquare_safe_25_ci": [
-      0.025,
-      0.1375
+      0.625,
+      0.8128124999999983
      ],
-     "lsquare_falsesafe_25": 0.25,
-     "laware_safe_25": 0.075,
+     "lsquare_falsesafe_25": 0.025,
+     "laware_safe_25": 0.5,
      "laware_safe_25_ci": [
-      0.025,
-      0.1375
+      0.3875,
+      0.6
      ],
      "laware_falsesafe_25": 0.25
     },
     "hazard_bearing": {
-     "maxrect_safe_10": 0.0,
+     "maxrect_safe_10": 0.5,
      "maxrect_safe_10_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_10": 0.85,
-     "lsquare_safe_10": 0.0,
+     "maxrect_falsesafe_10": 0.1,
+     "lsquare_safe_10": 0.45,
      "lsquare_safe_10_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "lsquare_falsesafe_10": 1.0,
+     "lsquare_falsesafe_10": 0.3,
      "laware_safe_10": 0.0,
      "laware_safe_10_ci": [
       0.0,
       0.0
      ],
-     "laware_falsesafe_10": 1.0,
-     "maxrect_safe_20": 0.0,
+     "laware_falsesafe_10": 0.75,
+     "maxrect_safe_20": 0.5,
      "maxrect_safe_20_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_20": 0.5,
-     "lsquare_safe_20": 0.0,
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.45,
      "lsquare_safe_20_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "lsquare_falsesafe_20": 0.5,
+     "lsquare_falsesafe_20": 0.05,
      "laware_safe_20": 0.0,
      "laware_safe_20_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_20": 0.5,
-     "maxrect_safe_25": 0.0,
+     "maxrect_safe_25": 0.5,
      "maxrect_safe_25_ci": [
-      0.0,
-      0.0
+      0.35,
+      0.65
      ],
-     "maxrect_falsesafe_25": 0.5,
-     "lsquare_safe_25": 0.0,
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.45,
      "lsquare_safe_25_ci": [
-      0.0,
-      0.0
+      0.3,
+      0.6
      ],
-     "lsquare_falsesafe_25": 0.5,
+     "lsquare_falsesafe_25": 0.05,
      "laware_safe_25": 0.0,
      "laware_safe_25_ci": [
       0.0,
       0.0
      ],
      "laware_falsesafe_25": 0.5
+    }
+   },
+   "bright": {
+    "auroc": 0.8671481243107734,
+    "prauc": 0.3172375836635161,
+    "all": {
+     "maxrect_safe_10": 0.75,
+     "maxrect_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_10": 0.05,
+     "lsquare_safe_10": 0.7375,
+     "lsquare_safe_10_ci": [
+      0.6375,
+      0.825
+     ],
+     "lsquare_falsesafe_10": 0.1375,
+     "laware_safe_10": 0.75,
+     "laware_safe_10_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_10": 0.125,
+     "maxrect_safe_20": 0.75,
+     "maxrect_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.7375,
+     "lsquare_safe_20_ci": [
+      0.6375,
+      0.825
+     ],
+     "lsquare_falsesafe_20": 0.0125,
+     "laware_safe_20": 0.75,
+     "laware_safe_20_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.75,
+     "maxrect_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.7375,
+     "lsquare_safe_25_ci": [
+      0.6375,
+      0.825
+     ],
+     "lsquare_falsesafe_25": 0.0125,
+     "laware_safe_25": 0.75,
+     "laware_safe_25_ci": [
+      0.65,
+      0.8375
+     ],
+     "laware_falsesafe_25": 0.0
+    },
+    "hazard_bearing": {
+     "maxrect_safe_10": 0.5,
+     "maxrect_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_10": 0.1,
+     "lsquare_safe_10": 0.475,
+     "lsquare_safe_10_ci": [
+      0.325,
+      0.625
+     ],
+     "lsquare_falsesafe_10": 0.275,
+     "laware_safe_10": 0.5,
+     "laware_safe_10_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_10": 0.25,
+     "maxrect_safe_20": 0.5,
+     "maxrect_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_20": 0.0,
+     "lsquare_safe_20": 0.475,
+     "lsquare_safe_20_ci": [
+      0.325,
+      0.625
+     ],
+     "lsquare_falsesafe_20": 0.025,
+     "laware_safe_20": 0.5,
+     "laware_safe_20_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_20": 0.0,
+     "maxrect_safe_25": 0.5,
+     "maxrect_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "maxrect_falsesafe_25": 0.0,
+     "lsquare_safe_25": 0.475,
+     "lsquare_safe_25_ci": [
+      0.325,
+      0.625
+     ],
+     "lsquare_falsesafe_25": 0.025,
+     "laware_safe_25": 0.5,
+     "laware_safe_25_ci": [
+      0.35,
+      0.65
+     ],
+     "laware_falsesafe_25": 0.0
     }
    }
   }

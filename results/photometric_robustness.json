@@ -1,0 +1,1160 @@
+{
+ "baseline_max_abs_diff": 0,
+ "frozen_config": {
+  "tau": 60,
+  "a_min": 500,
+  "theta": 0.05,
+  "min_component_area": 100,
+  "phi_deg": 10.0,
+  "ksize": 15
+ },
+ "variants": {
+  "baseline": {
+   "spec": {},
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.687482227692267,
+     "prauc": 0.1502486501673207
+    },
+    "grad_shadow": {
+     "auroc": 0.743230949576184,
+     "prauc": 0.20561315793209373
+    },
+    "full": {
+     "auroc": 0.8663328512152527,
+     "prauc": 0.31568652649761975,
+     "crater_within_auroc": 0.9296302339802012,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5025336623367187,
+     "prauc": 0.12406068167936841
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 60,
+     "a_min": 500,
+     "phi_deg": 10.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.687482227692267,
+     "prauc": 0.1502486501673207
+    },
+    "grad_shadow": {
+     "auroc": 0.743230949576184,
+     "prauc": 0.20561315793209373
+    },
+    "full": {
+     "auroc": 0.8663328512152527,
+     "prauc": 0.31568652649761975,
+     "crater_within_auroc": 0.9296302339802012,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5025336623367187,
+     "prauc": 0.12406068167936841
+    }
+   }
+  },
+  "sky_0.1": {
+   "spec": {
+    "sky": 0.1
+   },
+   "shadow_grey_level": 11.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6890502462920927,
+     "prauc": 0.15094957250497548
+    },
+    "grad_shadow": {
+     "auroc": 0.737572930985685,
+     "prauc": 0.20409564126077667
+    },
+    "full": {
+     "auroc": 0.8685473421992647,
+     "prauc": 0.3361416559160073,
+     "crater_within_auroc": 0.9317185419708697,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5028280074021697,
+     "prauc": 0.12410756701965425
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 1500,
+     "tau": 60,
+     "a_min": 500,
+     "phi_deg": 10.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6890502462920927,
+     "prauc": 0.15094957250497548
+    },
+    "grad_shadow": {
+     "auroc": 0.737572930985685,
+     "prauc": 0.20409564126077667
+    },
+    "full": {
+     "auroc": 0.8685473421992647,
+     "prauc": 0.3361416559160073,
+     "crater_within_auroc": 0.9317185419708697,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5028280074021697,
+     "prauc": 0.12410756701965425
+    }
+   }
+  },
+  "sky_0.2": {
+   "spec": {
+    "sky": 0.2
+   },
+   "shadow_grey_level": 21.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6897887813865051,
+     "prauc": 0.1514228556637113
+    },
+    "grad_shadow": {
+     "auroc": 0.7316910234618389,
+     "prauc": 0.20168942930933137
+    },
+    "full": {
+     "auroc": 0.8700563458832792,
+     "prauc": 0.35882626344234925,
+     "crater_within_auroc": 0.9331133605887985,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5026097903082932,
+     "prauc": 0.12408014619621859
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 60,
+     "a_min": 500,
+     "phi_deg": 10.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6897887813865051,
+     "prauc": 0.1514228556637113
+    },
+    "grad_shadow": {
+     "auroc": 0.7316910234618389,
+     "prauc": 0.20168942930933137
+    },
+    "full": {
+     "auroc": 0.8700563458832792,
+     "prauc": 0.35882626344234925,
+     "crater_within_auroc": 0.9331133605887985,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5026097903082932,
+     "prauc": 0.12408014619621859
+    }
+   }
+  },
+  "sky_0.3": {
+   "spec": {
+    "sky": 0.3
+   },
+   "shadow_grey_level": 29.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6904579467041057,
+     "prauc": 0.1519952887264895
+    },
+    "grad_shadow": {
+     "auroc": 0.7257446260031785,
+     "prauc": 0.1982603198663591
+    },
+    "full": {
+     "auroc": 0.8715383409219807,
+     "prauc": 0.3829475097465276,
+     "crater_within_auroc": 0.933906303031154,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5026193258730605,
+     "prauc": 0.12400616388861724
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 1500,
+     "tau": 60,
+     "a_min": 500,
+     "phi_deg": 7.5,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6904579467041057,
+     "prauc": 0.1519952887264895
+    },
+    "grad_shadow": {
+     "auroc": 0.7257446260031785,
+     "prauc": 0.1982603198663591
+    },
+    "full": {
+     "auroc": 0.8660685921388342,
+     "prauc": 0.3894025126713823,
+     "crater_within_auroc": 0.9316455870251783,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5026193258730605,
+     "prauc": 0.12400616388861724
+    }
+   }
+  },
+  "sky_0.5": {
+   "spec": {
+    "sky": 0.5
+   },
+   "shadow_grey_level": 42.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6917780894260012,
+     "prauc": 0.15309403375183622
+    },
+    "grad_shadow": {
+     "auroc": 0.71624936689279,
+     "prauc": 0.18916254414509281
+    },
+    "full": {
+     "auroc": 0.8720490303341963,
+     "prauc": 0.42343909608378183,
+     "crater_within_auroc": 0.9345969342408903,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5025687881275246,
+     "prauc": 0.12391901911331511
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 1500,
+     "tau": 80,
+     "a_min": 500,
+     "phi_deg": 7.5,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6917780894260012,
+     "prauc": 0.15309403375183622
+    },
+    "grad_shadow": {
+     "auroc": 0.7458769946463162,
+     "prauc": 0.2549659946873407
+    },
+    "full": {
+     "auroc": 0.8666450216538977,
+     "prauc": 0.4407864407642486,
+     "crater_within_auroc": 0.934883399336712,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5025687881275246,
+     "prauc": 0.12391901911331511
+    }
+   }
+  },
+  "sky_1.0": {
+   "spec": {
+    "sky": 1.0
+   },
+   "shadow_grey_level": 63.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6935350040646223,
+     "prauc": 0.15507116970433701
+    },
+    "grad_shadow": {
+     "auroc": 0.6935350040646223,
+     "prauc": 0.15507116970433701
+    },
+    "full": {
+     "auroc": 0.8726748809955985,
+     "prauc": 0.47258979673511176,
+     "crater_within_auroc": 0.9346677980758841,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7375,
+      "100": 0.7375
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.502691022745905,
+     "prauc": 0.12386514851997933
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 1500,
+     "tau": 80,
+     "a_min": 500,
+     "phi_deg": 5.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6935350040646223,
+     "prauc": 0.15507116970433701
+    },
+    "grad_shadow": {
+     "auroc": 0.7231580580127429,
+     "prauc": 0.2296015333837288
+    },
+    "full": {
+     "auroc": 0.8483361984969793,
+     "prauc": 0.4840397103162938,
+     "crater_within_auroc": 0.9345510014938799,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.502691022745905,
+     "prauc": 0.12386514851997933
+    }
+   }
+  },
+  "albedo_smooth_0.1": {
+   "spec": {
+    "albedo_kind": "smooth",
+    "albedo_c": 0.1
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6783435324992764,
+     "prauc": 0.14763511142977442
+    },
+    "grad_shadow": {
+     "auroc": 0.7452748571991339,
+     "prauc": 0.20496006888963605
+    },
+    "full": {
+     "auroc": 0.8197685695032993,
+     "prauc": 0.2697749125864409,
+     "crater_within_auroc": 0.8823755615082209,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7375,
+      "100": 0.7375
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4852006974547238,
+     "prauc": 0.11157515470353835
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 40,
+     "a_min": 500,
+     "phi_deg": 15.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6783435324992764,
+     "prauc": 0.14763511142977442
+    },
+    "grad_shadow": {
+     "auroc": 0.718919246587092,
+     "prauc": 0.1803061511899218
+    },
+    "full": {
+     "auroc": 0.8330145740909117,
+     "prauc": 0.2745028849945381,
+     "crater_within_auroc": 0.8902223360344161,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4852006974547238,
+     "prauc": 0.11157515470353835
+    }
+   }
+  },
+  "albedo_patch_0.1": {
+   "spec": {
+    "albedo_kind": "patch",
+    "albedo_c": 0.1
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6809979486834589,
+     "prauc": 0.14704870860736283
+    },
+    "grad_shadow": {
+     "auroc": 0.7423950014025129,
+     "prauc": 0.2038865366816266
+    },
+    "full": {
+     "auroc": 0.8175631869604008,
+     "prauc": 0.2823170151572646,
+     "crater_within_auroc": 0.8705152524377946,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4974181088155084,
+     "prauc": 0.11451190082624153
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 40,
+     "a_min": 500,
+     "phi_deg": 12.5,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6809979486834589,
+     "prauc": 0.14704870860736283
+    },
+    "grad_shadow": {
+     "auroc": 0.718730637305608,
+     "prauc": 0.17958309531851208
+    },
+    "full": {
+     "auroc": 0.8252426529935919,
+     "prauc": 0.2841189866652454,
+     "crater_within_auroc": 0.8766240617230603,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4974181088155084,
+     "prauc": 0.11451190082624153
+    }
+   }
+  },
+  "albedo_smooth_0.2": {
+   "spec": {
+    "albedo_kind": "smooth",
+    "albedo_c": 0.2
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6504489552849609,
+     "prauc": 0.14137483264372425
+    },
+    "grad_shadow": {
+     "auroc": 0.7331221343137896,
+     "prauc": 0.19218961611047386
+    },
+    "full": {
+     "auroc": 0.7301904904276975,
+     "prauc": 0.16532601236426345,
+     "crater_within_auroc": 0.774984273636639,
+     "safe_landing": {
+      "10": 0.725,
+      "25": 0.725,
+      "50": 0.7125,
+      "100": 0.3875
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.9,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4736899552796788,
+     "prauc": 0.10678972306805819
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 40,
+     "a_min": 500,
+     "phi_deg": 20.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6504489552849609,
+     "prauc": 0.14137483264372425
+    },
+    "grad_shadow": {
+     "auroc": 0.7031087615966024,
+     "prauc": 0.17652921351531783
+    },
+    "full": {
+     "auroc": 0.7766587583202643,
+     "prauc": 0.21882479044687678,
+     "crater_within_auroc": 0.8096148615189408,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7375,
+      "100": 0.7375
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4736899552796788,
+     "prauc": 0.10678972306805819
+    }
+   }
+  },
+  "albedo_patch_0.2": {
+   "spec": {
+    "albedo_kind": "patch",
+    "albedo_c": 0.2
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.672817470366136,
+     "prauc": 0.1400853070403159
+    },
+    "grad_shadow": {
+     "auroc": 0.7405424361162362,
+     "prauc": 0.19301246603372335
+    },
+    "full": {
+     "auroc": 0.6963356579194022,
+     "prauc": 0.15818036160989252,
+     "crater_within_auroc": 0.7309062756955045,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.6125
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5209432322002049,
+     "prauc": 0.11213565058157147
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 40,
+     "a_min": 500,
+     "phi_deg": 20.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.672817470366136,
+     "prauc": 0.1400853070403159
+    },
+    "grad_shadow": {
+     "auroc": 0.714101272475527,
+     "prauc": 0.17204900270023837
+    },
+    "full": {
+     "auroc": 0.7476262578785858,
+     "prauc": 0.2129166429384338,
+     "crater_within_auroc": 0.7586601899644209,
+     "safe_landing": {
+      "10": 0.725,
+      "25": 0.725,
+      "50": 0.7125,
+      "100": 0.625
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.9,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5209432322002049,
+     "prauc": 0.11213565058157147
+    }
+   }
+  },
+  "albedo_smooth_0.3": {
+   "spec": {
+    "albedo_kind": "smooth",
+    "albedo_c": 0.3
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6235063597908911,
+     "prauc": 0.1352264394280659
+    },
+    "grad_shadow": {
+     "auroc": 0.704827917156975,
+     "prauc": 0.16371778108427554
+    },
+    "full": {
+     "auroc": 0.6649589472271679,
+     "prauc": 0.12477442428239602,
+     "crater_within_auroc": 0.6801537820286991,
+     "safe_landing": {
+      "10": 0.7125,
+      "25": 0.7125,
+      "50": 0.55,
+      "100": 0.1
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.85,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4633751924526903,
+     "prauc": 0.103010609373731
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 20,
+     "a_min": 500,
+     "phi_deg": 20.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6235063597908911,
+     "prauc": 0.1352264394280659
+    },
+    "grad_shadow": {
+     "auroc": 0.6562353764618383,
+     "prauc": 0.15241263198367755
+    },
+    "full": {
+     "auroc": 0.7212305425439978,
+     "prauc": 0.1719525922712134,
+     "crater_within_auroc": 0.7342340797043568,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7375,
+      "100": 0.65
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.4633751924526903,
+     "prauc": 0.103010609373731
+    }
+   }
+  },
+  "albedo_patch_0.3": {
+   "spec": {
+    "albedo_kind": "patch",
+    "albedo_c": 0.3
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6648404574078391,
+     "prauc": 0.13371869979323858
+    },
+    "grad_shadow": {
+     "auroc": 0.7343813228835216,
+     "prauc": 0.17692174182461573
+    },
+    "full": {
+     "auroc": 0.6014450036896108,
+     "prauc": 0.10373765180981001,
+     "crater_within_auroc": 0.5472952900005141,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7,
+      "100": 0.475
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5640985795750245,
+     "prauc": 0.11552056855387487
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 40,
+     "a_min": 500,
+     "phi_deg": 20.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6648404574078391,
+     "prauc": 0.13371869979323858
+    },
+    "grad_shadow": {
+     "auroc": 0.7112893114880438,
+     "prauc": 0.16502272790884956
+    },
+    "full": {
+     "auroc": 0.6510490166947642,
+     "prauc": 0.13651671179662944,
+     "crater_within_auroc": 0.6434260506205783,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7375,
+      "100": 0.65
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5640985795750245,
+     "prauc": 0.11552056855387487
+    }
+   }
+  },
+  "lunar_lambert_0.5": {
+   "spec": {
+    "L": 0.5
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.7012900912816551,
+     "prauc": 0.15469376062771345
+    },
+    "grad_shadow": {
+     "auroc": 0.7387773564703627,
+     "prauc": 0.200873365726504
+    },
+    "full": {
+     "auroc": 0.879617775053569,
+     "prauc": 0.3379229394269272,
+     "crater_within_auroc": 0.9346486045428971,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5127977084315202,
+     "prauc": 0.12456187004316577
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 1500,
+     "tau": 60,
+     "a_min": 500,
+     "phi_deg": 10.0,
+     "ksize": 9
+    },
+    "grad": {
+     "auroc": 0.7012900912816551,
+     "prauc": 0.15469376062771345
+    },
+    "grad_shadow": {
+     "auroc": 0.7387773564703627,
+     "prauc": 0.200873365726504
+    },
+    "full": {
+     "auroc": 0.8785858219753577,
+     "prauc": 0.33847020461636035,
+     "crater_within_auroc": 0.9343880448910837,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5127977084315202,
+     "prauc": 0.12456187004316577
+    }
+   }
+  },
+  "lunar_lambert_1.0": {
+   "spec": {
+    "L": 1.0
+   },
+   "shadow_grey_level": 0.0,
+   "frozen": {
+    "grad": {
+     "auroc": 0.7114031378054816,
+     "prauc": 0.15820095750410904
+    },
+    "grad_shadow": {
+     "auroc": 0.7396132581557513,
+     "prauc": 0.19799300937980172
+    },
+    "full": {
+     "auroc": 0.8822261234687804,
+     "prauc": 0.34260677462556455,
+     "crater_within_auroc": 0.9386914968759905,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5159047761386268,
+     "prauc": 0.12430937308143812
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 1500,
+     "tau": 80,
+     "a_min": 500,
+     "phi_deg": 7.5,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.7114031378054816,
+     "prauc": 0.15820095750410904
+    },
+    "grad_shadow": {
+     "auroc": 0.7557064671123734,
+     "prauc": 0.22597898552191323
+    },
+    "full": {
+     "auroc": 0.8867617995417967,
+     "prauc": 0.3603274423120379,
+     "crater_within_auroc": 0.9376556557130629,
+     "safe_landing": {
+      "10": 0.75,
+      "25": 0.75,
+      "50": 0.75,
+      "100": 0.75
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 1.0,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.5159047761386268,
+     "prauc": 0.12430937308143812
+    }
+   }
+  },
+  "combined": {
+   "spec": {
+    "L": 0.5,
+    "sky": 0.15,
+    "albedo_kind": "smooth",
+    "albedo_c": 0.2
+   },
+   "shadow_grey_level": 16.129336401284586,
+   "frozen": {
+    "grad": {
+     "auroc": 0.6525971692504489,
+     "prauc": 0.14174506397382794
+    },
+    "grad_shadow": {
+     "auroc": 0.7063205058971085,
+     "prauc": 0.1836664538708287
+    },
+    "full": {
+     "auroc": 0.6888700778671739,
+     "prauc": 0.14872340259618438,
+     "crater_within_auroc": 0.7338366833089439,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7125,
+      "100": 0.45
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.47659535515320745,
+     "prauc": 0.10172573555940918
+    }
+   },
+   "retuned": {
+    "config": {
+     "theta": 0.05,
+     "min_component_area": 100,
+     "tau": 40,
+     "a_min": 500,
+     "phi_deg": 20.0,
+     "ksize": 15
+    },
+    "grad": {
+     "auroc": 0.6525971692504489,
+     "prauc": 0.14174506397382794
+    },
+    "grad_shadow": {
+     "auroc": 0.6806720182182293,
+     "prauc": 0.16365820959608082
+    },
+    "full": {
+     "auroc": 0.7402764504601823,
+     "prauc": 0.20028178162027185,
+     "crater_within_auroc": 0.757572046684615,
+     "safe_landing": {
+      "10": 0.7375,
+      "25": 0.7375,
+      "50": 0.7375,
+      "100": 0.7375
+     },
+     "safe_landing_by_terrain_25": {
+      "crater": 0.95,
+      "rocky": 0.0,
+      "smooth": 1.0,
+      "dunes": 1.0
+     }
+    },
+    "b1": {
+     "auroc": 0.47659535515320745,
+     "prauc": 0.10172573555940918
+    }
+   }
+  }
+ }
+}

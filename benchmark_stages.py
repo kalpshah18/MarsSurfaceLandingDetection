@@ -28,7 +28,8 @@ import tracemalloc
 import cv2
 import numpy as np
 
-from pipeline import augment_shadow, compute_gradient_hazard, fuse_and_select, maximal_rectangle
+from pipeline import (augment_shadow, compute_brightness_hazard, compute_gradient_hazard, fuse_and_select,
+                      maximal_rectangle)
 from review_common import iter_tiles, load_config
 
 REPEATS = 5
@@ -42,6 +43,9 @@ def stage_times(img, cfg):
     t1 = time.perf_counter()
     G_aug, _ = augment_shadow(img, G, tau=cfg['tau'], a_min=cfg['a_min'])
     t2 = time.perf_counter()
+    G_aug = np.maximum(G_aug, compute_brightness_hazard(img, phi_deg=cfg['phi_deg'], ksize=cfg['ksize']))
+    t2b = time.perf_counter()
+    t2, t_bright = t2b, t2b - t2
     _, _, filt, _ = fuse_and_select(G_aug, None, theta=cfg['theta'], min_component_area=cfg['min_component_area'])
     t3 = time.perf_counter()
     maximal_rectangle(filt)
@@ -49,7 +53,8 @@ def stage_times(img, cfg):
     fuse_total = t3 - t2
     rect = t4 - t3
     # fuse_and_select also runs maximal_rectangle internally; subtract one rectangle call.
-    return {'sobel': t1 - t0, 'shadow': t2 - t1, 'fuse': max(0.0, fuse_total - rect), 'rectangle': rect}
+    return {'sobel': t1 - t0, 'shadow': t2 - t1 - t_bright, 'bright': t_bright,
+            'fuse': max(0.0, fuse_total - rect), 'rectangle': rect}
 
 
 def peak_rss_mb():
@@ -61,7 +66,7 @@ def peak_rss_mb():
 def memory_child(size):
     """Run in a fresh process: peak RSS increase and tracemalloc peak for one tile."""
     import psutil
-    cfg = load_config()['V_grad_shadow']
+    cfg = load_config()['V_bright']
     tile = next(iter_tiles('TEST'))
     img = tile['ori'] if size == 768 else cv2.resize(tile['ori'], (size, size), interpolation=cv2.INTER_LINEAR)
     del tile
@@ -69,6 +74,7 @@ def memory_child(size):
     tracemalloc.start()
     G = compute_gradient_hazard(img)
     G_aug, _ = augment_shadow(img, G, tau=cfg['tau'], a_min=cfg['a_min'])
+    G_aug = np.maximum(G_aug, compute_brightness_hazard(img, phi_deg=cfg['phi_deg'], ksize=cfg['ksize']))
     fuse_and_select(G_aug, None, theta=cfg['theta'], min_component_area=cfg['min_component_area'])
     _, tm_peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
@@ -78,13 +84,13 @@ def memory_child(size):
 
 def main():
     cv2.setNumThreads(1)
-    cfg = load_config()['V_grad_shadow']
+    cfg = load_config()['V_bright']
     tiles = [t['ori'] for t in iter_tiles('TEST')]
     res = {}
     for size in SIZES:
         imgs = tiles if size == 768 else [cv2.resize(t, (size, size), interpolation=cv2.INTER_LINEAR) for t in tiles]
         stage_times(imgs[0], cfg)  # warm-up
-        samples = {k: [] for k in ('sobel', 'shadow', 'fuse', 'rectangle', 'total')}
+        samples = {k: [] for k in ('sobel', 'shadow', 'bright', 'fuse', 'rectangle', 'total')}
         for img in imgs:
             for _ in range(REPEATS):
                 st = stage_times(img, cfg)

@@ -1,0 +1,66 @@
+{
+ "arcadia_starship": {
+  "best_shift_rowcol": [
+   0,
+   1
+  ],
+  "r2_best": 0.0349,
+  "r2_zero": 0.0346
+ },
+ "eberswalde": {
+  "best_shift_rowcol": [
+   2,
+   0
+  ],
+  "r2_best": 0.1997,
+  "r2_zero": 0.1912
+ },
+ "elysium_insight": {
+  "best_shift_rowcol": [
+   1,
+   1
+  ],
+  "r2_best": 0.4165,
+  "r2_zero": 0.3832
+ },
+ "gale": {
+  "best_shift_rowcol": [
+   0,
+   0
+  ],
+  "r2_best": 0.1501,
+  "r2_zero": 0.1501
+ },
+ "holden": {
+  "best_shift_rowcol": [
+   1,
+   -1
+  ],
+  "r2_best": 0.1042,
+  "r2_zero": 0.1039
+ },
+ "jezero": {
+  "best_shift_rowcol": [
+   0,
+   2
+  ],
+  "r2_best": 0.3165,
+  "r2_zero": 0.2995
+ },
+ "mawrth": {
+  "best_shift_rowcol": [
+   -1,
+   1
+  ],
+  "r2_best": 0.0606,
+  "r2_zero": 0.0565
+ },
+ "meridiani_dunes": {
+  "best_shift_rowcol": [
+   0,
+   0
+  ],
+  "r2_best": 0.3345,
+  "r2_zero": 0.3345
+ }
+}

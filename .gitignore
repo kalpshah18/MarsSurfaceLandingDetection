@@ -25,3 +25,9 @@ data/raw/
 *.swo
 
 *.zip
+
+# Archived v1 (painted-shadow) dataset and results, kept locally for comparison
+data/synthetic_v1_painted/
+results_v1_painted/
+splits_v1_painted.json
+data/MANIFEST_v1_painted.csv

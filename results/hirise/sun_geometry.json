@@ -1,0 +1,74 @@
+{
+ "gale": {
+  "split": "DEV",
+  "obs": "ESP_023957_1755",
+  "incidence_deg": 32.67541,
+  "sun_elevation_deg": 57.32459,
+  "sub_solar_azimuth_deg": 184.195612,
+  "north_azimuth_deg": 270.0,
+  "emission_deg": 16.183405
+ },
+ "elysium_insight": {
+  "split": "DEV",
+  "obs": "ESP_034862_1835",
+  "incidence_deg": 48.417592,
+  "sun_elevation_deg": 41.582408,
+  "sub_solar_azimuth_deg": 209.176818,
+  "north_azimuth_deg": 270.0,
+  "emission_deg": 24.725226
+ },
+ "holden": {
+  "split": "DEV",
+  "obs": "ESP_019612_1535",
+  "incidence_deg": 63.804476,
+  "sun_elevation_deg": 26.195524,
+  "sub_solar_azimuth_deg": 206.211778,
+  "north_azimuth_deg": 270.0,
+  "emission_deg": 9.257874
+ },
+ "mawrth": {
+  "split": "DEV",
+  "obs": "ESP_015985_2040",
+  "incidence_deg": 38.371381,
+  "sun_elevation_deg": 51.628619,
+  "sub_solar_azimuth_deg": 168.410708,
+  "north_azimuth_deg": 269.999999,
+  "emission_deg": 14.917952
+ },
+ "jezero": {
+  "split": "TEST",
+  "obs": "ESP_045994_1985",
+  "incidence_deg": 47.582999,
+  "sun_elevation_deg": 42.417001,
+  "sub_solar_azimuth_deg": 177.367154,
+  "north_azimuth_deg": 270.0,
+  "emission_deg": 3.768226
+ },
+ "eberswalde": {
+  "split": "TEST",
+  "obs": "ESP_016065_1560",
+  "incidence_deg": 57.235417,
+  "sun_elevation_deg": 32.764583,
+  "sub_solar_azimuth_deg": 213.976829,
+  "north_azimuth_deg": 270.0,
+  "emission_deg": 31.316464
+ },
+ "arcadia_starship": {
+  "split": "TEST",
+  "obs": "ESP_060719_2200",
+  "incidence_deg": 40.528676,
+  "sun_elevation_deg": 49.471324,
+  "sub_solar_azimuth_deg": 162.805552,
+  "north_azimuth_deg": 269.999999,
+  "emission_deg": 3.243124
+ },
+ "meridiani_dunes": {
+  "split": "TEST",
+  "obs": "ESP_027443_1815",
+  "incidence_deg": 52.532335,
+  "sun_elevation_deg": 37.467665,
+  "sub_solar_azimuth_deg": 206.35553,
+  "north_azimuth_deg": 270.0,
+  "emission_deg": 4.61165
+ }
+}
