@@ -43,7 +43,7 @@ echo "Real HiRISE evaluation (Tables 9-10); needs the tiles from hirise_download
 echo "hirise_make_tiles.py under HIRISE_DATA_DIR (about 4.4 GB, outside the repo)"
 if [ -n "$HIRISE_DATA_DIR" ]; then python hirise_eval_v2.py; else echo "HIRISE_DATA_DIR not set; skipped"; fi
 
-echo "Runtime and memory (Table 5); run on an otherwise idle machine"
+echo "Runtime and memory (Table 8); run on an otherwise idle machine"
 python benchmark_stages.py
 
 echo "Figures"
