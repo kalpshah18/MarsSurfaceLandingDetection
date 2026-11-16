@@ -29,14 +29,15 @@ As you suggested, the figure now illustrates the sunlit and shadowed regions. Pa
 
 The physical rendering changed the results, and the analysis it enabled improved the method:
 
-- With realistic shadows, intensity gradients alone reach an AUROC of 0.529, and shadow detection raises it to 0.598. The original values (0.350 and 0.796) depended on the painted dark region and have been removed.
-- The new analysis (Section 5.1) shows why gradients struggle on craters. A wall facing the sun is lit near normal incidence and appears bright and nearly textureless, while shadows capture only the wall facing away from the sun.
-- We therefore added a first-order photometric slope cue, the deviation of local brightness from that of level ground, motivated by photoclinometry (Section 4.3). With the three cues combined, AUROC rises to 0.750 and PR-AUC to 0.359 (4.4 times chance). The pipeline finds safe landing sites on 30% of crater tiles for footprints up to 15 m, where gradient and shadow cues alone find none.
-- The full front-end runs in 31.5 ms per 768 × 768 tile on a single CPU core.
-- A new sun-elevation study (Section 5.4, Table 5) covers 15° to 60°. The shadow cue matters most at low sun, the brightness cue at high sun, and the combined map is the best variant at every elevation.
-- The remaining failures are crater walls that slope across the sun direction, the known limitation of single-image photoclinometry, which we now discuss explicitly (Section 5.3 and Limitations).
+- The original values (AUROC 0.350 and 0.796) depended on the painted dark region and have been removed.
+- The new analysis (Section 5.1) shows why intensity gradients struggle on craters. A wall facing the sun is lit near normal incidence and appears bright and nearly textureless, while shadows capture only the wall facing away from the sun. With realistic shading, gradients alone barely rank crater slopes (within-tile AUROC 0.497).
+- We therefore added a first-order photometric slope cue, the deviation of local brightness from that of level ground, motivated by photoclinometry (Section 4.3), and we now scale both the gradient and the brightness cue by physical constants derived from the sun elevation and the slope threshold rather than by statistics of each image (Section 4.1).
+- With the three cues combined, AUROC reaches 0.866 and PR-AUC 0.316 (3.9 times chance) on held-out sites, and the within-tile crater AUROC rises to 0.930. The full front-end runs in 28.5 ms per 768 × 768 tile on a single CPU core.
+- The pipeline now returns a safe landing site on every crater, plain and dune test tile for footprints from 5 m to 157 m (Section 5.3), and an ablation shows that the earlier per-image gradient normalization had limited it to small footprints (Section 5.4).
+- A new sun-elevation study (Section 5.5, Table 6) covers 15° to 60°. Because the constants follow the sun elevation, the combined map is the best variant at every elevation without retuning.
+- We also added an evaluation on real HiRISE orthoimages with co-registered terrain models from eight sites (Section 6). With parameters transferred unchanged from the synthetic data, the hazard map ranks real terrain above a local-texture baseline at three of four held-out sites.
 
-We are grateful for this comment. It corrected an error in our data generation and led directly to the improved method and the illumination analysis in the revised manuscript.
+We are grateful for this comment. It corrected an error in our data generation and led directly to the improved method, the illumination analysis and the real-data evaluation in the revised manuscript.
 
 Sincerely,
 The authors

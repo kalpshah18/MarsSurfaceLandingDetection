@@ -1,19 +1,20 @@
-"""Evaluate the current pipeline (V_grad, V_grad+shadow, V_full) on real HiRISE DTM/ortho tiles.
+"""Evaluate the pipeline (V_grad, V_grad+shadow, V_full) on real HiRISE DTM/ortho tiles (paper Section 6).
 
-Tiles: results/hirise/tiles_manifest.csv (hirise_make_tiles.py), 8 sites x 20 tiles,
-4 DEV sites and 4 TEST sites. Labels: slope > 15 deg over 5 posts of the HiRISE DTM.
-Sun geometry per observation: results/hirise/sun_geometry.json (from the PDS RDR labels).
+Tiles: results/hirise/tiles_manifest.csv (hirise_make_tiles.py), 8 sites x 20 tiles: 4 DEV sites
+(Gale, Elysium, Holden, Mawrth) and 4 TEST sites (Jezero, Eberswalde, Arcadia, Meridiani).
+Labels: slope > 15 deg over 5 posts of the HiRISE DTM. Sun elevation of each observation:
+results/hirise/sun_geometry.json (PDS RDR labels); both physical constants use it.
 
-Two protocols, each for the gradient normalizations p99 and fixed_b5 (run_normalization_study.py):
-  transfer  parameters frozen from synthetic DEV tuning; the physical constants are recomputed per
-            image from its median brightness and its real sun elevation (g_ref for fixed_b5, and
-            kappa scaled by I_ref * cot(e) relative to the synthetic tiles). Nothing is tuned on HiRISE.
-  hirise    parameters re-tuned on 5 tiles per HiRISE DEV site (20 tiles) with the same staged
-            procedure, then evaluated once on the TEST sites.
+Protocols:
+  transfer      configuration tuned on the synthetic DEV tiles (results/best_config.json), unchanged.
+  transfer_p99  as transfer, with the per-tile p99 gradient normalization (ablation, config from
+                results/normalization_study.json).
+  hirise        configuration re-tuned on 5 tiles per HiRISE DEV site (20 tiles) with the same staged
+                procedure and grids, then evaluated once on the TEST sites.
 
-Reported per split: pooled AUROC / PR-AUC, B1 (local std) and chance, mean within-tile AUROC, and
-maximal-rectangle Safe Landing at L = 10, 20, 25, 50 next to the random-square null (probability that
-a uniformly placed L x L square has <= 5% unsafe pixels) and site availability.
+Reported: pooled AUROC / PR-AUC, mean within-tile AUROC, B1 (local std) and chance, maximal-rectangle
+Safe Landing at L = 10, 20, 25, 50 next to the random-square null (probability that a uniformly placed
+L x L square has <= 5% unsafe pixels) and site availability, per split and per TEST site.
 
     HIRISE_DATA_DIR=C:/Users/shahk/hirise_data python hirise_eval_v2.py
 Output: results/hirise/evaluation_v2.json
@@ -30,13 +31,11 @@ from footprint_metrics import EPSILON
 from pipeline import augment_shadow, compute_brightness_hazard, fuse_and_select
 from review_common import any_safe_square, window_sums
 from run_evaluation import compute_proxy_labels, get_local_std
-from run_normalization_study import gradient_hazard, tune
+from run_normalization_study import gradient_hazard, staged_tune
 
 DATA_DIR = os.environ.get('HIRISE_DATA_DIR', os.path.join('data', 'raw', 'hirise'))
 OUT = os.path.join('results', 'hirise', 'evaluation_v2.json')
 LS = [10, 20, 25, 50]
-SYN_E = 30.0
-SYN_IREF = 127.5  # level-ground brightness of the synthetic tiles: 255 * sin(30 deg)
 
 
 def load_tiles():
@@ -53,27 +52,20 @@ def load_tiles():
     return tiles
 
 
-def kappa_scale(ori, elev):
-    """Physical rescaling of a synthetic-tuned kappa to this image's brightness and sun elevation."""
-    return (float(np.median(ori)) / np.tan(np.radians(elev))) / (SYN_IREF / np.tan(np.radians(SYN_E)))
-
-
-def maps_for(t, mode, cfg, scale_kappa):
+def maps_for(t, mode, cfg):
     G = gradient_hazard(t['ori'], mode, t['elev'])
     G_aug, _ = augment_shadow(t['ori'], G, tau=cfg['tau'], a_min=cfg['a_min'])
-    kappa = cfg['kappa'] * (kappa_scale(t['ori'], t['elev']) if scale_kappa else 1.0)
-    H = np.maximum(G_aug, compute_brightness_hazard(t['ori'], kappa=kappa, ksize=cfg['ksize']))
-    return {'grad': G, 'grad_shadow': G_aug, 'full': H}
+    B = compute_brightness_hazard(t['ori'], phi_deg=cfg['phi_deg'], ksize=cfg['ksize'], sun_elevation_deg=t['elev'])
+    return {'grad': G, 'grad_shadow': G_aug, 'full': np.maximum(G_aug, B)}
 
 
 def random_null(unsafe, L):
-    if L > min(unsafe.shape):
-        return 0.0
     return float((window_sums(unsafe, L) <= EPSILON * L * L + 1e-9).mean())
 
 
-def evaluate(tiles, mode, cfg, scale_kappa):
-    us, hs, b1 = [], {m: [] for m in ('grad', 'grad_shadow', 'full')}, []
+def evaluate(tiles, mode, cfg):
+    us, b1 = [], []
+    hs = {m: [] for m in ('grad', 'grad_shadow', 'full')}
     within = {m: [] for m in list(hs) + ['b1']}
     sel = {m: {L: [] for L in LS} for m in hs}
     null = {L: [] for L in LS}
@@ -90,7 +82,7 @@ def evaluate(tiles, mode, cfg, scale_kappa):
         for L in LS:
             null[L].append(random_null(u, L))
             avail[L].append(any_safe_square(u, L))
-        for m, H in maps_for(t, mode, cfg, scale_kappa).items():
+        for m, H in maps_for(t, mode, cfg).items():
             hf = H.ravel()[::10]
             hs[m].append(hf)
             if both:
@@ -115,61 +107,36 @@ def evaluate(tiles, mode, cfg, scale_kappa):
     return res
 
 
-def main():
-    tiles = load_tiles()
-    with open(os.path.join('results', 'normalization_study.json')) as f:
-        syn = json.load(f)
-    out = {'sun_geometry': 'results/hirise/sun_geometry.json', 'protocols': {}}
+def run(tiles, mode, cfg):
     dev = [t for t in tiles if t['split'] == 'DEV']
     test = [t for t in tiles if t['split'] == 'TEST']
+    return {'config': cfg, 'gradient_normalization': mode,
+            'DEV': evaluate(dev, mode, cfg), 'TEST': evaluate(test, mode, cfg),
+            'TEST_by_site': {s: evaluate([t for t in test if t['site'] == s], mode, cfg)
+                             for s in sorted({t['site'] for t in test})}}
+
+
+def main():
+    tiles = load_tiles()
     with open(os.path.join('results', 'best_config.json')) as f:
-        cfg_paper = json.load(f)['V_bright']
-    out['protocols']['transfer_paper'] = {
-        'config': cfg_paper,
-        'DEV': evaluate(dev, 'p99', cfg_paper, True),
-        'TEST': evaluate(test, 'p99', cfg_paper, True),
-    }
-    print('paper transfer done', flush=True)
-    for mode in ('p99', 'fixed_b5'):
-        cfg_syn = syn[mode]['config']
-        out['protocols'][f'transfer_{mode}'] = {
-            'config': cfg_syn,
-            'DEV': evaluate(dev, mode, cfg_syn, True),
-            'TEST': evaluate(test, mode, cfg_syn, True),
-            'TEST_by_site': {s: evaluate([t for t in test if t['site'] == s], mode, cfg_syn, True)
-                             for s in sorted({t['site'] for t in test})},
-        }
-        print(mode, 'transfer TEST', {k: (v['auroc'], v['prauc']) if isinstance(v, dict) and 'auroc' in v else None
-                                      for k, v in out['protocols'][f'transfer_{mode}']['TEST'].items()}, flush=True)
-        tune_tiles = []
-        for s in sorted({t['site'] for t in dev}):
-            tune_tiles += [t for t in dev if t['site'] == s][:5]
-        # Same staged tuning as on synthetic data; kappa is tuned in this image's grey levels directly.
-        cfg_h = tune(mode, [{'ori': t['ori'], 'unsafe': t['unsafe']} for t in tune_tiles],
-                     elevation_deg=float(np.mean([t['elev'] for t in tune_tiles]))) if mode == 'p99' else \
-            tune_with_elev(mode, tune_tiles)
-        out['protocols'][f'hirise_{mode}'] = {
-            'config': cfg_h,
-            'TEST': evaluate(test, mode, cfg_h, False),
-            'TEST_by_site': {s: evaluate([t for t in test if t['site'] == s], mode, cfg_h, False)
-                             for s in sorted({t['site'] for t in test})},
-        }
-        print(mode, 'hirise-tuned', cfg_h, flush=True)
+        cfg_syn = json.load(f)['V_bright']
+    with open(os.path.join('results', 'normalization_study.json')) as f:
+        cfg_p99 = json.load(f)['p99']['config']
+    out = {'sun_geometry': 'results/hirise/sun_geometry.json', 'protocols': {}}
+    out['protocols']['transfer'] = run(tiles, 'physical', cfg_syn)
+    print('transfer', round(out['protocols']['transfer']['TEST']['full']['auroc'], 3), flush=True)
+    out['protocols']['transfer_p99'] = run(tiles, 'p99', cfg_p99)
+    print('transfer_p99', round(out['protocols']['transfer_p99']['TEST']['full']['auroc'], 3), flush=True)
+    dev = [t for t in tiles if t['split'] == 'DEV']
+    tune_tiles = []
+    for s in sorted({t['site'] for t in dev}):
+        tune_tiles += [t for t in dev if t['site'] == s][:5]
+    cfg_h = staged_tune(tune_tiles, 'physical')
+    out['protocols']['hirise'] = run(tiles, 'physical', cfg_h)
+    print('hirise', cfg_h, round(out['protocols']['hirise']['TEST']['full']['auroc'], 3), flush=True)
     with open(OUT, 'w') as f:
         json.dump(out, f, indent=1, default=str)
     print('wrote', OUT)
-
-
-def tune_with_elev(mode, tiles):
-    """tune() with each tile's own sun elevation for g_ref (fixed_b5 only)."""
-    import run_normalization_study as rns
-    orig = rns.gradient_hazard
-    elev = {id(t['ori']): t['elev'] for t in tiles}
-    rns.gradient_hazard = lambda img, m, e=30.0: orig(img, m, elev.get(id(img), e))
-    try:
-        return rns.tune(mode, [{'ori': t['ori'], 'unsafe': t['unsafe']} for t in tiles])
-    finally:
-        rns.gradient_hazard = orig
 
 
 if __name__ == '__main__':

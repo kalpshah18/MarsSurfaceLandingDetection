@@ -36,7 +36,7 @@ def render_physical(z, azimuth_deg, elevation_deg, gsd=1.0):
     return physical_render(z, azimuth_deg, elevation_deg, gsd)
 
 
-def evaluate(tiles, theta, tau, a_min, mca, image_key='ori'):
+def evaluate(tiles, theta, tau, a_min, mca, image_key='ori', elevation=30.0):
     """Metrics for grad and grad_shadow under one configuration."""
     br = load_config()['V_bright']
     us, hs = [], {'grad': [], 'grad_shadow': [], 'bright': []}
@@ -44,10 +44,10 @@ def evaluate(tiles, theta, tau, a_min, mca, image_key='ori'):
     sub = slice(None, None, 10)
     for t in tiles:
         ori, unsafe = t[image_key], t['unsafe']
-        G = compute_gradient_hazard(ori)
+        G = compute_gradient_hazard(ori, elevation)
         G_aug, _ = augment_shadow(ori, G, tau=tau, a_min=a_min)
         us.append(unsafe.flatten()[sub])
-        G_br = np.maximum(G_aug, compute_brightness_hazard(ori, kappa=br['kappa'], ksize=br['ksize']))
+        G_br = np.maximum(G_aug, compute_brightness_hazard(ori, phi_deg=br['phi_deg'], ksize=br['ksize'], sun_elevation_deg=elevation))
         for m, Gm in (('grad', G), ('grad_shadow', G_aug), ('bright', G_br)):
             s, _, filt, (x, y, w, h) = fuse_and_select(Gm, None, theta=theta, min_component_area=mca)
             H = 1.0 - s
@@ -112,7 +112,7 @@ def main(mode):
         for az, el in configs:
             for t in tiles:
                 t['ori_r'], _ = render_physical(t['dtm'], az, el)
-            r = evaluate(tiles, cfg['theta'], cfg['tau'], cfg['a_min'], cfg['min_component_area'], 'ori_r')
+            r = evaluate(tiles, cfg['theta'], cfg['tau'], cfg['a_min'], cfg['min_component_area'], 'ori_r', el)
             res.append({'azimuth': az, 'elevation': el, **r})
             print(az, el, round(r['grad']['auroc'], 3), round(r['grad_shadow']['auroc'], 3), flush=True)
         path = os.path.join(OUT_DIR, 'sun_sweep.json')
@@ -129,7 +129,7 @@ def main(mode):
                 t['ori_r'], sh = render_physical(t['dtm'], az, el)
                 if t['terrain'] == 'crater':
                     cast.append(float(sh.mean()))
-            r = evaluate(tiles, cfg['theta'], cfg['tau'], cfg['a_min'], cfg['min_component_area'], 'ori_r')
+            r = evaluate(tiles, cfg['theta'], cfg['tau'], cfg['a_min'], cfg['min_component_area'], 'ori_r', el)
             res.append({'azimuth': az, 'elevation': el, 'crater_mean_cast_shadow_frac': float(np.mean(cast)), **r})
             print(az, el, round(np.mean(cast), 4), round(r['grad']['auroc'], 3), round(r['grad_shadow']['auroc'], 3),
                   flush=True)

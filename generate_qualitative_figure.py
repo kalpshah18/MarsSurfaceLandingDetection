@@ -47,7 +47,7 @@ def generate_figure(tile_id='crater_2_0'):
     _, _, _, rect_gs = run_v_grad_shadow(ori, **gs_cfg)
     pu_g, pu_gs = pct_unsafe(unsafe, rect_g), pct_unsafe(unsafe, rect_gs)
     br_cfg = cfg['V_bright']
-    B = compute_brightness_hazard(ori, kappa=br_cfg['kappa'], ksize=br_cfg['ksize'])
+    B = compute_brightness_hazard(ori, phi_deg=br_cfg['phi_deg'], ksize=br_cfg['ksize'])
     H_full = np.maximum(G_shadow, B)
     _, _, _, rect_br = run_v_bright(ori, **br_cfg)
     pu_br = pct_unsafe(unsafe, rect_br)
@@ -75,8 +75,8 @@ def generate_figure(tile_id='crater_2_0'):
         main_shadow = lab == 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
         ax.contour(main_shadow, levels=[0.5], colors=['#ff9800'], linewidths=1.2)
         sy, sx = np.argwhere(main_shadow).mean(axis=0)
-        ax.annotate('cast shadow', xy=(sx, sy), xytext=(min(cx + 1.6 * R, ori.shape[1] - 80), max(cy - 1.4 * R, 40)),
-                    color='#ff9800', fontsize=8, ha='center',
+        ax.annotate('cast shadow', xy=(sx, sy), xytext=(ori.shape[1] * 0.97, max(sy - 0.45 * R, ori.shape[0] * 0.45)),
+                    color='#ff9800', fontsize=8, ha='right',
                     arrowprops=dict(arrowstyle='->', color='#ff9800', lw=1.0))
     ux, uy = np.cos(np.radians(SUN_AZIMUTH)), np.sin(np.radians(SUN_AZIMUTH))
     ax.annotate('sunlit far wall', xy=(cx - 0.6 * R * ux, cy - 0.6 * R * uy),
@@ -150,7 +150,7 @@ def generate_figure(tile_id='crater_2_0'):
     # (h) landing boxes
     ax = axes[1, 3]
     ax.imshow(ori, cmap='gray', vmin=0, vmax=255)
-    for rect, ec, ls in ((rect_g, '#FF3333', '-'), (rect_br, '#00FF66', '--')):
+    for rect, ec, ls in ((rect_g, '#FF3333', '-'), (rect_gs, '#FFB300', ':'), (rect_br, '#00FF66', '--')):
         x, y, w, h = rect
         if w > 0 and h > 0:
             ax.add_patch(patches.Rectangle((x, y), w, h, lw=2.2, ec=ec, fc='none', ls=ls))
@@ -169,7 +169,8 @@ def generate_figure(tile_id='crater_2_0'):
             sp.set_edgecolor('#00FF66'); sp.set_linewidth(1.5)
         ax.indicate_inset_zoom(ins, edgecolor='#00FF66', linewidth=1.0, alpha=1.0)
     ax.set_title('(h) Landing Box Selection', fontsize=11, fontweight='bold', pad=6)
-    ax.text(0.04, 0.06, f'Red: $V_{{grad}}$, $V_{{grad+shadow}}$ ({pu_g:.0f}% unsafe)\n'
+    ax.text(0.04, 0.06, f'Red: $V_{{grad}}$ ({pu_g:.0f}% unsafe)\n'
+                        f'Amber: $V_{{grad+shadow}}$ ({pu_gs:.0f}% unsafe)\n'
                         f'Green: $V_{{full}}$ ({pu_br:.0f}% unsafe)',
             transform=ax.transAxes, color='white', fontsize=8.5, bbox=LABEL_BOX)
     ax.axis('off')

@@ -95,10 +95,7 @@ def generate_footprint_envelope_figure(sweep_path='results/footprint_sweep.json'
         (main, 'square_fit', lab + ' Square Fit', '#eb6834', '--', 's'),
         (main, 'safe_landing', lab + ' Safe Landing', '#1baf7a', '-', '^'),
     ]
-    if main == 'bright':
-        lines.append(('grad_shadow', 'safe_landing', r'$V_{\mathrm{grad+shadow}}$ Safe Landing', '#6b6b66', ':', 'D'))
-    else:
-        lines.append(('grad', 'safe_landing', r'$V_{\mathrm{grad}}$ Safe Landing', '#6b6b66', ':', 'D'))
+    lines.append(('grad', 'safe_landing', r'$V_{\mathrm{grad}}$ Safe Landing', '#6b6b66', ':', 'D'))
 
     plt.rcParams.update({'font.size': 8, 'axes.titlesize': 8, 'axes.labelsize': 8,
                          'legend.fontsize': 7, 'xtick.labelsize': 7, 'ytick.labelsize': 7,
@@ -115,13 +112,14 @@ def generate_footprint_envelope_figure(sweep_path='results/footprint_sweep.json'
 
     for method, key, label, color, ls, marker in lines:
         ax.plot(Ls, series(method, key), color=color, ls=ls, lw=1.6, marker=marker,
-                markersize=3.2, markevery=5, label=label, zorder=3)
+                markersize=3.2, markevery=5 if len(Ls) <= 60 else 15, label=label, zorder=3)
 
     ax.set_xlim(Ls[0], Ls[-1])
     ax.set_ylim(0, 1.02)
     ax.set_xlabel('Required footprint side $L$ (m)')
     ax.set_ylabel('Fraction of TEST tiles (n = 80)')
-    ax.set_xticks(range(10, Ls[-1] + 1, 10))
+    step = 10 if Ls[-1] <= 60 else 25
+    ax.set_xticks(range(step if step == 10 else 25, Ls[-1] + 1, step))
     ax.grid(True, color='#e6e6e1', lw=0.6)
     ax.set_axisbelow(True)
     for side in ('top', 'right'):

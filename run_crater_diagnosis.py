@@ -45,7 +45,7 @@ def main():
         sunfacing = cos_i > np.sin(np.radians(SUN_ELEVATION)) + 0.1
         cast = cast_shadow(z, SUN_AZIMUTH, SUN_ELEVATION)
         box = (slice(y, y + h), slice(x, x + w))
-        H_br = np.maximum(G_aug, compute_brightness_hazard(ori, kappa=bcfg['kappa'], ksize=bcfg['ksize']))
+        H_br = np.maximum(G_aug, compute_brightness_hazard(ori, phi_deg=bcfg['phi_deg'], ksize=bcfg['ksize']))
         _, _, _, (bx, by, bw, bh) = fuse_and_select(H_br, None, theta=bcfg['theta'],
                                                     min_component_area=bcfg['min_component_area'])
         bbox = (slice(by, by + bh), slice(bx, bx + bw))

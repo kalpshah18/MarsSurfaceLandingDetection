@@ -28,16 +28,23 @@ python run_footprint_sweep.py
 echo "Crater diagnosis (Section 5.1)"
 python run_crater_diagnosis.py
 
-echo "Review analyses and sun-angle sweep"
+echo "Gradient-normalization ablation (Table 5)"
+python run_normalization_study.py
+
+echo "Review analyses and sun-angle sweep (Table 6)"
 python run_review_analyses.py
 python run_review_sweeps.py sunphys
+
+echo "Real HiRISE evaluation (Tables 8-9); needs the tiles from hirise_download.py and"
+echo "hirise_make_tiles.py under HIRISE_DATA_DIR (about 4.4 GB, outside the repo)"
+if [ -n "$HIRISE_DATA_DIR" ]; then python hirise_eval_v2.py; else echo "HIRISE_DATA_DIR not set; skipped"; fi
 
 echo "Runtime and memory (Table 5); run on an otherwise idle machine"
 python benchmark_stages.py
 
 echo "Figures"
 python -c "import generate_figures as g; g.generate_footprint_envelope_figure(out_stem='Mars_Landing_Paper_ARXIV_Style_updated/media/fig_footprint_envelope')"
-python generate_qualitative_figure.py crater_2_8
+python generate_qualitative_figure.py crater_2_16
 python generate_crater_model_figure.py
 
 echo "Done."

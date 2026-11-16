@@ -52,7 +52,7 @@
 
 
 \begin{abstract}
-Onboard hazard detection for planetary landing must run on radiation-hardened processors with tight compute and memory budgets. Single-frame 2D optical sensing is the simplest and cheapest sensing option available, and passive optical hazard avoidance has flown on recent lunar landers. We characterize what a deterministic, single-frame classical pipeline can deliver, and at what computational cost. The pipeline combines three image cues: intensity gradients, morphological shadow detection, and a photometric slope cue that measures how far local brightness departs from that of level ground. We evaluate it against slope-derived proxy labels (unsafe: slope $>15^\circ$) on a synthetic Martian dataset rendered with Lambertian shading and ray-marched cast shadows, with disjoint development and test sites. Intensity gradients alone barely separate unsafe from safe terrain (AUROC 0.529), because a crater wall that faces the sun appears bright and nearly textureless. Shadow detection captures the sun-averted side of crater bowls (AUROC 0.598), and the brightness cue captures the sun-facing side: the three cues together reach AUROC 0.750 and PR-AUC 0.359, 4.4 times the 0.081 chance level and 3.7 times raw gradients. Across sun elevations from $15^\circ$ to $60^\circ$ the shadow cue dominates at low sun and the brightness cue at high sun, and the full map is the best variant at every elevation. The full hazard-map front-end runs in 31.5~ms per $768 \times 768$ tile on a single CPU core with about 30~MB of additional resident memory. Treating the lander footprint as an explicit operating parameter, the pipeline returns a safe landing region (a footprint-sized square with at most 5\% unsafe terrain) on every hazard-free test tile for footprints up to 5~m, on at least half of all test tiles up to 9~m, and on 26.3\% at 20~m. On crater terrain it finds safe sites on 30\% of tiles for footprints up to 15~m, where gradient and shadow cues alone find none. The remaining misses are slopes that run across the sun direction, the known limitation of single-image photoclinometry. Single-frame classical vision is therefore an efficient hazard detector for small-footprint landing and an inexpensive cueing stage for 3D sensors, and we quantify where its operating envelope ends.
+Onboard hazard detection for planetary landing must run on radiation-hardened processors with tight compute and memory budgets. Single-frame 2D optical sensing is the simplest and cheapest sensing option available, and passive optical hazard avoidance has flown on recent lunar landers. We characterize what a deterministic, single-frame classical pipeline can deliver, and at what computational cost. The pipeline combines three image cues, intensity gradients, morphological shadow detection and a photometric slope cue, and scales the gradient and brightness cues by physical constants derived from the sun elevation and the slope threshold rather than by statistics of each image. We evaluate it against slope-derived proxy labels (unsafe: slope $>15^\circ$) on a synthetic Martian dataset rendered with Lambertian shading and ray-marched cast shadows, and on 160 tiles of real HiRISE orthoimages with co-registered terrain models from eight sites. On held-out synthetic sites the full hazard map reaches AUROC 0.866 and PR-AUC 0.316, 3.9 times the chance level, and the front-end runs in 28.5~ms per $768 \times 768$ tile on a single CPU core with about 30~MB of additional memory. Treating the lander footprint as an explicit operating parameter, the pipeline returns a safe landing site, a footprint-sized square with at most 5\% unsafe terrain, on 75\% of held-out tiles for every footprint from 5~m to 157~m: on every crater, plain and dune tile, while the rocky tiles contain no safe 20~m site at all. With parameters transferred unchanged from synthetic data, the hazard map ranks real HiRISE terrain above a local-texture baseline at three of four held-out sites (AUROC up to 0.80); on that terrain, where hazards are sparse, its selected sites are safe at about the rate of a randomly placed square. Single-frame classical vision is therefore an efficient hazard detector and cueing stage, and we quantify where its operating envelope ends.
 \end{abstract}
 
 
@@ -69,8 +69,9 @@ Hazard detection algorithms are frequently evaluated against proxy ground truth 
 This paper characterizes the operating envelope of single-frame, intensity-based hazard scoring. Our contributions are:
 \begin{enumerate}
     \item A leak-free evaluation protocol with site-level separation between independently generated development and test terrain, and unsafe terrain as the primary evaluation class.
-    \item A three-cue classical hazard map (intensity gradient, shadow, and a photometric slope cue) with a physical analysis of what each cue sees under oblique illumination. Shadows capture the sun-averted side of crater bowls and brightness captures the sun-facing side, together raising the PR-AUC of raw gradients from 0.098 to 0.359 at negligible cost.
-    \item A footprint-requirement sweep that maps landing-region availability as a function of the required lander footprint and terrain type, identifying where single-frame 2D sensing returns safe sites on its own and where it should cue a 3D sensor.
+    \item A three-cue classical hazard map (intensity gradient, shadow, and a photometric slope cue) whose gradient and brightness cues are scaled by physical constants from the sun elevation and the slope threshold, with an analysis of what each cue sees under oblique illumination.
+    \item A footprint-requirement sweep that maps landing-site availability as a function of the required lander footprint and terrain type, and an ablation showing that per-image gradient normalization, not the cues themselves, had limited earlier versions to small footprints.
+    \item An evaluation on real HiRISE orthoimages with co-registered terrain models from eight sites, with parameters transferred unchanged from the synthetic data.
     \item Per-stage latency and memory profiles showing that the front-end fits comfortably within flight-class compute budgets.
 \end{enumerate}
 
@@ -92,7 +93,7 @@ We evaluate our method on a synthetic Martian dataset comprising 160 rendered ti
 
 \textbf{Crater model.} Each crater tile contains one fresh or moderately degraded simple crater with rim-crest diameter $D$ drawn uniformly from 200--600~m (210--592~m in the dataset) and depth-to-diameter ratio $d/D$ drawn uniformly from 0.10 to 0.20, the range from degraded to fresh simple craters \cite{pike1977size,melosh1989impact}. The interior is a paraboloidal bowl, $z(r) = h_r - d\,(1 - r^2/R^2)$ for $r < R = D/2$, with rim height $h_r = 0.04\,D$ and an ejecta blanket $z(r) = h_r (R/r)^3$ outside the rim. Depths therefore range from 25 to 108~m. The wall is flat at the centre and steepest at the rim, where its slope is $\arctan(4\,d/D)$, between $22^\circ$ and $39^\circ$. Small-scale height noise (standard deviation 0.1~m per 1~m post) gives the surface a texture.
 
-\textbf{Image model.} Images are rendered with unit-albedo Lambertian shading, $I = \max(0, \mathbf{n}\cdot\mathbf{s})$, for a sun at elevation $30^\circ$ and azimuth $45^\circ$ (measured in image coordinates from the $+x$ axis toward $+y$, so the sun lies toward the lower right of every image). Cast shadows are computed by ray marching the DTM toward the sun, and shadowed pixels are set to zero; atmospheric skylight is not modelled. No other darkening is applied. At $30^\circ$ elevation a crater casts a shadow only if its rim slope exceeds $30^\circ$, i.e.\ $d/D > 0.144$. The shadow then forms a crescent just inside the sun-side rim, while the far wall, which faces the sun, is the brightest part of the scene (Fig.~\ref{fig:crater_model}). On the test split, 9 of the 20 craters cast a shadow, covering on average 5.4\% and at most 16.6\% of the crater area. Under this model a planar slope of uniform albedo has nearly uniform intensity, so intensity gradients detect it only through its edges and its surface texture; its absolute brightness, however, still depends on its tilt toward or away from the sun, which the cue of Section~\ref{sec:bright} exploits.
+\textbf{Image model.} Images are rendered with unit-albedo Lambertian shading, $I = \max(0, \mathbf{n}\cdot\mathbf{s})$, for a sun at elevation $30^\circ$ and azimuth $45^\circ$ (measured in image coordinates from the $+x$ axis toward $+y$, so the sun lies toward the lower right of every image). Cast shadows are computed by ray marching the DTM toward the sun, and shadowed pixels are set to zero; atmospheric skylight is not modelled. No other darkening is applied. At $30^\circ$ elevation a crater casts a shadow only if its rim slope exceeds $30^\circ$, i.e.\ $d/D > 0.144$. The shadow then forms a crescent just inside the sun-side rim, while the far wall, which faces the sun, is the brightest part of the scene (Fig.~\ref{fig:crater_model}). On the test split, 9 of the 20 craters cast a shadow, covering on average 5.4\% and at most 16.6\% of the crater area. Under this model a planar slope of uniform albedo has nearly uniform intensity, so intensity gradients detect it only through its edges and its surface texture; its absolute brightness, however, still depends on its tilt toward or away from the sun, which both the gradient normalization and the cue of Section~\ref{sec:bright} exploit.
 
 \begin{figure}[!htb]
   \centering
@@ -109,24 +110,22 @@ We evaluate our method on a synthetic Martian dataset comprising 160 rendered ti
 \label{sec:methodology}
 
 \subsection{Gradient Hazard Scoring}
-The baseline module quantifies terrain slope and roughness at the pixel level by computing the spatial gradient of the input grayscale image $I(x,y)$. Horizontal and vertical partial derivatives are obtained via the Sobel operator \cite{sobel1968} with a standard $3 \times 3$ kernel size:
+The gradient module responds to changes in surface orientation, which under oblique illumination appear as intensity transitions at rock boundaries, crater rims and slope breaks. Because the hazard labels are defined over a 5~m baseline, we measure the gradient at the same scale: the grayscale image $I(x,y)$ is first box-filtered over $b \times b$ pixels ($b = 5$, the label baseline at 1~m GSD), giving $I_b$, and horizontal and vertical derivatives are then obtained with the $3 \times 3$ Sobel operator \cite{sobel1968}:
 \begin{equation}
-    I_x = \frac{\partial I}{\partial x}, \qquad I_y = \frac{\partial I}{\partial y}.
+    g(x,y) = \sqrt{\left(\frac{\partial I_b}{\partial x}\right)^2 + \left(\frac{\partial I_b}{\partial y}\right)^2}.
 \end{equation}
-The gradient magnitude at each pixel is defined as
+We normalize $g$ by a fixed physical constant rather than by a statistic of the tile. For a Lambertian surface whose level ground has brightness $I_{\text{ref}}$ at sun elevation $e$, a facet tilted toward or away from the sun by a small angle $\alpha$ changes the brightness by approximately $I_{\text{ref}} \cot(e) \sin\alpha$. A slope change equal to the label threshold ($15^\circ$) spread over the baseline therefore produces a Sobel response (8 times the intensity change per pixel) of
 \begin{equation}
-    g(x,y) = \sqrt{I_x^2 + I_y^2},
+    g_{\text{ref}} = \frac{8\, I_{\text{ref}} \cot(e) \sin 15^\circ}{b},
+    \qquad
+    G(x,y) = \min\!\left(1,\; \frac{g(x,y)}{g_{\text{ref}}}\right).
 \end{equation}
-where high values mark abrupt intensity transitions, which under oblique illumination occur at rock boundaries, crater rims, and changes in surface orientation. To suppress extreme specular outliers while maintaining scene-adaptive scaling, $g(x,y)$ is normalized by its 99th percentile $g_{p99}$ computed over non-zero pixels:
-\begin{equation}
-    G(x,y) = \min\!\left(1,\; \frac{g(x,y)}{g_{p99}}\right).
-\end{equation}
-The bounded hazard score $G(x,y) \in [0,1]$ serves as the continuous predictor of unsafe terrain, where values near 1.0 denote high hazard and values near 0.0 denote smooth topography.
+We estimate $I_{\text{ref}}$ as the median of the image, which assumes that most of a landing tile is near level and absorbs the unknown albedo and camera gain; the sun elevation is known onboard from the ephemeris. For the synthetic tiles $g_{\text{ref}} \approx 91$. A per-tile normalization, such as dividing by the 99th percentile of $g$ as in earlier versions of this pipeline, forces about 1\% of every tile to the maximum hazard however flat it is, and on hazard-free terrain it stretches small-scale texture across the full hazard range; Section~\ref{sec:norm} quantifies the difference.
 
 \subsection{Shadow Augmentation}
 Under single-frame illumination, raw gradient magnitude fails inside shadowed depressions: because illumination inside a shadow is near uniform or zero, spatial intensity gradients vanish ($\nabla I \approx 0$), resulting in dangerously low hazard scores for steep, hazardous terrain.
 
-To address this, a shadow augmentation module identifies dark connected regions using an inverse binary threshold at intensity level $\tau = 60$. External contours are extracted, and spurious small patches below $A_{\min} = 500$ pixels are discarded. Both values were selected on the DEV tiles from $\tau \in \{20, 40, 60, 80\}$ and $A_{\min} \in \{100, 500\}$ by the F1 score of the filtered safe mask against the proxy-safe labels. The threshold responds to any dark region, not only to cast shadows: on crater tiles the retained regions also include the part of the bowl that faces away from the sun and is dimly lit (Fig.~\ref{fig:qualitative}d). For every retained contour, its enclosed interior is flood-filled, and the hazard score is set to maximum:
+To address this, a shadow augmentation module identifies dark connected regions using an inverse binary threshold at intensity level $\tau = 60$. External contours are extracted, and spurious small patches below $A_{\min} = 500$ pixels are discarded; both values were selected on the DEV tiles from $\tau \in \{20, 40, 60, 80\}$ and $A_{\min} \in \{100, 500\}$ (Section~\ref{sec:fusion}). The threshold responds to any dark region, not only to cast shadows: on crater tiles the retained regions also include the part of the bowl that faces away from the sun and is dimly lit (Fig.~\ref{fig:qualitative}d). For every retained contour, its enclosed interior is flood-filled, and the hazard score is set to maximum:
 \begin{equation}
     G(x,y) \leftarrow 1.0 \quad \forall\,(x,y) \in \text{filled shadow region}.
 \end{equation}
@@ -134,18 +133,20 @@ Shadows are a standard passive cue for landing hazards such as rocks and steep c
 
 \subsection{Photometric Slope Cue}
 \label{sec:bright}
-For a Lambertian surface of uniform albedo, level ground has intensity proportional to $\sin e$, where $e$ is the sun elevation, and a facet tilted toward or away from the sun is brighter or darker. A first-order photoclinometric slope cue is therefore the deviation of local brightness from that of level ground. We estimate the level-ground brightness as the median $I_{\text{ref}}$ of the box-filtered image $\bar I$ (a $k \times k$ mean), which assumes that most of a landing tile is near level and absorbs the unknown albedo, and define
+The same photometric relation gives a direct, first-order photoclinometric slope cue: the deviation of local brightness from that of level ground. With $\bar I$ the $k \times k$ box-filtered image, we define
 \begin{equation}
-    B(x,y) = \min\!\left(1,\; \frac{|\bar I(x,y) - I_{\text{ref}}|}{\kappa}\right),
+    B(x,y) = \min\!\left(1,\; \frac{|\bar I(x,y) - I_{\text{ref}}|}{I_{\text{ref}} \cot(e) \sin\varphi}\right),
 \end{equation}
-where $\kappa$ is the brightness change that counts as fully hazardous. At $e = 30^\circ$, a $15^\circ$ tilt directly toward or away from the sun changes the intensity of an otherwise level surface by roughly 50--60 grey levels, so $\kappa$ of this order matches the label threshold. The cue sees only the slope component along the sun azimuth, and it is zero for slopes that run across the sun direction. The full hazard map is the pixelwise maximum of the shadow-augmented gradient hazard and the brightness cue,
+so that $B$ saturates for a facet tilted by $\varphi$ toward or away from the sun. Like $g_{\text{ref}}$, the scale depends only on the image median and the sun elevation, so the cue carries over between images without re-scaling. It sees only the slope component along the sun azimuth and is zero for slopes that run across the sun direction. The full hazard map is the pixelwise maximum of the shadow-augmented gradient hazard and the brightness cue,
 \begin{equation}
     H(x,y) = \max\big(G(x,y),\, B(x,y)\big).
 \end{equation}
-With $\tau$, $A_{\min}$ and $\theta$ fixed, $\kappa \in \{20, 30, 40, 50, 70\}$ and $k \in \{5, 9, 15\}$ were selected on the same 8 DEV tiles by the same criterion, giving $\kappa = 50$ and $k = 15$.
 
 \subsection{Safe-Region Fusion and Landing Box Selection}
-We evaluate three variants: $V_{\text{grad}}$ uses the gradient hazard $G$ alone, $V_{\text{grad+shadow}}$ the shadow-augmented gradient hazard, and $V_{\text{full}}$ the full map $H$. The continuous safety score is the complement of the variant's hazard map, e.g.\ $s = 1 - H$ for $V_{\text{full}}$. A binary safety mask is produced by thresholding $s > \theta$, with $\theta = 0.2$ tuned on the same 8 DEV tiles. Connected components smaller than 100 pixels are filtered out. Finally, a maximal-rectangle algorithm \cite{vandevoorde1998maximal} extracts the largest contiguous safe landing bounding box within the binary mask.
+\label{sec:fusion}
+We evaluate three variants: $V_{\text{grad}}$ uses the gradient hazard $G$ alone, $V_{\text{grad+shadow}}$ the shadow-augmented gradient hazard, and $V_{\text{full}}$ the full map $H$. The continuous safety score is the complement of the variant's hazard map, e.g.\ $s = 1 - H$ for $V_{\text{full}}$. A binary safety mask is produced by thresholding $s > \theta$, connected components smaller than a minimum area are removed, and a maximal-rectangle algorithm \cite{vandevoorde1998maximal} extracts the largest contiguous safe landing box within the mask.
+
+\textbf{Parameter selection.} All parameters are selected on the same 8 DEV tiles (two per terrain type) by the F1 score of the filtered safe mask against the proxy-safe labels, in three stages: $\theta \in \{0.05, 0.1, 0.2, 0.35, 0.5\}$ and the minimum component area in $\{100, 500, 1500\}$ for $V_{\text{grad}}$; then $\tau$ and $A_{\min}$ with these fixed; then $\varphi \in \{5^\circ, 7.5^\circ, 10^\circ, 12.5^\circ, 15^\circ, 20^\circ\}$ and $k \in \{5, 9, 15\}$. The selected values are $\theta = 0.05$, a minimum component area of 100 pixels, $\tau = 60$, $A_{\min} = 500$, $\varphi = 10^\circ$ and $k = 15$. No TEST tile is used for selection.
 
 \subsection{Footprint Requirement as an Operating Parameter}
 \label{sec:footprint}
@@ -161,12 +162,12 @@ Finally, a box that is large enough but encloses unsafe terrain is not a usable 
 \begin{equation}
     \text{Safe Landing}(L) = \mathbb{I}\!\left(\text{Square Fit}(L) \;\wedge\; f_{\text{unsafe}}(B) \le \epsilon\right),
 \end{equation}
-where $f_{\text{unsafe}}(B)$ is the fraction of proxy-unsafe pixels inside $B$ and $\epsilon = 0.05$. We sweep $L \in \{20, 25, 30, 35, 40, 50\}$~m. The upper value, $L = 50$~m, corresponds to a large-lander requirement covering leg span, structural clearance, and touchdown dispersion; smaller values correspond to compact landers, rotorcraft, and landers with tighter navigation dispersion.
+where $f_{\text{unsafe}}(B)$ is the fraction of proxy-unsafe pixels inside $B$ and $\epsilon = 0.05$. We sweep $L$ from 5~m to 200~m. The upper value, $L = 50$~m, corresponds to a large-lander requirement covering leg span, structural clearance, and touchdown dispersion; smaller values correspond to compact landers, rotorcraft, and landers with tighter navigation dispersion.
 
 \begin{figure*}[!t]
   \centering
   \includegraphics[width=\textwidth]{fig_qualitative_crater.pdf}
-  \caption{Qualitative progression on a crater test tile (\texttt{crater\_2\_9}, $D = 240$~m, depth 44~m, $d/D = 0.18$). It is one of the 6 crater test tiles on which the $V_{\text{full}}$ box is safe; on 12 others it remains on a crater wall (Section~\ref{sec:envelope}). (a) Monocular input image, sun toward the lower right at $30^\circ$ elevation. The ray-marched cast shadow (orange outline, 13\% of the crater area) is a crescent just inside the sun-side rim; the far wall faces the sun and is the brightest part of the tile. (b) DTM-derived slope with the proxy-unsafe boundary ($>15^\circ$) in dashed cyan; the unsafe ring is the crater wall, and the flat centre and the surrounding plain are safe. (c) Raw Sobel gradient hazard $G(x,y)$: zero inside the cast shadow and low on the smoothly shaded, sun-facing wall. (d) Dark-region mask at $\tau = 60$, $A_{\min} = 500$, covering the cast shadow and the dimly lit wall beside it. (e) Shadow-augmented hazard map; the sun-facing wall keeps its low score. (f) Brightness cue $B(x,y)$ ($\kappa = 50$, $k = 15$): high on both the bright sun-facing wall and the dark sun-averted wall, low on the level floor and plain. (g) Full hazard map $H = \max(G, B)$, which flags the whole wall. (h) Landing boxes: $V_{\text{grad}}$ and $V_{\text{grad+shadow}}$ select the same region on the sun-facing wall (red, 98\% proxy-unsafe); $V_{\text{full}}$ selects a region on the plain outside the rim (green, dashed, enlarged in the inset; 0\% unsafe).}
+  \caption{Qualitative progression on a crater test tile (\texttt{crater\_2\_16}, $D = 548$~m, depth 84~m, $d/D = 0.15$), one of the 2 crater test tiles on which $V_{\text{grad}}$ selects an unsafe region. (a) Monocular input image, sun toward the lower right at $30^\circ$ elevation. The ray-marched cast shadow (orange outline, 5\% of the crater area) lies just inside the sun-side rim; the far wall faces the sun and is the brightest part of the tile. (b) DTM-derived slope with the proxy-unsafe boundary ($>15^\circ$) in dashed cyan; the unsafe ring is the crater wall, and the flat centre and the surrounding plain are safe. (c) Gradient hazard $G(x,y)$ with the physical normalization: high at the rim, low on the smoothly shaded walls. (d) Dark-region mask at $\tau = 60$, $A_{\min} = 500$, covering the cast shadow and the dimly lit wall beside it. (e) Shadow-augmented hazard map; the sun-facing wall keeps its low score. (f) Brightness cue $B(x,y)$ ($\varphi = 10^\circ$, $k = 15$): high on both the bright sun-facing wall and the dark sun-averted wall, low on the level floor and plain. (g) Full hazard map $H = \max(G, B)$, which flags the whole wall. (h) Landing boxes: $V_{\text{grad}}$ (red) selects a region inside the crater that is 69\% proxy-unsafe; $V_{\text{grad+shadow}}$ (amber, dotted) and $V_{\text{full}}$ (green, dashed) select the same region on the plain, with no unsafe pixels.}
   \label{fig:qualitative}
 \end{figure*}
 
@@ -176,7 +177,7 @@ where $f_{\text{unsafe}}(B)$ is the fraction of proxy-unsafe pixels inside $B$ a
 We designate unsafe terrain (proxy slope $> 15^\circ$) as the primary evaluation class. Table~\ref{tab:classification} summarizes precision, recall, F1, AUROC, and PR-AUC computed across the held-out test set (47,185,920 pixels across 80 tiles; every 10th pixel of each tile in raster order is evaluated, giving 4,718,640 pixels). Neighbouring pixels are spatially correlated, so the effective sample size is smaller than this count.
 
 \begin{table}[!htb]
-  \caption{Unsafe-class precision, recall, F1, AUROC, and PR-AUC pooled across held-out test pixels (prevalence = 0.081).}
+  \caption{Unsafe-class precision, recall, F1, AUROC, and PR-AUC pooled across held-out test pixels (prevalence = 0.081). B1 is evaluated as a hazard score only.}
   \label{tab:classification}
   \centering
   \small
@@ -185,26 +186,26 @@ We designate unsafe terrain (proxy slope $> 15^\circ$) as the primary evaluation
     \toprule
     Method & Precision & Recall & F1 & AUROC & PR-AUC \\
     \midrule
-    $V_{\text{grad}}$ & 0.137 & 0.078 & 0.100 & 0.529 & 0.098 \\
-    $V_{\text{grad+shadow}}$ & 0.284 & 0.202 & 0.236 & 0.598 & 0.194 \\
-    $V_{\text{full}}$ & \textbf{0.413} & \textbf{0.386} & \textbf{0.399} & \textbf{0.750} & \textbf{0.359} \\
-    B1 (Local Std) & 0.179 & 0.237 & 0.204 & 0.503 & 0.124 \\
-    B5 (Random) & 0.089 & 0.051 & 0.065 & 0.499 & 0.081 \\
+    $V_{\text{grad}}$ & 0.176 & 0.182 & 0.179 & 0.687 & 0.150 \\
+    $V_{\text{grad+shadow}}$ & 0.264 & 0.309 & 0.285 & 0.743 & 0.206 \\
+    $V_{\text{full}}$ & \textbf{0.356} & \textbf{0.511} & \textbf{0.420} & \textbf{0.866} & \textbf{0.316} \\
+    B1 (Local Std) & n/a & n/a & n/a & 0.503 & 0.124 \\
+    B5 (Random) & 0.167 & 0.172 & 0.170 & 0.499 & 0.081 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\textbf{Computation of PR-AUC and the Random Baseline:} In Table~\ref{tab:classification}, PR-AUC and AUROC are computed across pooled test pixels. Under this pooled definition, the random baseline ($B_5$) achieves a PR-AUC of 0.081, matching the 8.1\% hazard prevalence of the held-out test set; $B_5$ flags each tile at the same rate as $V_{\text{grad}}$. If PR-AUC is instead computed as an unweighted macro-average over individual tiles, tiles containing zero hazards (smooth plains and dunes) yield undefined PR-AUC values ($0/0$) and must be discarded. Restricting the average to the 40 hazard-containing tiles (craters and rocky terrain) inflates the evaluated hazard prevalence to 16.2\%, causing the macro-averaged random PR-AUC to read 0.162 and $V_{\text{grad}}$ to read 0.184. Global pixel pooling avoids this sample-selection distortion.
+\textbf{Computation of PR-AUC and the Random Baseline:} In Table~\ref{tab:classification}, PR-AUC and AUROC are computed across pooled test pixels. Under this pooled definition, the random baseline ($B_5$) achieves a PR-AUC of 0.081, matching the 8.1\% hazard prevalence of the held-out test set; $B_5$ flags each tile at the same rate as $V_{\text{grad}}$. If PR-AUC is instead computed as an unweighted macro-average over individual tiles, tiles containing zero hazards (smooth plains and dunes) yield undefined PR-AUC values ($0/0$) and must be discarded. Restricting the average to the 40 hazard-containing tiles (craters and rocky terrain) inflates the evaluated hazard prevalence to 16.2\%, so the macro-averaged random PR-AUC reads 0.162. Global pixel pooling avoids this sample-selection distortion.
 
-\textbf{What each cue captures:} Gradient scoring alone ($V_{\text{grad}}$) reaches a pooled AUROC of 0.529, and on crater tiles it ranks unsafe pixels below safe ones (mean within-tile AUROC 0.435 over the 20 crater test tiles). Two effects combine. Inside a cast shadow the intensity is uniformly zero, so the gradient vanishes ($\nabla I \approx 0$). More importantly, the wall that faces the sun is lit close to normal incidence, where Lambertian shading changes least with small changes in surface orientation; its texture produces little intensity contrast, and it appears bright and smooth. The mean raw gradient score on unsafe, sun-facing crater pixels is 0.254, below the 0.353 on safe terrain, while unsafe pixels elsewhere on the lit walls score 0.359.
+\textbf{What each cue captures:} Gradient scoring alone ($V_{\text{grad}}$) reaches a pooled AUROC of 0.687, but on crater tiles it barely separates unsafe from safe pixels (mean within-tile AUROC 0.497 over the 20 crater test tiles). Two effects combine. Inside a cast shadow the intensity is uniformly zero, so the gradient vanishes ($\nabla I \approx 0$). More importantly, a crater wall is a smooth slope whose shading changes gradually, and the wall that faces the sun is lit close to normal incidence, where Lambertian shading changes least with orientation. The mean gradient score on unsafe, sun-facing crater pixels is 0.116, no higher than the 0.120 on safe terrain.
 
-The shadow cue addresses the first effect. Cast shadows contain 4.9\% of the unsafe crater pixels at $30^\circ$ elevation; the dark-region mask also captures the dimly lit wall that faces away from the sun and covers 25.7\%. It raises the within-tile crater AUROC to 0.575 and the pooled AUROC to 0.598 (PR-AUC 0.194). The brightness cue addresses the second effect: the sun-facing wall is bright precisely because it is tilted toward the sun, and with the cue added, 78.7\% of the unsafe sun-facing crater pixels fall below the safety threshold $\theta$. With all three cues ($V_{\text{full}}$), the within-tile crater AUROC rises to 0.875 and the pooled AUROC to 0.750, with a PR-AUC of 0.359: 4.4 times the chance level, 3.7 times raw gradients and 2.9 times the best classical baseline (B1, 0.124). Each cue is a single image-wide filtering operation with no learned parameters.
+The shadow cue addresses the first effect. Cast shadows contain 4.9\% of the unsafe crater pixels at $30^\circ$ elevation; the dark-region mask also captures the dimly lit wall that faces away from the sun and covers 25.7\%. It raises the within-tile crater AUROC to 0.617 and the pooled AUROC to 0.743 (PR-AUC 0.206). The brightness cue addresses the second effect: the sun-facing wall is bright precisely because it is tilted toward the sun, and with the cue added, 84.8\% of the unsafe sun-facing crater pixels fall below the safety threshold $\theta$. With all three cues ($V_{\text{full}}$), the within-tile crater AUROC rises to 0.930 and the pooled AUROC to 0.866, with a PR-AUC of 0.316: 3.9 times the chance level, 2.1 times gradients alone and 2.5 times the best classical baseline (B1, 0.124). Each cue is a single image-wide filtering operation with no learned parameters.
 
 \subsection{Landing Box Evaluation at a Large-Lander Footprint}
 Table~\ref{tab:box} reports the geometry and hazard composition of the extracted maximal rectangles across the 80 held-out test tiles, with Footprint OK evaluated at the large-lander requirement $L = 50$~m ($A_{\text{req}} = 2{,}500$ pixels).
 
 \begin{table}[!htb]
-  \caption{Landing box evaluation metrics on held-out test tiles ($768 \times 768$ pixels, 589,824~$\text{m}^2$) at the large-lander requirement $L = 50$~m. Frac Unsafe is the fraction of proxy-unsafe pixels inside the box, averaged over all 80 tiles (every method returns a box on every tile); the 40 smooth and dune tiles contain no proxy-unsafe pixels and contribute 0 to this average. The local-std baseline (B1) is evaluated as a hazard score only (Table~\ref{tab:classification}) and has no landing box.}
+  \caption{Landing box evaluation metrics on held-out test tiles ($768 \times 768$ pixels, 589,824~$\text{m}^2$) at the large-lander requirement $L = 50$~m. Frac Unsafe is the fraction of proxy-unsafe pixels inside the box, averaged over all 80 tiles (every method returns a box on every tile).}
   \label{tab:box}
   \centering
   \small
@@ -212,37 +213,37 @@ Table~\ref{tab:box} reports the geometry and hazard composition of the extracted
     \toprule
     Method & Box Found & Mean Area (px) & Rel Area (Tile) & Frac Unsafe & Footprint OK (50 m) \\
     \midrule
-    $V_{\text{grad}}$ & 1.000 & 1,694 & 0.0029 & 0.276 & 0.225 \\
-    $V_{\text{grad+shadow}}$ & 1.000 & 1,694 & 0.0029 & 0.275 & 0.225 \\
-    $V_{\text{full}}$ & 1.000 & 718 & 0.0012 & 0.198 & 0.000 \\
+    $V_{\text{grad}}$ & 1.000 & 353,675 & 0.600 & 0.049 & 0.750 \\
+    $V_{\text{grad+shadow}}$ & 1.000 & 352,772 & 0.598 & 0.034 & 0.750 \\
+    $V_{\text{full}}$ & 1.000 & 352,311 & 0.597 & 0.034 & 0.750 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-$V_{\text{grad}}$ and $V_{\text{grad+shadow}}$ select the same box on 78 of the 80 test tiles (they differ on two rocky tiles). Their 22.5\% Footprint OK at $L = 50$~m is not a usable result: all 18 qualifying boxes are on crater tiles, where every box lies on the sun-facing crater wall (on average 99.9\% of its pixels face the sun; mean intensity 196, mean slope $22.7^\circ$) and is 89--100\% proxy-unsafe (Fig.~\ref{fig:qualitative}h, red). $V_{\text{full}}$ removes these boxes. By flagging the bright wall it lowers the mean unsafe fraction from 0.275 to 0.198 over all tiles and from 0.551 to 0.397 over the 40 crater and rocky tiles, and its largest box (1,984 pixels, short side 33~m) is below the 50~m requirement, so it reports no 50~m site rather than an unsafe one. On smooth and dune tiles, which contain no proxy-unsafe pixels, surface texture fragments the safe mask into small regions, so all three variants under-report usable area there; the brightness cue leaves these boxes unchanged.
+With the physical normalization the safe mask is no longer fragmented, and the maximal rectangle covers on average 60\% of the tile. At $L = 50$~m all three variants meet the area requirement on 75\% of tiles. The 3.4\% mean unsafe fraction of the $V_{\text{grad+shadow}}$ and $V_{\text{full}}$ boxes comes entirely from the rocky tiles, whose boxes are 7--24\% unsafe but at most 10~m wide. On every crater tile both select a region on the surrounding plain (on average 0.01\% unsafe pixels); $V_{\text{grad}}$ places its box inside the crater on 2 of the 20 crater tiles (50\% and 69\% unsafe, Fig.~\ref{fig:qualitative}h), which the shadow cue prevents. The size of the boxes also shows the role of the selector. Because the plain around a crater is larger than the crater wall, the maximal rectangle avoids the wall even where a hazard map does not flag it, so box-level results reflect both the hazard map and the selector, and the pixel-level ranking of Table~\ref{tab:classification} is the measure of detection.
 
 \subsection{Operating Envelope Across Footprint Requirements}
 \label{sec:envelope}
 Table~\ref{tab:envelope} reports Footprint OK, Square Fit, and Safe Landing (Section~\ref{sec:footprint}) as the required footprint side $L$ is varied.
 
 \begin{table}[!htb]
-  \caption{Fraction of held-out test tiles (out of 80) yielding a qualifying landing region as a function of required footprint side $L$. Safe Landing requires Square Fit and at most $\epsilon = 5\%$ unsafe pixels inside the box. Tiles without a qualifying box count as failures. $V_{\text{grad}}$ has the same Safe Landing rate as $V_{\text{grad+shadow}}$ at every $L$.}
+  \caption{Fraction of held-out test tiles (out of 80) yielding a qualifying landing region as a function of required footprint side $L$. Safe Landing requires Square Fit and at most $\epsilon = 5\%$ unsafe pixels inside the box. Tiles without a qualifying box count as failures. $V_{\text{grad+shadow}}$ has the same Safe Landing rate as $V_{\text{full}}$ at every $L$ in the table.}
   \label{tab:envelope}
   \centering
   \small
   \setlength{\tabcolsep}{5pt}
   \begin{tabular}{cc ccc cc}
     \toprule
-    & & \multicolumn{3}{c}{$V_{\text{full}}$} & \multicolumn{2}{c}{$V_{\text{grad+shadow}}$} \\
+    & & \multicolumn{3}{c}{$V_{\text{full}}$} & \multicolumn{2}{c}{$V_{\text{grad}}$} \\
     \cmidrule(lr){3-5} \cmidrule(lr){6-7}
     $L$ (m) & $A_{\text{req}}$ (px) & Footprint OK & Square Fit & Safe Landing & Footprint OK & Safe Landing \\
     \midrule
-    20 & 400   & 0.762 & 0.412 & \textbf{0.263} & 0.762 & 0.200 \\
-    25 & 625   & 0.688 & 0.200 & \textbf{0.125} & 0.688 & 0.087 \\
-    30 & 900   & 0.225 & 0.075 & 0.025 & 0.287 & 0.025 \\
-    35 & 1,225 & 0.075 & 0.000 & 0.000 & 0.250 & 0.000 \\
-    40 & 1,600 & 0.025 & 0.000 & 0.000 & 0.250 & 0.000 \\
-    50 & 2,500 & 0.000 & 0.000 & 0.000 & 0.225 & 0.000 \\
+    20 & 400   & 0.750 & 0.750 & \textbf{0.750} & 0.750 & 0.725 \\
+    25 & 625   & 0.750 & 0.750 & \textbf{0.750} & 0.750 & 0.725 \\
+    30 & 900   & 0.750 & 0.750 & \textbf{0.750} & 0.750 & 0.725 \\
+    40 & 1,600 & 0.750 & 0.750 & \textbf{0.750} & 0.750 & 0.725 \\
+    50 & 2,500 & 0.750 & 0.750 & \textbf{0.750} & 0.750 & 0.725 \\
+    100 & 10,000 & 0.750 & 0.750 & \textbf{0.750} & 0.750 & 0.725 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -250,16 +251,16 @@ Table~\ref{tab:envelope} reports Footprint OK, Square Fit, and Safe Landing (Sec
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.62\textwidth]{fig_footprint_envelope.pdf}
-  \caption{Fraction of the 80 held-out test tiles meeting each footprint criterion as the required footprint side $L$ varies in 1~m steps (Table~\ref{tab:envelope} lists selected values). Footprint OK tests box area alone; Square Fit additionally requires the box to contain an $L \times L$ square; Safe Landing further requires at most 5\% proxy-unsafe pixels inside the box. The grey region marks $L > 33$~m, where no $V_{\text{full}}$ box contains an $L \times L$ square, and the dashed line marks the 50~m large-lander requirement. The $V_{\text{full}}$ safe landing rate is at or above that of $V_{\text{grad+shadow}}$ at every $L$, stays at or above 0.5 up to 9~m, and is zero from 31~m.}
+  \caption{Fraction of the 80 held-out test tiles meeting each footprint criterion as the required footprint side $L$ varies in 1~m steps from 5~m to 200~m (Table~\ref{tab:envelope} lists selected values). Footprint OK tests box area alone; Square Fit additionally requires the box to contain an $L \times L$ square; Safe Landing further requires at most 5\% proxy-unsafe pixels inside the box. The dashed line marks the 50~m large-lander requirement. The $V_{\text{full}}$ safe landing rate is 0.75 from 5~m to 157~m, the ceiling set by the rocky tiles, and 0.725 at 200~m; $V_{\text{grad}}$ stays at 0.725.}
   \label{fig:envelope}
 \end{figure}
 
-At $L = 25$~m, $V_{\text{full}}$ meets the area requirement on 68.8\% of tiles and the square-fit requirement on 20.0\%, and 12.5\% of tiles (95\% tile-bootstrap CI 6.3--20.0\%) yield a region that both fits a $25\text{ m} \times 25\text{ m}$ square and contains at most 5\% unsafe terrain, against 8.8\% for $V_{\text{grad+shadow}}$. Over the full sweep (Fig.~\ref{fig:envelope}), the $V_{\text{full}}$ safe landing rate is 57.5\% at 5~m, 47.5\% at 10~m, 26.3\% at 20~m (CI 16.3--36.3\%) and 2.5\% at 30~m; it stays at or above 50\% for footprints up to 9~m and is zero from 31~m, where the elongated safe regions no longer contain the footprint (the largest short side of any box is 33~m). $V_{\text{full}}$ is at or above $V_{\text{grad+shadow}}$ at every footprint, and $V_{\text{grad}}$ and $V_{\text{grad+shadow}}$ have identical safe landing rates at every footprint. The whole gain comes from crater tiles.
+$V_{\text{full}}$ returns a safe landing site on 75.0\% of the test tiles (95\% tile-bootstrap CI 65.0--83.8\%) for every footprint from 5~m to 157~m, and on 72.5\% at 200~m (Fig.~\ref{fig:envelope}). This is the ceiling of the test set: the 20 rocky tiles contain no $20\text{ m} \times 20\text{ m}$ square with at most 5\% unsafe pixels anywhere, so no selector could return a safe site there for $L \ge 20$~m. $V_{\text{grad+shadow}}$ matches $V_{\text{full}}$ at every footprint, and $V_{\text{grad}}$ reaches 72.5\% because of its two crater-tile failures.
 
-Table~\ref{tab:terrain} breaks the $L = 25$~m result down by terrain type. Smooth plains and dunes contain no proxy-unsafe pixels, so any box found there is safe and the only question is whether texture-driven fragmentation leaves a large enough region: 15\% of smooth and 20\% of dune tiles yield a 25~m square (largest short sides 26 and 30~m), and every one of these tiles yields a safe 5~m site. On rocky terrain every box contains 10--16\% unsafe pixels, so the rocky safe landing rate is zero at every footprint. For $L \ge 20$~m this is the correct outcome rather than a method failure: no $20\text{ m} \times 20\text{ m}$ square with at most 5\% unsafe pixels exists anywhere on any rocky test tile, so no selector could return a safe site there. On crater terrain, $V_{\text{full}}$ returns a safe site on 30\% of tiles for footprints up to 15~m, 25\% at 20~m and 15\% at 25~m, whereas $V_{\text{grad}}$ and $V_{\text{grad+shadow}}$ return none at any footprint. The crater outcome is bimodal: 6 of the 20 boxes contain at most 5\% unsafe pixels and lie on near-level ground (mean slope $2$--$9^\circ$), 12 are at least 99\% unsafe and 2 are 62--64\% unsafe. These remaining boxes lie on walls whose slope runs mostly across the sun direction (mean $|\cos(\text{aspect} - \text{sun azimuth})|$ of 0.40, against 0.64 for random orientation), where brightness changes little under a single illumination; this is the known limitation of single-image photoclinometry \cite{beyer2003meter}. Every crater test tile still contains a $50\text{ m} \times 50\text{ m}$ square with at most 5\% unsafe pixels on the surrounding plain, so the map leaves room for better site selection.
+Table~\ref{tab:terrain} breaks the $L = 25$~m result down by terrain type. Every crater, smooth and dune tile yields a safe 25~m site. On smooth and dune tiles the whole tile ($768 \times 768$~m) is returned as a single safe region; on crater tiles the boxes lie on the surrounding plain and have short sides of 157 to 441~m, so 90\% of crater tiles still yield a safe site at 200~m. On rocky terrain every box is 3--10~m wide and 7--24\% unsafe, so the rocky safe landing rate is zero at every footprint; for $L \ge 20$~m this is the correct outcome rather than a method failure.
 
 \begin{table}[!htb]
-  \caption{Per-terrain results for $V_{\text{full}}$ at $L = 25$~m (20 test tiles per terrain type). Mean Box Area and Frac Unsafe are averaged over the 20 tiles of each terrain type. Brackets give 95\% tile-bootstrap confidence intervals (2,000 resamples); with 20 tiles, 0.150 corresponds to 3 tiles.}
+  \caption{Per-terrain results for $V_{\text{full}}$ at $L = 25$~m (20 test tiles per terrain type). Mean Box Area and Frac Unsafe are averaged over the 20 tiles of each terrain type. Brackets give 95\% tile-bootstrap confidence intervals (2,000 resamples).}
   \label{tab:terrain}
   \centering
   \small
@@ -268,20 +269,46 @@ Table~\ref{tab:terrain} breaks the $L = 25$~m result down by terrain type. Smoot
     \toprule
     Terrain & Mean Box Area (px) & Frac Unsafe & Square Fit (25 m) & Safe Landing (25 m) \\
     \midrule
-    Crater & 1,130 & 0.663 [0.450, 0.850] & 0.450 [0.25, 0.65] & 0.150 [0.00, 0.35] \\
-    Rocky  & 329 & 0.130 [0.122, 0.138] & 0.000 [0.00, 0.00] & 0.000 [0.00, 0.00] \\
-    Smooth & 679 & 0.000 [0.000, 0.000] & 0.150 [0.00, 0.30] & 0.150 [0.00, 0.30] \\
-    Dunes  & 736 & 0.000 [0.000, 0.000] & 0.200 [0.05, 0.40] & 0.200 [0.05, 0.40] \\
+    Crater & 229,473 & 0.000 [0.000, 0.000] & 1.000 [1.00, 1.00] & 1.000 [1.00, 1.00] \\
+    Rocky  & 125 & 0.137 [0.118, 0.156] & 0.000 [0.00, 0.00] & 0.000 [0.00, 0.00] \\
+    Smooth & 589,824 & 0.000 [0.000, 0.000] & 1.000 [1.00, 1.00] & 1.000 [1.00, 1.00] \\
+    Dunes  & 589,824 & 0.000 [0.000, 0.000] & 1.000 [1.00, 1.00] & 1.000 [1.00, 1.00] \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{Sensitivity to Sun Elevation and Azimuth}
-\label{sec:sun}
-To test how the cues depend on illumination, we re-rendered the 80 test tiles from their DTMs with the same image model at sun elevations of $15^\circ$, $30^\circ$, $45^\circ$ and $60^\circ$ (azimuth $45^\circ$) and at azimuths of $135^\circ$, $225^\circ$ and $315^\circ$ (elevation $30^\circ$), keeping all parameters at the values tuned for $30^\circ$ (Table~\ref{tab:sun}).
+\subsection{Effect of Gradient Normalization}
+\label{sec:norm}
+Earlier versions of this pipeline normalized the gradient of each tile by its own 99th percentile. Table~\ref{tab:norm} compares four normalizations of $G$ inside $V_{\text{full}}$, each tuned on the DEV tiles with the same procedure and grids and evaluated once on TEST.
 
 \begin{table}[!htb]
-  \caption{Sensitivity to sun elevation (azimuth $45^\circ$) on the 80 test tiles, re-rendered from their DTMs. All parameters are those tuned at $30^\circ$. Cast shadow is the mean fraction of a crater tile in cast shadow. The last column is the fraction of the 40 crater and rocky tiles on which $V_{\text{full}}$ returns a safe $10\text{ m} \times 10\text{ m}$ site.}
+  \caption{Gradient normalization inside $V_{\text{full}}$ on the 80 test tiles. Raw: $3 \times 3$ Sobel on the image; 5~m scale: Sobel on the $5 \times 5$ box-filtered image. Per-tile p99: divided by the tile's 99th percentile of $g$; physical: divided by $g_{\text{ref}}$.}
+  \label{tab:norm}
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{llcccccc}
+    \toprule
+    & & & & \multicolumn{3}{c}{Safe Landing} & Largest box \\
+    \cmidrule(lr){5-7}
+    Gradient scale & Normalization & AUROC & PR-AUC & 10~m & 25~m & 50~m & short side (m) \\
+    \midrule
+    Raw & Per-tile p99 & 0.764 & \textbf{0.375} & 0.625 & 0.362 & 0.000 & 51 \\
+    Raw & Physical & 0.795 & 0.188 & 0.375 & 0.037 & 0.000 & 34 \\
+    5~m & Per-tile p99 & 0.717 & 0.350 & 0.738 & 0.438 & 0.237 & 368 \\
+    5~m & Physical (ours) & \textbf{0.866} & 0.316 & \textbf{0.750} & \textbf{0.750} & \textbf{0.750} & 768 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+A per-tile normalization sets about 1\% of every tile to the maximum hazard however flat the tile is, and stretches small-scale texture across the full hazard range. On hazard-free terrain this scatters unsafe pixels across the safe mask and fragments it, so no box is wider than 51~m and no tile supports a 50~m footprint. A fixed constant applied to the raw $3 \times 3$ response is worse, because at the pixel scale surface texture alone exceeds $g_{\text{ref}}$. Measuring the gradient at the label baseline and normalizing it by the physical constant removes the fragmentation: every hazard-free tile becomes a single safe region, and the envelope extends from 25~m to 157~m. The per-tile variant keeps a slightly higher PR-AUC (0.375 against 0.316), but it cannot support any footprint of 50~m or more.
+
+\subsection{Sensitivity to Sun Elevation and Azimuth}
+\label{sec:sun}
+To test how the cues depend on illumination, we re-rendered the 80 test tiles from their DTMs with the same image model at sun elevations of $15^\circ$, $30^\circ$, $45^\circ$ and $60^\circ$ (azimuth $45^\circ$) and at azimuths of $135^\circ$, $225^\circ$ and $315^\circ$ (elevation $30^\circ$), keeping all parameters at the values selected at $30^\circ$; the physical constants use each render's sun elevation (Table~\ref{tab:sun}).
+
+\begin{table}[!htb]
+  \caption{Sensitivity to sun elevation (azimuth $45^\circ$) on the 80 test tiles, re-rendered from their DTMs. Parameters are those selected at $30^\circ$; $g_{\text{ref}}$ and the brightness scale follow the sun elevation. Cast shadow is the mean fraction of a crater tile in cast shadow. The last column is the $V_{\text{full}}$ Safe Landing rate at $L = 10$~m over all 80 tiles.}
   \label{tab:sun}
   \centering
   \small
@@ -290,75 +317,123 @@ To test how the cues depend on illumination, we re-rendered the 80 test tiles fr
     \toprule
     & & \multicolumn{3}{c}{AUROC / PR-AUC} & \\
     \cmidrule(lr){3-5}
-    Elevation & Cast shadow & $V_{\text{grad}}$ & $V_{\text{grad+shadow}}$ & $V_{\text{full}}$ & Safe 10~m, hazardous tiles \\
+    Elevation & Cast shadow & $V_{\text{grad}}$ & $V_{\text{grad+shadow}}$ & $V_{\text{full}}$ & Safe 10~m \\
     \midrule
-    $15^\circ$ & 0.109 & 0.434 / 0.081 & 0.605 / 0.102 & \textbf{0.630} / \textbf{0.107} & 0.400 \\
-    $30^\circ$ & 0.008 & 0.529 / 0.098 & 0.598 / 0.194 & \textbf{0.750} / \textbf{0.359} & 0.150 \\
-    $45^\circ$ & 0.000 & 0.521 / 0.094 & 0.524 / 0.097 & \textbf{0.724} / \textbf{0.313} & 0.000 \\
-    $60^\circ$ & 0.000 & 0.509 / 0.091 & 0.509 / 0.091 & \textbf{0.669} / \textbf{0.214} & 0.000 \\
+    $15^\circ$ & 0.109 & 0.591 / 0.134 & 0.610 / 0.103 & \textbf{0.633} / 0.108 & 0.500 \\
+    $30^\circ$ & 0.008 & 0.687 / 0.150 & 0.743 / 0.206 & \textbf{0.866} / \textbf{0.316} & 0.750 \\
+    $45^\circ$ & 0.000 & 0.689 / 0.151 & 0.691 / 0.152 & \textbf{0.878} / \textbf{0.326} & 0.750 \\
+    $60^\circ$ & 0.000 & 0.691 / 0.153 & 0.691 / 0.153 & \textbf{0.879} / \textbf{0.350} & 0.750 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The two added cues cover complementary illumination regimes. The shadow cue is most valuable at low sun: at $15^\circ$, cast shadows cover 10.9\% of a crater tile, raw gradients are strongly inverted (AUROC 0.434), and shadow augmentation raises AUROC by 0.171; at $45^\circ$ and above the craters cast no shadow and its gain falls to 0.003 and zero. The brightness cue carries the map at intermediate and high sun, adding 0.152, 0.200 and 0.160 AUROC over $V_{\text{grad+shadow}}$ at $30^\circ$, $45^\circ$ and $60^\circ$. $V_{\text{full}}$ is the best variant at every elevation, and at low sun it also returns the most safe sites on hazardous terrain (40\% of crater and rocky tiles at 10~m). Azimuth has essentially no effect: at $30^\circ$ elevation, $V_{\text{full}}$ AUROC is between 0.750 and 0.752 and PR-AUC between 0.359 and 0.365 for all four azimuths, as expected for rotationally symmetric craters.
+Because $g_{\text{ref}}$ and the brightness scale follow the sun elevation, the gradient and brightness cues work across elevations without retuning: from $30^\circ$ to $60^\circ$ the $V_{\text{full}}$ AUROC is 0.866 to 0.879 and its PR-AUC rises from 0.316 to 0.350, with a safe site on 75\% of tiles at 10~m. The shadow cue adds 0.056 AUROC at $30^\circ$ and almost nothing at $45^\circ$ and above, where the craters cast no shadow. At $15^\circ$ the dark threshold $\tau = 60$, which is an absolute grey level, comes close to the brightness of level ground (66), so the dark-region mask also covers benign terrain: every crater tile still yields a safe 10~m site, but only half of the plain and dune tiles do. Scaling $\tau$ with $I_{\text{ref}}$, as the other two constants are scaled, is a natural extension. Azimuth has essentially no effect: at $30^\circ$ elevation the $V_{\text{full}}$ AUROC is between 0.866 and 0.868 for all four azimuths, as expected for rotationally symmetric craters.
 
 \subsection{Per-Stage Runtime and Memory Benchmarks}
 To evaluate computational suitability, we timed each processing stage of $V_{\text{full}}$ on all 80 TEST tiles at native resolution ($768 \times 768$) and on the same tiles resized to $512 \times 512$ and $1024 \times 1024$, with five timed runs per tile after one warm-up (400 measurements per stage and resolution). All timings are single-threaded (OpenCV restricted to one thread) on a 12th Gen Intel Core i5-12450H laptop CPU under Windows~11 on mains power, Python 3.12.4, OpenCV 4.9.0 and NumPy 1.26.4. Peak memory is reported as the increase in the process's peak resident set during one pipeline call; the Python heap peak from allocation tracing is shown alongside, as it does not include OpenCV's native buffers. Table~\ref{tab:runtime_breakdown} reports the per-stage breakdown.
 
 \begin{table}[!htb]
-  \caption{Per-stage runtime of $V_{\text{full}}$ in milliseconds, given as the median with the interquartile range (IQR) beneath it, over 400 measurements, and peak memory. Threshold + filter is the safe-mask threshold and connected-component filter, measured as the difference between the fusion call and a separate rectangle call, so its IQR is wide. Front-end is the sum of the Sobel, shadow, brightness and threshold medians. Total is measured end to end.}
+  \caption{Per-stage runtime of $V_{\text{full}}$ in milliseconds, given as the median with the interquartile range (IQR) beneath it, over 400 measurements, and peak memory. Gradient includes the $5 \times 5$ box filter and the Sobel operator. Threshold + filter is the safe-mask threshold and connected-component filter, measured as the difference between the fusion call and a separate rectangle call, so its IQR is wide. Front-end is the sum of the gradient, shadow, brightness and threshold medians. Total is measured end to end.}
   \label{tab:runtime_breakdown}
   \centering
   \small
   \setlength{\tabcolsep}{3pt}
   \begin{tabular}{lccccccccc}
     \toprule
-    & \multicolumn{7}{c}{Runtime (ms)} & \multicolumn{2}{c}{Peak memory (MB)} \
+    & \multicolumn{7}{c}{Runtime (ms)} & \multicolumn{2}{c}{Peak memory (MB)} \\
     \cmidrule(lr){2-8} \cmidrule(lr){9-10}
-    Resolution & Sobel & Shadow & Brightness & Thresh.\ + filter & Front-end & Rectangle & Total & RSS & Python heap \
+    Resolution & Gradient & Shadow & Brightness & Thresh.\ + filter & Front-end & Rectangle & Total & RSS & Python heap \\
     \midrule
-    $512 \times 512$ & 5.9 & 0.7 & 5.0 & 0.5 & 12.2 & 140.9 & 171.1 & 29.3 & 7.0 \
-    {\footnotesize\quad IQR} & {\footnotesize 5.1--7.0} & {\footnotesize 0.5--7.7} & {\footnotesize 4.1--5.8} & {\footnotesize 0.0--21.6} & & {\footnotesize 123.6--155.1} & {\footnotesize 154.5--184.1} & & \
-    $768 \times 768$ & 12.8 & 1.5 & 10.6 & 6.7 & 31.5 & 316.5 & 371.6 & 29.9 & 15.8 \
-    {\footnotesize\quad IQR} & {\footnotesize 11.4--15.6} & {\footnotesize 1.1--14.7} & {\footnotesize 9.2--12.5} & {\footnotesize 0.0--35.7} & & {\footnotesize 291.4--339.5} & {\footnotesize 346.9--394.2} & & \
-    $1024 \times 1024$ & 24.1 & 3.2 & 19.6 & 11.7 & 58.6 & 556.2 & 648.1 & 28.3 & 28.0 \
-    {\footnotesize\quad IQR} & {\footnotesize 20.9--28.7} & {\footnotesize 2.5--21.6} & {\footnotesize 15.8--22.7} & {\footnotesize 0.0--47.8} & & {\footnotesize 525.8--589.5} & {\footnotesize 617.0--689.2} & & \
+    $512 \times 512$ & 6.1 & 0.7 & 4.6 & 0.0 & 11.4 & 133.1 & 162.2 & 29.4 & 6.0 \\
+    {\footnotesize\quad IQR} & {\footnotesize 5.1--7.0} & {\footnotesize 0.4--7.3} & {\footnotesize 3.9--5.5} & {\footnotesize 0.0--17.9} & & {\footnotesize 117.9--148.2} & {\footnotesize 147.2--179.3} & & \\
+    $768 \times 768$ & 13.5 & 1.3 & 9.9 & 3.8 & 28.5 & 289.2 & 350.7 & 29.9 & 13.5 \\
+    {\footnotesize\quad IQR} & {\footnotesize 11.2--15.0} & {\footnotesize 1.0--14.1} & {\footnotesize 8.7--11.9} & {\footnotesize 0.0--40.3} & & {\footnotesize 253.4--327.6} & {\footnotesize 317.0--375.9} & & \\
+    $1024 \times 1024$ & 22.3 & 2.7 & 16.8 & 13.0 & 54.8 & 506.0 & 602.7 & 28.1 & 24.0 \\
+    {\footnotesize\quad IQR} & {\footnotesize 19.4--25.4} & {\footnotesize 2.4--18.9} & {\footnotesize 14.9--19.9} & {\footnotesize 0.0--65.1} & & {\footnotesize 426.6--570.0} & {\footnotesize 548.8--645.8} & & \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The hazard-map front-end completes in 31.5~ms at native resolution (12.8~ms for Sobel gradients, 1.5~ms for shadow contour extraction, 10.6~ms for the brightness cue and 6.7~ms for thresholding and component filtering), and scales roughly linearly with pixel count. The two added cues cost 12.1~ms together. About a third of the brightness-cue time is the image median, which a histogram-based or subsampled estimate would reduce. Maximal-rectangle extraction takes the largest share of latency (316.5~ms at $768 \times 768$) because it runs as interpreted Python loops; it is an unoptimized stage rather than an inherent cost of the method. Peak resident memory rises by about 30~MB at every resolution, while the Python heap alone peaks at 15.8~MB at native resolution and 28.0~MB at $1024 \times 1024$, well within the memory available on space-grade architectures.
+The hazard-map front-end completes in 28.5~ms at native resolution (13.5~ms for the box-filtered Sobel gradient, 1.3~ms for shadow contour extraction, 9.9~ms for the brightness cue and 3.8~ms for thresholding and component filtering), and scales roughly linearly with pixel count. The shadow and brightness cues cost 11.2~ms together. Maximal-rectangle extraction takes the largest share of latency (289.2~ms at $768 \times 768$) because it runs as interpreted Python loops; it is an unoptimized stage rather than an inherent cost of the method. Peak resident memory rises by about 30~MB at every resolution, while the Python heap alone peaks at 13.5~MB at native resolution and 24.0~MB at $1024 \times 1024$, well within the memory available on space-grade architectures.
+
+\section{Evaluation on Real HiRISE Data}
+\label{sec:hirise}
+\textbf{Data.} We evaluated the pipeline on eight HiRISE digital terrain models at 1~m post spacing with their co-registered RED orthoimages, distributed through the Planetary Data System \cite{mcewen2007hirise}. Four sites form a real DEV split (Gale crater, the InSight candidate site in Elysium Planitia, Holden crater and Mawrth Vallis) and four a real TEST split (Jezero crater, Eberswalde crater, Arcadia Planitia and the Meridiani Planum dunes). From each site we drew 20 random valid $768 \times 768$ tiles, giving 160 tiles. Orthoimages are linearly stretched to 8 bits, labels are slopes above $15^\circ$ over 5 DTM posts as for the synthetic data, and the sun elevation of each observation is read from its PDS label ($26^\circ$ to $57^\circ$; $33^\circ$ to $49^\circ$ at the TEST sites). The unsafe prevalence is 2.1\% at the DEV sites and 8.6\% at the TEST sites.
+
+\textbf{Protocol.} In the main protocol all parameters are transferred unchanged from the synthetic DEV selection; only the image median and the sun elevation enter $g_{\text{ref}}$ and the brightness scale. As a check, we also re-selected all parameters on 5 tiles from each real DEV site with the same procedure and grids. Site selection is compared with a random-square null: the probability that a uniformly placed $L \times L$ square on the same tile contains at most 5\% unsafe pixels.
+
+\begin{table}[!htb]
+  \caption{Results on the 80 real HiRISE TEST tiles (4 sites; prevalence 0.086). Within-tile is the mean AUROC over tiles that contain both classes. Safe Landing at $L = 20$ and 50~m is compared with the random-square null (0.78 and 0.73).}
+  \label{tab:hirise}
+  \centering
+  \small
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{lccccc}
+    \toprule
+    Method & AUROC & PR-AUC & Within-tile & Safe 20~m & Safe 50~m \\
+    \midrule
+    $V_{\text{grad}}$ & 0.604 & 0.114 & 0.638 & 0.80 & 0.69 \\
+    $V_{\text{grad+shadow}}$ & 0.605 & 0.114 & 0.644 & 0.75 & 0.65 \\
+    $V_{\text{full}}$ & 0.654 & 0.134 & \textbf{0.704} & 0.80 & 0.68 \\
+    $V_{\text{full}}$, per-tile p99 normalization & 0.622 & 0.130 & 0.684 & 0.79 & 0.70 \\
+    $V_{\text{full}}$, re-selected on real DEV & \textbf{0.661} & 0.132 & 0.703 & 0.79 & 0.68 \\
+    B1 (Local Std) & 0.643 & \textbf{0.158} & 0.658 & n/a & n/a \\
+    Chance / random square & 0.500 & 0.086 & 0.500 & 0.78 & 0.73 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[!htb]
+  \caption{$V_{\text{full}}$ (transferred parameters) per real TEST site, with the sun elevation of the observation and the local-std baseline B1.}
+  \label{tab:hirise_sites}
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lcccccc}
+    \toprule
+    & & & \multicolumn{2}{c}{AUROC / PR-AUC} & \multicolumn{2}{c}{Safe Landing / random null} \\
+    \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+    Site & Sun elev. & Prevalence & $V_{\text{full}}$ & B1 & 20~m & 50~m \\
+    \midrule
+    Eberswalde & $32.8^\circ$ & 0.093 & \textbf{0.803} / \textbf{0.355} & 0.600 / 0.179 & 0.80 / 0.74 & 0.80 / 0.67 \\
+    Jezero & $42.4^\circ$ & 0.031 & \textbf{0.758} / \textbf{0.070} & 0.570 / 0.054 & 1.00 / 0.93 & 0.85 / 0.90 \\
+    Meridiani & $37.5^\circ$ & 0.068 & \textbf{0.715} / \textbf{0.127} & 0.590 / 0.123 & 0.80 / 0.76 & 0.70 / 0.69 \\
+    Arcadia & $49.5^\circ$ & 0.150 & 0.582 / 0.191 & \textbf{0.600} / \textbf{0.204} & 0.60 / 0.69 & 0.35 / 0.66 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Ranking.} The cues transfer to real imagery (Table~\ref{tab:hirise}). Without any tuning on real data, the brightness cue adds 0.049 AUROC and 0.060 within-tile AUROC over $V_{\text{grad+shadow}}$, and the physical gradient normalization improves on the per-tile one (0.654 against 0.622). Re-selecting all parameters on the real DEV sites gives no further gain (0.661), so the physically scaled parameters carry over from synthetic to real images. $V_{\text{full}}$ ranks terrain above the local-std baseline in pooled AUROC (0.654 against 0.643) and within tiles (0.704 against 0.658), and at three of the four sites by 0.13 to 0.20 AUROC (Table~\ref{tab:hirise_sites}). The pooled PR-AUC is below B1 (0.134 against 0.158) because of Arcadia Planitia, the site with the highest prevalence (15\%) and the highest sun, where both scores are weak. The shadow cue adds little at these sun elevations, and at the DEV sites Holden and Mawrth, where dark-toned material falls below $\tau$, it lowers AUROC (0.486 against 0.582 for $V_{\text{grad}}$).
+
+\textbf{Site selection.} Real hazards are sparse, and every real TEST tile contains a safe $50\text{ m} \times 50\text{ m}$ square, so a randomly placed square is safe on 78\% of tiles at 20~m and 73\% at 50~m. $V_{\text{full}}$ returns a safe site on 80\% and 68\% of tiles: at the random rate overall, above it at Eberswalde (0.80 against 0.67 at 50~m) and Jezero at 20~m, and below it at Arcadia. The maximal rectangle selects the largest region the mask leaves rather than the region with the lowest hazard, so a better ranking does not translate directly into better sites; footprint-aware selection that uses the hazard score is the natural next step.
+
+\textbf{Caveats.} The effective resolution of HiRISE DTMs is coarser than their 1~m post spacing, so the labels are smoothed and miss metre-scale rocks; the images are orbital, not descent, imagery; and the TEST split has four sites.
 
 \section{Discussion: Where Single-Frame 2D Sensing Fits}
-The results define an operating envelope for single-frame classical hazard detection and show which cue covers which part of the terrain.
+The results define an operating envelope for single-frame classical hazard detection, show which cue covers which part of the terrain, and test how far that carries to real imagery.
 
-\textbf{Efficient front-end.} The full hazard map costs 31.5~ms per $768 \times 768$ tile on one CPU core and about 30~MB of additional memory, with no learned parameters and fully deterministic behaviour. The shadow and brightness cues together add 12.1~ms and raise PR-AUC from 0.098 to 0.359. The front-end scales linearly with pixel count (Table~\ref{tab:runtime_breakdown}); timing on a flight processor remains to be measured.
+\textbf{Efficient front-end.} The full hazard map costs 28.5~ms per $768 \times 768$ tile on one CPU core and about 30~MB of additional memory, with no learned parameters and fully deterministic behaviour. The shadow and brightness cues together add 11.2~ms and double the PR-AUC of gradients alone. The front-end scales linearly with pixel count (Table~\ref{tab:runtime_breakdown}); timing on a flight processor remains to be measured.
 
-\textbf{Complementary cues.} The three cues respond to different physical signatures of the same hazard. Gradients respond to texture and edges, shadows to the sun-averted side of steep slopes, and brightness to the sun-facing side. Each is weak alone on crater terrain (within-tile AUROC 0.435 for gradients), and together they reach 0.875. Because all three depend on the known sun direction, their behaviour can be predicted for any planned landing time.
+\textbf{Physically scaled cues.} Normalizing the gradient and brightness cues by constants derived from the sun elevation and the slope threshold, rather than by statistics of each image, is what makes the pipeline usable for large footprints and across images: it removes the fragmentation that limited per-tile normalization to footprints below 50~m (Table~\ref{tab:norm}), keeps the cues valid across sun elevations without retuning (Table~\ref{tab:sun}), and lets parameters selected on synthetic data transfer to real HiRISE images with no loss (Table~\ref{tab:hirise}).
 
-\textbf{Small-footprint vehicles.} $V_{\text{full}}$ returns a safe site on every hazard-free test tile at 5~m, on at least half of all test tiles up to 9~m and on 26.3\% at 20~m (Fig.~\ref{fig:envelope}, Table~\ref{tab:envelope}), including 30\% of crater tiles up to 15~m. For small vehicles such as rotorcraft, a camera-only hazard map of this kind can supply candidate sites with no additional sensor hardware.
+\textbf{Complementary cues.} The three cues respond to different physical signatures of the same hazard: gradients to edges and texture, shadows to the sun-averted side of steep slopes, and brightness to the sun-facing side. Gradients alone barely rank crater slopes (within-tile AUROC 0.497); all three together reach 0.930. Because all three depend on the known sun direction, their behaviour can be predicted for any planned landing time.
 
-\textbf{Cueing for 3D sensors.} With AUROC 0.750 and PR-AUC 0.359, the full map ranks terrain well enough to act as a pre-filter that directs lidar or stereo, the coarse-optical, fine-3D architecture flown on Chang'e-3 \cite{li2016change3}. Its residual blind spot is also predictable: slopes that run across the sun direction. A cueing stage can assign these, which are identifiable from the sun azimuth and the local topographic context, to the 3D sensor or to a second image taken under different illumination or viewing geometry.
+\textbf{Vehicles and footprints.} On the synthetic test set the pipeline returns a safe site on every crater, plain and dune tile for footprints up to 157~m, which covers small rotorcraft and large landers alike, and it correctly finds none on the rocky tiles. On real terrain its ranking transfers, while its selected sites match the safety of a random square; there, the 2D map is best used to rank candidate areas for a 3D sensor, the coarse-optical, fine-3D architecture flown on Chang'e-3 \cite{li2016change3}.
 
 \textbf{Degraded-mode fallback.} Because the front-end needs only a camera, it is a candidate fallback when a primary 3D sensor degrades.
 
-\textbf{Larger footprints.} From 31~m upward no tile yields a safe region, because the safe regions in the binary mask are fragmented and elongated. For these footprints, including the 50~m large-lander requirement, the 2D map is best used for cueing, with direct 3D measurement for site certification.
-
 \subsection{Limitations}
-The operating envelope above is bounded by several intrinsic limitations of single-frame 2D hazard estimation and by the simplifications of our synthetic data:
+The operating envelope above is bounded by several intrinsic limitations of single-frame 2D hazard estimation and by the simplifications of our data:
 \begin{enumerate}
-    \item \textbf{Slope Direction Ambiguity:} Under Lambertian shading the brightness cue sees only the slope component along the sun azimuth, and intensity gradients see slopes only through their edges and texture. Slopes that run across the sun direction remain hard to detect from one image; they account for the remaining unsafe crater boxes.
-    \item \textbf{Illumination Sensitivity:} Shading depends on solar incidence and phase angles. Cast shadows appear only on slopes steeper than the sun elevation, and the brightness change of a tilted facet depends on the sun elevation. Section~\ref{sec:sun} quantifies this for elevations of $15^\circ$ to $60^\circ$; the main results use a single geometry (azimuth $45^\circ$, elevation $30^\circ$) with parameters tuned for it.
-    \item \textbf{Albedo and Reference Brightness:} The brightness cue assumes uniform albedo and estimates the level-ground brightness as the tile median, which assumes that most of the tile is near level. Albedo variations on real terrain would be read as slope, and a tile dominated by a single slope would bias the reference. Photometric models beyond Lambert's law \cite{mcewen1991photometric} and local albedo normalisation are natural extensions.
-    \item \textbf{Footprint Fragmentation:} Surface texture fragments the safe mask into small, irregular patches; the largest box on any tile fits a square of at most 33~m, which limits the method to small footprints even on benign terrain.
-    \item \textbf{Residual Contamination:} Averaged over all 80 test tiles, $V_{\text{full}}$ boxes contain 19.8\% unsafe terrain. Over the 40 crater and rocky tiles the mean is 39.7\%: every rocky box exceeds the 5\% tolerance, as does any selector at $L \ge 20$~m, and 14 of the 20 crater boxes exceed it. The maximal-rectangle step uses only the binary safe mask, not the hazard score within it, so usability at a given footprint must be judged with the Safe Landing criterion rather than box size alone.
-    \item \textbf{Synthetic Data Fidelity:} The terrain and image models are idealised: one rotationally symmetric crater per crater tile, uniform albedo, Lambertian reflectance, no atmospheric skylight in shadows, and no boulders, ejecta texture or albedo variation. Real Martian imagery adds albedo contrast, dust-scattered skylight and non-Lambertian photometry, each of which changes all three cues. DTM-derived labels also do not capture small-scale rock distributions or soil strength required for landing gear certification. Validation on real orbital imagery is needed.
+    \item \textbf{Slope Direction Ambiguity:} Under Lambertian shading the brightness cue sees only the slope component along the sun azimuth, and intensity gradients see slopes mainly through their edges and texture. Slopes that run across the sun direction remain hard to detect from one image, the known limitation of single-image photoclinometry \cite{beyer2003meter}.
+    \item \textbf{Illumination Sensitivity:} The dark threshold $\tau$ is an absolute grey level; at $15^\circ$ sun elevation it approaches the brightness of level ground and flags benign terrain (Section~\ref{sec:sun}). The other two constants follow the sun elevation; $\tau$ should too.
+    \item \textbf{Albedo and Reference Brightness:} Both physical constants assume uniform albedo and estimate the level-ground brightness as the tile median. Albedo variations are read as slope, and dark-toned material is read as shadow, as at the real Holden and Mawrth sites. Photometric models beyond Lambert's law \cite{mcewen1991photometric} and local albedo normalization are natural extensions.
+    \item \textbf{Site Selection:} The maximal-rectangle step uses only the binary safe mask, not the hazard score within it. On the synthetic data the largest safe region is also a safe one, but on real terrain the selected sites are safe at the rate of a random square. Selection that targets the required footprint and minimizes the hazard score inside it is needed to turn better ranking into better sites.
+    \item \textbf{Data Fidelity:} The synthetic terrain is idealised: one rotationally symmetric crater per crater tile, uniform albedo, Lambertian reflectance and no atmospheric skylight. The real evaluation uses orbital images and DTM-derived labels at an effective resolution coarser than 1~m, with four TEST sites. Neither captures the small-scale rock distribution or soil strength relevant to landing gear certification, or the geometry of descent imagery.
 \end{enumerate}
 
 \section{Conclusion}
-This study characterizes what single-frame classical hazard detection can deliver for planetary landing, using unsafe terrain as the primary evaluation class, strict site-level separation between independently generated development and test terrain, and imagery rendered with Lambertian shading and ray-marched cast shadows. Three inexpensive cues, intensity gradients, shadows and a first-order photometric slope cue, complement each other: gradients alone barely separate unsafe from safe terrain (AUROC 0.529), while all three together reach AUROC 0.750 and PR-AUC 0.359, 4.4 times chance, in 31.5~ms per tile on a single CPU core with about 30~MB of additional memory.
-
-Treating the lander footprint as an operating parameter shows where this efficiency translates into usable sites. The full pipeline returns a safe site on at least half of all test tiles for footprints up to 9~m and on every hazard-free tile at 5~m, and it finds safe sites on crater terrain that gradient and shadow cues alone miss. Its remaining blind spot, slopes running across the sun direction, follows from the illumination geometry and can be anticipated and assigned to a 3D sensor. Single-frame classical vision is therefore an efficient hazard detector for small-footprint landing and an inexpensive cueing stage for larger vehicles. Future work will evaluate on real HiRISE imagery with local albedo normalisation, combine images taken under different illumination to resolve slopes across the sun direction, and investigate footprint-aware site selection on the full hazard map.
+This study characterizes what single-frame classical hazard detection can deliver for planetary landing, on synthetic imagery rendered with Lambertian shading and ray-marched cast shadows and on real HiRISE orthoimages with co-registered terrain models. Three inexpensive cues, intensity gradients, shadows and a first-order photometric slope cue, complement each other, and scaling them by physical constants from the sun elevation and the slope threshold makes them robust across tiles, sun elevations and data sources. On held-out synthetic sites the full map reaches AUROC 0.866 and PR-AUC 0.316 in 28.5~ms per tile on a single CPU core with about 30~MB of additional memory, and it returns a safe site on every crater, plain and dune tile for footprints up to 157~m. On real HiRISE terrain, with parameters transferred unchanged, it ranks hazards above a local-texture baseline at three of four sites. Single-frame classical vision is therefore an efficient hazard detector and an inexpensive cueing stage for 3D sensors. Future work will add footprint-aware site selection that uses the hazard score, scale the dark threshold with the sun elevation, normalize local albedo, and evaluate on descent imagery.
 
 \section*{Acknowledgments}
 The authors acknowledge the Indian Institute of Technology Gandhinagar for providing computational resources and infrastructure in support of this research.

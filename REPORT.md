@@ -234,3 +234,21 @@ Brightness cue transfers (grad+shadow 0.605 -> full 0.654); shadow cue adds ~0 (
 dark-toned DEV sites. Site selection is at the random-square rate (0.80 vs 0.78 at 20 m; 0.68 vs 0.73
 at 50 m); every tile has a safe 50 m square. Per site, V_full AUROC: Eberswalde 0.80, Jezero 0.76,
 Meridiani 0.72, Arcadia 0.58.
+
+## Folded into the paper (2026-11-17): physical normalization + real HiRISE section
+- pipeline.py: G uses the 5x5-blurred Sobel gradient / g_ref = 8 I_ref cot(e) sin15 / 5 (p99 kept as
+  `normalization='p99'`); brightness cue now B = min(1, |blur_k(I) - I_ref| / (I_ref cot(e) sin phi)),
+  phi tuned in degrees. I_ref = image median; e = sun elevation (input).
+- DEV tuning (theta grid widened to {0.05..0.5}): theta 0.05, mca 100, tau 60, A_min 500, phi 10, k 15.
+- Synthetic TEST: V_full AUROC 0.866 / PR-AUC 0.316; Safe Landing 0.75 from 5 to 157 m (ceiling: rocky
+  tiles have no safe 20 m square), 0.725 at 200 m. V_grad 0.725 (2 crater boxes in the crater).
+  Note: box-level success is helped by the selector (largest region = open plain); V_grad crater
+  within-tile AUROC is only 0.497, V_full 0.930.
+- Ablation (Table 5): p99 raw 0.764/0.375, SL50 0; fixed raw 0.795/0.188; p99 at 5 m 0.717/0.350,
+  SL50 0.237; physical at 5 m 0.866/0.316, SL50 0.75.
+- Sun sweep: V_full 0.633 / 0.866 / 0.878 / 0.879 AUROC at 15/30/45/60 deg; at 15 deg the absolute
+  tau = 60 nears level-ground brightness (66) and fragments benign tiles (SL10 0.50).
+- HiRISE TEST (transfer): V_full 0.654 / 0.134, within 0.704; B1 0.643 / 0.158 / 0.658; re-tuned on
+  real DEV 0.661. Site selection 0.80 / 0.68 at 20 / 50 m vs random null 0.78 / 0.73.
+- Runtime (768): front-end 28.5 ms (gradient 13.5, shadow 1.3, brightness 9.9, threshold 3.8),
+  RSS +30 MB.

@@ -40,7 +40,7 @@ def main():
         G = compute_gradient_hazard(ori)
         val_data.append((ori, unsafe, G))
         
-    thetas = [0.2, 0.35, 0.5]
+    thetas = [0.05, 0.1, 0.2, 0.35, 0.5]
     min_areas = [100, 500, 1500]
     
     best_v_grad_f1 = -1
@@ -84,24 +84,25 @@ def main():
             best_v_grad_shadow_f1 = f1
             best_v_grad_shadow_params = {'tau': tau, 'a_min': a_min, **best_v_grad_params}
             
-    # Brightness cue: tau, a_min, theta and min area fixed from V_grad_shadow; tune kappa and blur size.
+    # Brightness cue: tau, a_min, theta and min area fixed from V_grad_shadow; tune the saturation tilt
+    # phi (degrees) and the blur size.
     best_v_bright_f1 = -1
     best_v_bright_params = {}
     print("Tuning V_bright...")
-    for kappa, ksize in itertools.product([20, 30, 40, 50, 70], [5, 9, 15]):
+    for phi, ksize in itertools.product([5.0, 7.5, 10.0, 12.5, 15.0, 20.0], [5, 9, 15]):
         preds = []
         labels = []
         for ori, unsafe, G in val_data:
             G_aug, _ = augment_shadow(ori, G, tau=best_v_grad_shadow_params['tau'], a_min=best_v_grad_shadow_params['a_min'])
-            H = np.maximum(G_aug, compute_brightness_hazard(ori, kappa=kappa, ksize=ksize))
+            H = np.maximum(G_aug, compute_brightness_hazard(ori, phi_deg=phi, ksize=ksize))
             _, _, safe_mask, _ = fuse_and_select(H, texture_score=None, **best_v_grad_params)
             preds.extend(safe_mask.flatten()[::100])
             labels.extend((~unsafe).flatten()[::100])
         f1 = f1_score(labels, preds)
-        results.append({'model': 'V_bright', 'kappa': kappa, 'ksize': ksize, 'f1': f1})
+        results.append({'model': 'V_bright', 'phi_deg': phi, 'ksize': ksize, 'f1': f1})
         if f1 > best_v_bright_f1:
             best_v_bright_f1 = f1
-            best_v_bright_params = {**best_v_grad_shadow_params, 'kappa': kappa, 'ksize': ksize}
+            best_v_bright_params = {**best_v_grad_shadow_params, 'phi_deg': phi, 'ksize': ksize}
     print(f"Best V_bright F1: {best_v_bright_f1:.4f} with {best_v_bright_params}")
 
     os.makedirs('results', exist_ok=True)

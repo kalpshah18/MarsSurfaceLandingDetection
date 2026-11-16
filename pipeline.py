@@ -1,23 +1,43 @@
 import cv2
 import numpy as np
 
-def compute_gradient_hazard(image_gray):
+SLOPE_THRESHOLD_DEG = 15.0   # proxy-label threshold
+BASELINE_PX = 5              # proxy-label slope baseline (5 m at 1 m GSD)
+
+
+def level_ground_brightness(image_gray):
+    """Brightness of level ground, estimated as the image median (most of a tile is near level)."""
+    return float(np.median(image_gray))
+
+
+def gradient_reference(image_gray, sun_elevation_deg=30.0):
+    """Sobel response (8 x intensity change per pixel) of a slope change equal to the label threshold
+    spread over the label baseline, for a Lambertian surface with level-ground brightness I_ref:
+    g_ref = 8 * I_ref * cot(e) * sin(15 deg) / 5."""
+    e = np.radians(sun_elevation_deg)
+    I_ref = level_ground_brightness(image_gray)
+    return 8.0 * I_ref / np.tan(e) * np.sin(np.radians(SLOPE_THRESHOLD_DEG)) / BASELINE_PX
+
+
+def compute_gradient_hazard(image_gray, sun_elevation_deg=30.0, normalization='physical'):
+    """Gradient hazard G in [0, 1].
+
+    physical (default): Sobel gradient of the image box-filtered over the label baseline, divided by
+        the fixed physical constant g_ref (gradient_reference).
+    p99: raw 3x3 Sobel gradient divided by its per-tile 99th percentile (earlier versions; ablation).
+    """
     I = image_gray.astype(np.float32)
+    if normalization == 'physical':
+        I = cv2.blur(I, (BASELINE_PX, BASELINE_PX), borderType=cv2.BORDER_REPLICATE)
     Ix = cv2.Sobel(I, cv2.CV_32F, 1, 0, ksize=3, borderType=cv2.BORDER_REPLICATE)
     Iy = cv2.Sobel(I, cv2.CV_32F, 0, 1, ksize=3, borderType=cv2.BORDER_REPLICATE)
     g = np.sqrt(Ix**2 + Iy**2)
-    
-    non_zero = g[g > 0]
-    if len(non_zero) > 0:
-        g_p99 = np.percentile(non_zero, 99)
+    if normalization == 'physical':
+        ref = gradient_reference(image_gray, sun_elevation_deg)
     else:
-        g_p99 = 1.0
-    
-    if g_p99 == 0:
-        g_p99 = 1e-8
-        
-    G = np.minimum(1.0, g / g_p99)
-    return G
+        non_zero = g[g > 0]
+        ref = np.percentile(non_zero, 99) if len(non_zero) > 0 else 1.0
+    return np.minimum(1.0, g / max(float(ref), 1e-8))
 
 def augment_shadow(image_gray, G, tau=40, a_min=500):
     _, binary = cv2.threshold(image_gray, tau, 255, cv2.THRESH_BINARY_INV)
@@ -107,12 +127,12 @@ def fuse_and_select(G, texture_score=None, theta=0.35, min_component_area=1500):
     rect = maximal_rectangle(filtered_safe_mask)
     return s, safe_mask, filtered_safe_mask, rect
 
-def run_v_grad(image_gray, theta=0.35, min_component_area=1500):
-    G = compute_gradient_hazard(image_gray)
+def run_v_grad(image_gray, theta=0.35, min_component_area=1500, sun_elevation_deg=30.0):
+    G = compute_gradient_hazard(image_gray, sun_elevation_deg)
     return fuse_and_select(G, texture_score=None, theta=theta, min_component_area=min_component_area)
 
-def run_v_grad_shadow(image_gray, theta=0.35, min_component_area=1500, tau=40, a_min=500):
-    G = compute_gradient_hazard(image_gray)
+def run_v_grad_shadow(image_gray, theta=0.35, min_component_area=1500, tau=40, a_min=500, sun_elevation_deg=30.0):
+    G = compute_gradient_hazard(image_gray, sun_elevation_deg)
     G_aug, _ = augment_shadow(image_gray, G, tau=tau, a_min=a_min)
     return fuse_and_select(G_aug, texture_score=None, theta=theta, min_component_area=min_component_area)
 
@@ -124,23 +144,24 @@ def run_v_fft_ablation(image_gray, theta=0.35, min_component_area=1500, tau=40, 
 
 
 
-def compute_brightness_hazard(image_gray, kappa=30.0, ksize=9):
+def compute_brightness_hazard(image_gray, phi_deg=10.0, ksize=15, sun_elevation_deg=30.0):
     """Photometric slope cue: deviation of local mean brightness from level ground.
 
-    Under Lambertian shading a level surface has intensity proportional to sin(sun
-    elevation); a surface tilted toward or away from the sun is brighter or darker.
-    The level-ground brightness is estimated as the median of the box-filtered image
-    (most of a landing tile is near level), which also absorbs the unknown albedo.
-    B = min(1, |I_blur - I_ref| / kappa).
+    Under Lambertian shading a facet tilted by phi toward or away from the sun changes the brightness
+    of level ground (I_ref) by about I_ref * cot(e) * sin(phi). B saturates at that change:
+        B = min(1, |box_k(I) - I_ref| / (I_ref * cot(e) * sin(phi))).
     """
     I_blur = cv2.blur(image_gray.astype(np.float32), (ksize, ksize))
-    I_ref = float(np.median(I_blur))
-    return np.minimum(1.0, np.abs(I_blur - I_ref) / kappa)
+    I_ref = level_ground_brightness(image_gray)
+    scale = I_ref / np.tan(np.radians(sun_elevation_deg)) * np.sin(np.radians(phi_deg))
+    return np.minimum(1.0, np.abs(I_blur - I_ref) / max(scale, 1e-8))
 
 
-def run_v_bright(image_gray, theta=0.2, min_component_area=100, tau=60, a_min=500, kappa=30.0, ksize=9):
-    """V_grad+shadow+bright: max of the shadow-augmented gradient hazard and the brightness cue."""
-    G = compute_gradient_hazard(image_gray)
+def run_v_bright(image_gray, theta=0.05, min_component_area=100, tau=60, a_min=500, phi_deg=10.0, ksize=15,
+                 sun_elevation_deg=30.0):
+    """V_full: max of the shadow-augmented gradient hazard and the brightness cue."""
+    G = compute_gradient_hazard(image_gray, sun_elevation_deg)
     G_aug, _ = augment_shadow(image_gray, G, tau=tau, a_min=a_min)
-    H = np.maximum(G_aug, compute_brightness_hazard(image_gray, kappa=kappa, ksize=ksize))
+    H = np.maximum(G_aug, compute_brightness_hazard(image_gray, phi_deg=phi_deg, ksize=ksize,
+                                                    sun_elevation_deg=sun_elevation_deg))
     return fuse_and_select(H, texture_score=None, theta=theta, min_component_area=min_component_area)

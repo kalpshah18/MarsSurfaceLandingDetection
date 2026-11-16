@@ -43,7 +43,7 @@ def stage_times(img, cfg):
     t1 = time.perf_counter()
     G_aug, _ = augment_shadow(img, G, tau=cfg['tau'], a_min=cfg['a_min'])
     t2 = time.perf_counter()
-    G_aug = np.maximum(G_aug, compute_brightness_hazard(img, kappa=cfg['kappa'], ksize=cfg['ksize']))
+    G_aug = np.maximum(G_aug, compute_brightness_hazard(img, phi_deg=cfg['phi_deg'], ksize=cfg['ksize']))
     t2b = time.perf_counter()
     t2, t_bright = t2b, t2b - t2
     _, _, filt, _ = fuse_and_select(G_aug, None, theta=cfg['theta'], min_component_area=cfg['min_component_area'])
@@ -74,7 +74,7 @@ def memory_child(size):
     tracemalloc.start()
     G = compute_gradient_hazard(img)
     G_aug, _ = augment_shadow(img, G, tau=cfg['tau'], a_min=cfg['a_min'])
-    G_aug = np.maximum(G_aug, compute_brightness_hazard(img, kappa=cfg['kappa'], ksize=cfg['ksize']))
+    G_aug = np.maximum(G_aug, compute_brightness_hazard(img, phi_deg=cfg['phi_deg'], ksize=cfg['ksize']))
     fuse_and_select(G_aug, None, theta=cfg['theta'], min_component_area=cfg['min_component_area'])
     _, tm_peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()

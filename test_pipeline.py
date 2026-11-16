@@ -46,16 +46,30 @@ class TestPipeline(unittest.TestCase):
         ramp = np.tile(np.arange(0, 100, 2, dtype=np.uint8), (50, 1))
         G = compute_gradient_hazard(ramp)
         self.assertTrue(np.all(G >= 0))
-        # Gradient in interior should be uniform
-        # Check interior gradient consistency (ignore borders)
-        self.assertTrue(np.var(G[2:-2, 2:-2]) < 1e-4)
-        
-        # Checkerboard
+        # Interior gradient is uniform (ignore the blur + Sobel border)
+        self.assertTrue(np.var(G[4:-4, 4:-4]) < 1e-4)
+
+        # A sharp step edge saturates the hazard
+        step = np.full((50, 50), 60, dtype=np.uint8)
+        step[:, 25:] = 200
+        self.assertTrue(np.max(compute_gradient_hazard(step)) > 0.99)
+
+        # p99 normalization (ablation) still available
         cb = np.zeros((50, 50), dtype=np.uint8)
         cb[::2, ::2] = 255
         cb[1::2, 1::2] = 255
-        G_cb = compute_gradient_hazard(cb)
-        self.assertTrue(np.max(G_cb) > 0.9) # High gradient at edges
+        self.assertTrue(np.max(compute_gradient_hazard(cb, normalization='p99')) > 0.9)
+
+    def test_gradient_reference_is_physical(self):
+        # A ramp whose slope equals g_ref / 8 per pixel gives G = 1 in the interior.
+        from pipeline import gradient_reference
+        base = np.full((60, 60), 128, dtype=np.uint8)
+        g_ref = gradient_reference(base, 30.0)
+        self.assertAlmostEqual(g_ref, 8 * 128 / np.tan(np.radians(30)) * np.sin(np.radians(15)) / 5, places=4)
+        ramp = (128 + (np.arange(60) - 30) * (g_ref / 8.0)).astype(np.float32)
+        img = np.tile(ramp, (60, 1))
+        G = compute_gradient_hazard(np.clip(img, 0, 255).astype(np.uint8), 30.0)
+        self.assertGreater(G[30, 30], 0.95)
 
     @unittest.skipIf(compute_fft_texture is None,
                      'compute_fft_texture no longer exists in pipeline.py (FFT module is an ablation only)')
