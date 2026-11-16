@@ -2,15 +2,16 @@
 
     python run_review_sweeps.py sens   # tau x theta (and A_min) sensitivity
     python run_review_sweeps.py sun    # sun elevation / azimuth re-render sweep
-    python run_review_sweeps.py sunphys  # same, physical cast shadows, no painted shadow
+    python run_review_sweeps.py sunphys  # same sweep, also records the crater cast-shadow fraction
 
-The sun sweep re-renders each TEST tile from its stored DTM with the shading code of
-generate_synthetic.py (Lambertian, unit albedo, plus the generator's sun-independent
-"painted" shadow: crater pixels deeper than 10 m are clamped to intensity <= 30).
+The sun sweep re-renders each TEST tile from its stored DTM with the dataset's image
+model (render.py: Lambertian, unit albedo, ray-marched cast shadows; since dataset v2
+there is no painted shadow, so `sun` and `sunphys` use the same renderer).
 At azimuth 45 deg / elevation 30 deg the re-render must equal the stored images; the
-script checks this before sweeping.
+`sun` mode checks this before sweeping.
 
-Outputs: results/review/sensitivity.json, results/review/sun_sweep.json
+Outputs: results/review/sensitivity.json, results/review/sun_sweep.json,
+results/review/sun_sweep_physical.json
 """
 import json
 import os
@@ -21,7 +22,8 @@ import numpy as np
 from sklearn.metrics import average_precision_score, roc_auc_score
 
 from footprint_metrics import EPSILON
-from pipeline import augment_shadow, compute_gradient_hazard, fuse_and_select
+from render import render as physical_render
+from pipeline import augment_shadow, compute_brightness_hazard, compute_gradient_hazard, fuse_and_select
 from review_common import (HAZARD_TERRAINS, boot_ci, frac_in, iter_tiles, largest_inscribed_square,
                            load_config, min_hazard_square)
 
@@ -29,60 +31,24 @@ OUT_DIR = os.path.join('results', 'review')
 EVAL_L = [10, 20, 25]
 
 
-def render(z, terrain, azimuth_deg, elevation_deg, gsd=1.0):
-    """Shading model copied from generate_synthetic.py (which cannot be imported: it
-    imports pipeline.run_v0, which no longer exists)."""
-    dz_dx = np.gradient(z, axis=1) / gsd
-    dz_dy = np.gradient(z, axis=0) / gsd
-    az, el = np.radians(azimuth_deg), np.radians(elevation_deg)
-    nx, ny, nz = -dz_dx, -dz_dy, np.ones_like(z)
-    norm = np.sqrt(nx ** 2 + ny ** 2 + nz ** 2)
-    nx /= norm; ny /= norm; nz /= norm
-    lx, ly, lz = np.cos(el) * np.cos(az), np.cos(el) * np.sin(az), np.sin(el)
-    intensity = np.clip(nx * lx + ny * ly + nz * lz, 0, 1)
-    ori = (intensity * 255).astype(np.uint8)
-    if terrain == 'crater':
-        ori[z < -10] = np.minimum(ori[z < -10], 30)
-    return ori
-
-
 def render_physical(z, azimuth_deg, elevation_deg, gsd=1.0):
-    """Lambertian shading (same model as render) WITHOUT the painted crater shadow, plus
-    cast shadows from a height-field ray march toward the sun (shadowed pixels -> 0)."""
-    dz_dx = np.gradient(z, axis=1) / gsd
-    dz_dy = np.gradient(z, axis=0) / gsd
-    az, el = np.radians(azimuth_deg), np.radians(elevation_deg)
-    nx, ny, nz = -dz_dx, -dz_dy, np.ones_like(z)
-    norm = np.sqrt(nx ** 2 + ny ** 2 + nz ** 2)
-    lx, ly, lz = np.cos(el) * np.cos(az), np.cos(el) * np.sin(az), np.sin(el)
-    intensity = np.clip((nx * lx + ny * ly + nz * lz) / norm, 0, 1)
-    H, W = z.shape
-    shadow = np.zeros(z.shape, dtype=bool)
-    tan_el = np.tan(el)
-    t_max = int(np.ceil((z.max() - z.min()) / (tan_el * gsd))) + 1
-    ys, xs = np.mgrid[0:H, 0:W]
-    for t in range(1, t_max + 1):
-        dx, dy = int(round(t * np.cos(az))), int(round(t * np.sin(az)))
-        xx, yy = xs + dx, ys + dy
-        inside = (xx >= 0) & (xx < W) & (yy >= 0) & (yy < H)
-        zz = np.full(z.shape, -np.inf)
-        zz[inside] = z[yy[inside], xx[inside]]
-        shadow |= zz > z + t * gsd * tan_el
-    intensity[shadow] = 0.0
-    return (intensity * 255).astype(np.uint8), shadow
+    """Same image model as generate_synthetic.py (render.py)."""
+    return physical_render(z, azimuth_deg, elevation_deg, gsd)
 
 
 def evaluate(tiles, theta, tau, a_min, mca, image_key='ori'):
     """Metrics for grad and grad_shadow under one configuration."""
-    us, hs = [], {'grad': [], 'grad_shadow': []}
-    per = {'grad': [], 'grad_shadow': []}
+    br = load_config()['V_bright']
+    us, hs = [], {'grad': [], 'grad_shadow': [], 'bright': []}
+    per = {'grad': [], 'grad_shadow': [], 'bright': []}
     sub = slice(None, None, 10)
     for t in tiles:
         ori, unsafe = t[image_key], t['unsafe']
         G = compute_gradient_hazard(ori)
         G_aug, _ = augment_shadow(ori, G, tau=tau, a_min=a_min)
         us.append(unsafe.flatten()[sub])
-        for m, Gm in (('grad', G), ('grad_shadow', G_aug)):
+        G_br = np.maximum(G_aug, compute_brightness_hazard(ori, kappa=br['kappa'], ksize=br['ksize']))
+        for m, Gm in (('grad', G), ('grad_shadow', G_aug), ('bright', G_br)):
             s, _, filt, (x, y, w, h) = fuse_and_select(Gm, None, theta=theta, min_component_area=mca)
             H = 1.0 - s
             hs[m].append(H.flatten()[sub])
@@ -137,7 +103,7 @@ def main(mode):
     elif mode == 'sun':
         mism = 0
         for t in tiles:
-            mism += int((render(t['dtm'], t['terrain'], 45, 30) != t['ori']).sum())
+            mism += int((render_physical(t['dtm'], 45, 30)[0] != t['ori']).sum())
         if mism:
             sys.exit(f'Re-render at az 45 / el 30 differs from stored images in {mism} pixels; aborting.')
         print('Re-render check passed: az 45 / el 30 reproduces all stored TEST images exactly.')
@@ -145,14 +111,14 @@ def main(mode):
         res = []
         for az, el in configs:
             for t in tiles:
-                t['ori_r'] = render(t['dtm'], t['terrain'], az, el)
+                t['ori_r'], _ = render_physical(t['dtm'], az, el)
             r = evaluate(tiles, cfg['theta'], cfg['tau'], cfg['a_min'], cfg['min_component_area'], 'ori_r')
             res.append({'azimuth': az, 'elevation': el, **r})
             print(az, el, round(r['grad']['auroc'], 3), round(r['grad_shadow']['auroc'], 3), flush=True)
         path = os.path.join(OUT_DIR, 'sun_sweep.json')
         with open(path, 'w') as f:
-            json.dump({'note': 'TEST tiles re-rendered from stored DTMs; painted crater shadow is '
-                               'sun-independent as in generate_synthetic.py',
+            json.dump({'note': 'TEST tiles re-rendered from stored DTMs with the dataset image model '
+                               '(Lambertian + ray-marched cast shadows, render.py)',
                        'config': cfg, 'runs': res}, f, indent=1)
     elif mode == 'sunphys':
         configs = [(45, el) for el in (15, 30, 45, 60)] + [(az, 30) for az in (135, 225, 315)]

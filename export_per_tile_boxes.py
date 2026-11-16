@@ -22,7 +22,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
-from pipeline import run_v_grad, run_v_grad_shadow
+from pipeline import run_v_bright, run_v_grad, run_v_grad_shadow
 from run_evaluation import compute_proxy_labels
 
 OUT_PATH = os.path.join('results', 'per_tile_boxes.csv')
@@ -81,6 +81,8 @@ def main():
         _, _, _, rect_gs = run_v_grad_shadow(ori, **config['V_grad_shadow'])
         rows.append(box_row(tile_id, terrain, 'grad', rect_g, unsafe))
         rows.append(box_row(tile_id, terrain, 'grad_shadow', rect_gs, unsafe))
+        _, _, _, rect_br = run_v_bright(ori, **config['V_bright'])
+        rows.append(box_row(tile_id, terrain, 'bright', rect_br, unsafe))
 
     os.makedirs('results', exist_ok=True)
     with open(OUT_PATH, 'w', newline='') as f:

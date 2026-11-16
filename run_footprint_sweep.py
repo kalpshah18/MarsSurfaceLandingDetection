@@ -34,14 +34,16 @@ FINE_L = list(range(5, 61))
 LSTAR_RANGE = range(1, 61)
 TERRAIN_L = 25
 TERRAINS = ['crater', 'rocky', 'smooth', 'dunes']
-METHODS = ['grad_shadow', 'grad']
+METHODS = ['bright', 'grad_shadow', 'grad']
 N_TEST = 80
 
-# Table 2 values (paper, Section 4.2) that L = 50 must reproduce.
-TABLE2 = {
-    'grad_shadow': {'footprint_ok': 0.000, 'mean_area': 744, 'max_area': 1612, 'frac_unsafe': 0.186},
-    'grad': {'footprint_ok': 0.250, 'mean_area': 17028, 'frac_unsafe': 0.287},
-}
+# Table 2 values that L = 50 must reproduce, as written by compute_final_metrics.py.
+def load_table2(path=os.path.join('results', 'final_metrics.json')):
+    with open(path) as f:
+        b = json.load(f)['boxes']
+    return {m: {'footprint_ok': round(b[k]['footprint_ok_50'], 3), 'mean_area': round(b[k]['mean_area']),
+                'max_area': b[k]['max_area'], 'frac_unsafe': round(b[k]['frac_unsafe'], 3)}
+            for m, k in (('bright', 'V_bright'), ('grad_shadow', 'V_grad_shadow'), ('grad', 'V_grad'))}
 
 
 def load_boxes(path=BOXES_PATH):
@@ -90,7 +92,7 @@ def sanity_check(by_method):
     for m in METHODS:
         if len(by_method[m]) != N_TEST:
             problems.append(f'{m}: expected {N_TEST} tiles, got {len(by_method[m])}')
-    for m, ref in TABLE2.items():
+    for m, ref in load_table2().items():
         s = box_summary(by_method[m])
         r50 = rates(by_method[m], 50)
         got = {

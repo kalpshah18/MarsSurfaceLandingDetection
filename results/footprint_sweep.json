@@ -4,272 +4,310 @@
   "denominator": "all 80 TEST tiles (tiles with no box count as failures)",
   "source": "results\\per_tile_boxes.csv",
   "box_summary": {
+    "bright": {
+      "n_tiles": 80,
+      "box_found": 1.0,
+      "mean_area": 718.35,
+      "max_area": 1984,
+      "max_min_side": 33,
+      "mean_frac_unsafe": 0.1983127666585002
+    },
     "grad_shadow": {
       "n_tiles": 80,
       "box_found": 1.0,
-      "mean_area": 744.45,
-      "max_area": 1612,
-      "max_min_side": 31,
-      "mean_frac_unsafe": 0.18557367607090952
+      "mean_area": 1693.575,
+      "max_area": 8142,
+      "max_min_side": 89,
+      "mean_frac_unsafe": 0.27532935712160034
     },
     "grad": {
       "n_tiles": 80,
       "box_found": 1.0,
-      "mean_area": 17028.175,
-      "max_area": 147456,
-      "max_min_side": 384,
-      "mean_frac_unsafe": 0.28692891783703767
+      "mean_area": 1693.7125,
+      "max_area": 8142,
+      "max_min_side": 89,
+      "mean_frac_unsafe": 0.27580405603379926
     }
   },
   "table": {
     "20": {
       "A_req_px": 400,
+      "bright": {
+        "footprint_ok": 0.7625,
+        "square_fit": 0.4125,
+        "safe_landing": 0.2625
+      },
       "grad_shadow": {
-        "footprint_ok": 0.9625,
-        "square_fit": 0.2375,
-        "safe_landing": 0.2125
+        "footprint_ok": 0.7625,
+        "square_fit": 0.45,
+        "safe_landing": 0.2
       },
       "grad": {
-        "footprint_ok": 0.9625,
-        "square_fit": 0.4375,
-        "safe_landing": 0.1625
+        "footprint_ok": 0.7625,
+        "square_fit": 0.45,
+        "safe_landing": 0.2
       }
     },
     "25": {
       "A_req_px": 625,
+      "bright": {
+        "footprint_ok": 0.6875,
+        "square_fit": 0.2,
+        "safe_landing": 0.125
+      },
       "grad_shadow": {
         "footprint_ok": 0.6875,
-        "square_fit": 0.075,
-        "safe_landing": 0.075
+        "square_fit": 0.3375,
+        "safe_landing": 0.0875
       },
       "grad": {
         "footprint_ok": 0.6875,
-        "square_fit": 0.2875,
-        "safe_landing": 0.0375
+        "square_fit": 0.3375,
+        "safe_landing": 0.0875
       }
     },
     "30": {
       "A_req_px": 900,
+      "bright": {
+        "footprint_ok": 0.225,
+        "square_fit": 0.075,
+        "safe_landing": 0.025
+      },
       "grad_shadow": {
-        "footprint_ok": 0.1875,
-        "square_fit": 0.0125,
-        "safe_landing": 0.0125
+        "footprint_ok": 0.2875,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
       },
       "grad": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
-        "safe_landing": 0.0
+        "footprint_ok": 0.2875,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
       }
     },
     "35": {
       "A_req_px": 1225,
-      "grad_shadow": {
-        "footprint_ok": 0.1,
+      "bright": {
+        "footprint_ok": 0.075,
         "square_fit": 0.0,
+        "safe_landing": 0.0
+      },
+      "grad_shadow": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.2375,
         "safe_landing": 0.0
       },
       "grad": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.2375,
         "safe_landing": 0.0
       }
     },
     "40": {
       "A_req_px": 1600,
-      "grad_shadow": {
-        "footprint_ok": 0.0125,
+      "bright": {
+        "footprint_ok": 0.025,
         "square_fit": 0.0,
+        "safe_landing": 0.0
+      },
+      "grad_shadow": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.225,
         "safe_landing": 0.0
       },
       "grad": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.225,
         "safe_landing": 0.0
       }
     },
     "50": {
       "A_req_px": 2500,
-      "grad_shadow": {
+      "bright": {
         "footprint_ok": 0.0,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
+      "grad_shadow": {
+        "footprint_ok": 0.225,
+        "square_fit": 0.1375,
+        "safe_landing": 0.0
+      },
       "grad": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.225,
+        "square_fit": 0.1375,
         "safe_landing": 0.0
       }
     }
   },
   "fine": {
-    "grad_shadow": {
+    "bright": {
       "5": {
         "footprint_ok": 1.0,
-        "square_fit": 0.9875,
-        "safe_landing": 0.6
+        "square_fit": 0.9625,
+        "safe_landing": 0.575
       },
       "6": {
         "footprint_ok": 1.0,
-        "square_fit": 0.975,
-        "safe_landing": 0.5875
+        "square_fit": 0.95,
+        "safe_landing": 0.5625
       },
       "7": {
         "footprint_ok": 1.0,
-        "square_fit": 0.95,
-        "safe_landing": 0.575
+        "square_fit": 0.9375,
+        "safe_landing": 0.55
       },
       "8": {
         "footprint_ok": 1.0,
-        "square_fit": 0.875,
-        "safe_landing": 0.525
+        "square_fit": 0.925,
+        "safe_landing": 0.5375
       },
       "9": {
         "footprint_ok": 1.0,
-        "square_fit": 0.825,
-        "safe_landing": 0.5
+        "square_fit": 0.9,
+        "safe_landing": 0.525
       },
       "10": {
         "footprint_ok": 1.0,
-        "square_fit": 0.775,
-        "safe_landing": 0.4875
+        "square_fit": 0.8125,
+        "safe_landing": 0.475
       },
       "11": {
         "footprint_ok": 1.0,
-        "square_fit": 0.7125,
-        "safe_landing": 0.4375
+        "square_fit": 0.775,
+        "safe_landing": 0.4625
       },
       "12": {
         "footprint_ok": 1.0,
-        "square_fit": 0.65,
-        "safe_landing": 0.425
+        "square_fit": 0.7,
+        "safe_landing": 0.4125
       },
       "13": {
         "footprint_ok": 1.0,
-        "square_fit": 0.55,
-        "safe_landing": 0.375
+        "square_fit": 0.6125,
+        "safe_landing": 0.3875
       },
       "14": {
         "footprint_ok": 1.0,
-        "square_fit": 0.475,
-        "safe_landing": 0.35
+        "square_fit": 0.575,
+        "safe_landing": 0.3625
       },
       "15": {
         "footprint_ok": 1.0,
-        "square_fit": 0.425,
-        "safe_landing": 0.3125
+        "square_fit": 0.5375,
+        "safe_landing": 0.35
       },
       "16": {
         "footprint_ok": 1.0,
-        "square_fit": 0.375,
-        "safe_landing": 0.2625
+        "square_fit": 0.5125,
+        "safe_landing": 0.3375
       },
       "17": {
-        "footprint_ok": 1.0,
-        "square_fit": 0.325,
-        "safe_landing": 0.2375
+        "footprint_ok": 0.975,
+        "square_fit": 0.4625,
+        "safe_landing": 0.3
       },
       "18": {
-        "footprint_ok": 1.0,
-        "square_fit": 0.3125,
-        "safe_landing": 0.2375
+        "footprint_ok": 0.8875,
+        "square_fit": 0.4375,
+        "safe_landing": 0.2875
       },
       "19": {
-        "footprint_ok": 1.0,
-        "square_fit": 0.2625,
-        "safe_landing": 0.225
+        "footprint_ok": 0.775,
+        "square_fit": 0.425,
+        "safe_landing": 0.275
       },
       "20": {
-        "footprint_ok": 0.9625,
-        "square_fit": 0.2375,
-        "safe_landing": 0.2125
+        "footprint_ok": 0.7625,
+        "square_fit": 0.4125,
+        "safe_landing": 0.2625
       },
       "21": {
-        "footprint_ok": 0.8875,
-        "square_fit": 0.2125,
-        "safe_landing": 0.1875
+        "footprint_ok": 0.75,
+        "square_fit": 0.4,
+        "safe_landing": 0.2625
       },
       "22": {
-        "footprint_ok": 0.8,
-        "square_fit": 0.1625,
-        "safe_landing": 0.15
+        "footprint_ok": 0.75,
+        "square_fit": 0.3375,
+        "safe_landing": 0.2125
       },
       "23": {
         "footprint_ok": 0.75,
-        "square_fit": 0.125,
-        "safe_landing": 0.125
+        "square_fit": 0.275,
+        "safe_landing": 0.175
       },
       "24": {
         "footprint_ok": 0.75,
-        "square_fit": 0.0875,
-        "safe_landing": 0.0875
+        "square_fit": 0.2375,
+        "safe_landing": 0.1375
       },
       "25": {
         "footprint_ok": 0.6875,
-        "square_fit": 0.075,
-        "safe_landing": 0.075
+        "square_fit": 0.2,
+        "safe_landing": 0.125
       },
       "26": {
-        "footprint_ok": 0.55,
-        "square_fit": 0.0625,
-        "safe_landing": 0.0625
+        "footprint_ok": 0.5375,
+        "square_fit": 0.175,
+        "safe_landing": 0.1125
       },
       "27": {
-        "footprint_ok": 0.425,
-        "square_fit": 0.0375,
-        "safe_landing": 0.0375
+        "footprint_ok": 0.3875,
+        "square_fit": 0.1,
+        "safe_landing": 0.05
       },
       "28": {
-        "footprint_ok": 0.2625,
-        "square_fit": 0.025,
-        "safe_landing": 0.025
+        "footprint_ok": 0.3,
+        "square_fit": 0.1,
+        "safe_landing": 0.05
       },
       "29": {
-        "footprint_ok": 0.2125,
-        "square_fit": 0.0125,
-        "safe_landing": 0.0125
+        "footprint_ok": 0.25,
+        "square_fit": 0.0875,
+        "safe_landing": 0.0375
       },
       "30": {
-        "footprint_ok": 0.1875,
-        "square_fit": 0.0125,
-        "safe_landing": 0.0125
+        "footprint_ok": 0.225,
+        "square_fit": 0.075,
+        "safe_landing": 0.025
       },
       "31": {
         "footprint_ok": 0.175,
-        "square_fit": 0.0125,
-        "safe_landing": 0.0125
+        "square_fit": 0.05,
+        "safe_landing": 0.0
       },
       "32": {
-        "footprint_ok": 0.15,
-        "square_fit": 0.0,
+        "footprint_ok": 0.1375,
+        "square_fit": 0.025,
         "safe_landing": 0.0
       },
       "33": {
         "footprint_ok": 0.1125,
-        "square_fit": 0.0,
+        "square_fit": 0.0125,
         "safe_landing": 0.0
       },
       "34": {
-        "footprint_ok": 0.1,
-        "square_fit": 0.0,
-        "safe_landing": 0.0
-      },
-      "35": {
-        "footprint_ok": 0.1,
-        "square_fit": 0.0,
-        "safe_landing": 0.0
-      },
-      "36": {
         "footprint_ok": 0.0875,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
+      "35": {
+        "footprint_ok": 0.075,
+        "square_fit": 0.0,
+        "safe_landing": 0.0
+      },
+      "36": {
+        "footprint_ok": 0.075,
+        "square_fit": 0.0,
+        "safe_landing": 0.0
+      },
       "37": {
-        "footprint_ok": 0.0625,
+        "footprint_ok": 0.0375,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
       "38": {
-        "footprint_ok": 0.0375,
+        "footprint_ok": 0.025,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
@@ -279,27 +317,27 @@
         "safe_landing": 0.0
       },
       "40": {
-        "footprint_ok": 0.0125,
+        "footprint_ok": 0.025,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
       "41": {
-        "footprint_ok": 0.0,
+        "footprint_ok": 0.025,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
       "42": {
-        "footprint_ok": 0.0,
+        "footprint_ok": 0.025,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
       "43": {
-        "footprint_ok": 0.0,
+        "footprint_ok": 0.0125,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
       "44": {
-        "footprint_ok": 0.0,
+        "footprint_ok": 0.0125,
         "square_fit": 0.0,
         "safe_landing": 0.0
       },
@@ -384,31 +422,31 @@
         "safe_landing": 0.0
       }
     },
-    "grad": {
+    "grad_shadow": {
       "5": {
         "footprint_ok": 1.0,
-        "square_fit": 0.9875,
+        "square_fit": 0.9625,
         "safe_landing": 0.5
       },
       "6": {
         "footprint_ok": 1.0,
-        "square_fit": 0.975,
+        "square_fit": 0.95,
         "safe_landing": 0.4875
       },
       "7": {
         "footprint_ok": 1.0,
-        "square_fit": 0.95,
+        "square_fit": 0.9375,
         "safe_landing": 0.475
       },
       "8": {
         "footprint_ok": 1.0,
-        "square_fit": 0.8875,
-        "safe_landing": 0.4375
+        "square_fit": 0.925,
+        "safe_landing": 0.4625
       },
       "9": {
         "footprint_ok": 1.0,
-        "square_fit": 0.85,
-        "safe_landing": 0.4125
+        "square_fit": 0.9,
+        "safe_landing": 0.45
       },
       "10": {
         "footprint_ok": 1.0,
@@ -417,8 +455,8 @@
       },
       "11": {
         "footprint_ok": 1.0,
-        "square_fit": 0.7625,
-        "safe_landing": 0.35
+        "square_fit": 0.7875,
+        "safe_landing": 0.3875
       },
       "12": {
         "footprint_ok": 1.0,
@@ -427,96 +465,96 @@
       },
       "13": {
         "footprint_ok": 1.0,
-        "square_fit": 0.6625,
-        "safe_landing": 0.2875
+        "square_fit": 0.6375,
+        "safe_landing": 0.3125
       },
       "14": {
         "footprint_ok": 1.0,
-        "square_fit": 0.6375,
-        "safe_landing": 0.2625
+        "square_fit": 0.6,
+        "safe_landing": 0.2875
       },
       "15": {
         "footprint_ok": 1.0,
-        "square_fit": 0.5875,
-        "safe_landing": 0.225
+        "square_fit": 0.5625,
+        "safe_landing": 0.275
       },
       "16": {
         "footprint_ok": 1.0,
-        "square_fit": 0.55,
-        "safe_landing": 0.1875
+        "square_fit": 0.5375,
+        "safe_landing": 0.2625
       },
       "17": {
-        "footprint_ok": 1.0,
-        "square_fit": 0.525,
-        "safe_landing": 0.1875
+        "footprint_ok": 0.975,
+        "square_fit": 0.4875,
+        "safe_landing": 0.225
       },
       "18": {
-        "footprint_ok": 1.0,
-        "square_fit": 0.5125,
-        "safe_landing": 0.1875
+        "footprint_ok": 0.8875,
+        "square_fit": 0.475,
+        "safe_landing": 0.225
       },
       "19": {
-        "footprint_ok": 1.0,
+        "footprint_ok": 0.775,
         "square_fit": 0.4625,
-        "safe_landing": 0.175
+        "safe_landing": 0.2125
       },
       "20": {
-        "footprint_ok": 0.9625,
-        "square_fit": 0.4375,
-        "safe_landing": 0.1625
+        "footprint_ok": 0.7625,
+        "square_fit": 0.45,
+        "safe_landing": 0.2
       },
       "21": {
-        "footprint_ok": 0.8875,
-        "square_fit": 0.4125,
-        "safe_landing": 0.1375
+        "footprint_ok": 0.75,
+        "square_fit": 0.45,
+        "safe_landing": 0.2
       },
       "22": {
-        "footprint_ok": 0.8,
-        "square_fit": 0.375,
-        "safe_landing": 0.1125
+        "footprint_ok": 0.75,
+        "square_fit": 0.4,
+        "safe_landing": 0.15
       },
       "23": {
         "footprint_ok": 0.75,
-        "square_fit": 0.3375,
-        "safe_landing": 0.0875
+        "square_fit": 0.375,
+        "safe_landing": 0.125
       },
       "24": {
         "footprint_ok": 0.75,
-        "square_fit": 0.3,
-        "safe_landing": 0.05
+        "square_fit": 0.35,
+        "safe_landing": 0.1
       },
       "25": {
         "footprint_ok": 0.6875,
-        "square_fit": 0.2875,
-        "safe_landing": 0.0375
+        "square_fit": 0.3375,
+        "safe_landing": 0.0875
       },
       "26": {
-        "footprint_ok": 0.55,
+        "footprint_ok": 0.5375,
+        "square_fit": 0.325,
+        "safe_landing": 0.075
+      },
+      "27": {
+        "footprint_ok": 0.3875,
         "square_fit": 0.275,
         "safe_landing": 0.025
       },
-      "27": {
-        "footprint_ok": 0.425,
-        "square_fit": 0.2625,
-        "safe_landing": 0.0125
-      },
       "28": {
-        "footprint_ok": 0.275,
-        "square_fit": 0.25,
-        "safe_landing": 0.0
+        "footprint_ok": 0.325,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
       },
       "29": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
-        "safe_landing": 0.0
+        "footprint_ok": 0.3,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
       },
       "30": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
-        "safe_landing": 0.0
+        "footprint_ok": 0.2875,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
       },
       "31": {
-        "footprint_ok": 0.25,
+        "footprint_ok": 0.2625,
         "square_fit": 0.25,
         "safe_landing": 0.0
       },
@@ -532,175 +570,458 @@
       },
       "34": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.2375,
         "safe_landing": 0.0
       },
       "35": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.2375,
         "safe_landing": 0.0
       },
       "36": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.2375,
         "safe_landing": 0.0
       },
       "37": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.2375,
         "safe_landing": 0.0
       },
       "38": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.225,
         "safe_landing": 0.0
       },
       "39": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.225,
         "safe_landing": 0.0
       },
       "40": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.225,
         "safe_landing": 0.0
       },
       "41": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.225,
         "safe_landing": 0.0
       },
       "42": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.2,
         "safe_landing": 0.0
       },
       "43": {
         "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "square_fit": 0.2,
         "safe_landing": 0.0
       },
       "44": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2375,
+        "square_fit": 0.2,
         "safe_landing": 0.0
       },
       "45": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2375,
+        "square_fit": 0.2,
         "safe_landing": 0.0
       },
       "46": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2375,
+        "square_fit": 0.175,
         "safe_landing": 0.0
       },
       "47": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.225,
+        "square_fit": 0.1625,
         "safe_landing": 0.0
       },
       "48": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.225,
+        "square_fit": 0.15,
         "safe_landing": 0.0
       },
       "49": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.225,
+        "square_fit": 0.15,
         "safe_landing": 0.0
       },
       "50": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.225,
+        "square_fit": 0.1375,
         "safe_landing": 0.0
       },
       "51": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.225,
+        "square_fit": 0.1375,
         "safe_landing": 0.0
       },
       "52": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2,
+        "square_fit": 0.1375,
         "safe_landing": 0.0
       },
       "53": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2,
+        "square_fit": 0.1375,
         "safe_landing": 0.0
       },
       "54": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2,
+        "square_fit": 0.1375,
         "safe_landing": 0.0
       },
       "55": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2,
+        "square_fit": 0.125,
         "safe_landing": 0.0
       },
       "56": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.2,
+        "square_fit": 0.125,
         "safe_landing": 0.0
       },
       "57": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.1875,
+        "square_fit": 0.125,
         "safe_landing": 0.0
       },
       "58": {
-        "footprint_ok": 0.25,
-        "square_fit": 0.25,
+        "footprint_ok": 0.175,
+        "square_fit": 0.125,
         "safe_landing": 0.0
       },
       "59": {
+        "footprint_ok": 0.1625,
+        "square_fit": 0.1125,
+        "safe_landing": 0.0
+      },
+      "60": {
+        "footprint_ok": 0.15,
+        "square_fit": 0.1,
+        "safe_landing": 0.0
+      }
+    },
+    "grad": {
+      "5": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.95,
+        "safe_landing": 0.5
+      },
+      "6": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.9375,
+        "safe_landing": 0.4875
+      },
+      "7": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.925,
+        "safe_landing": 0.475
+      },
+      "8": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.9125,
+        "safe_landing": 0.4625
+      },
+      "9": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.8875,
+        "safe_landing": 0.45
+      },
+      "10": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.8,
+        "safe_landing": 0.4
+      },
+      "11": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.775,
+        "safe_landing": 0.3875
+      },
+      "12": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.7,
+        "safe_landing": 0.3375
+      },
+      "13": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.625,
+        "safe_landing": 0.3125
+      },
+      "14": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.6,
+        "safe_landing": 0.2875
+      },
+      "15": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.5625,
+        "safe_landing": 0.275
+      },
+      "16": {
+        "footprint_ok": 1.0,
+        "square_fit": 0.5375,
+        "safe_landing": 0.2625
+      },
+      "17": {
+        "footprint_ok": 0.9875,
+        "square_fit": 0.4875,
+        "safe_landing": 0.225
+      },
+      "18": {
+        "footprint_ok": 0.8875,
+        "square_fit": 0.475,
+        "safe_landing": 0.225
+      },
+      "19": {
+        "footprint_ok": 0.775,
+        "square_fit": 0.4625,
+        "safe_landing": 0.2125
+      },
+      "20": {
+        "footprint_ok": 0.7625,
+        "square_fit": 0.45,
+        "safe_landing": 0.2
+      },
+      "21": {
+        "footprint_ok": 0.75,
+        "square_fit": 0.45,
+        "safe_landing": 0.2
+      },
+      "22": {
+        "footprint_ok": 0.75,
+        "square_fit": 0.4,
+        "safe_landing": 0.15
+      },
+      "23": {
+        "footprint_ok": 0.75,
+        "square_fit": 0.375,
+        "safe_landing": 0.125
+      },
+      "24": {
+        "footprint_ok": 0.75,
+        "square_fit": 0.35,
+        "safe_landing": 0.1
+      },
+      "25": {
+        "footprint_ok": 0.6875,
+        "square_fit": 0.3375,
+        "safe_landing": 0.0875
+      },
+      "26": {
+        "footprint_ok": 0.5375,
+        "square_fit": 0.325,
+        "safe_landing": 0.075
+      },
+      "27": {
+        "footprint_ok": 0.3875,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
+      },
+      "28": {
+        "footprint_ok": 0.325,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
+      },
+      "29": {
+        "footprint_ok": 0.3,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
+      },
+      "30": {
+        "footprint_ok": 0.2875,
+        "square_fit": 0.275,
+        "safe_landing": 0.025
+      },
+      "31": {
+        "footprint_ok": 0.2625,
+        "square_fit": 0.25,
+        "safe_landing": 0.0
+      },
+      "32": {
         "footprint_ok": 0.25,
         "square_fit": 0.25,
         "safe_landing": 0.0
       },
-      "60": {
+      "33": {
         "footprint_ok": 0.25,
         "square_fit": 0.25,
+        "safe_landing": 0.0
+      },
+      "34": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.2375,
+        "safe_landing": 0.0
+      },
+      "35": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.2375,
+        "safe_landing": 0.0
+      },
+      "36": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.2375,
+        "safe_landing": 0.0
+      },
+      "37": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.2375,
+        "safe_landing": 0.0
+      },
+      "38": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.225,
+        "safe_landing": 0.0
+      },
+      "39": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.225,
+        "safe_landing": 0.0
+      },
+      "40": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.225,
+        "safe_landing": 0.0
+      },
+      "41": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.225,
+        "safe_landing": 0.0
+      },
+      "42": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.2,
+        "safe_landing": 0.0
+      },
+      "43": {
+        "footprint_ok": 0.25,
+        "square_fit": 0.2,
+        "safe_landing": 0.0
+      },
+      "44": {
+        "footprint_ok": 0.2375,
+        "square_fit": 0.2,
+        "safe_landing": 0.0
+      },
+      "45": {
+        "footprint_ok": 0.2375,
+        "square_fit": 0.2,
+        "safe_landing": 0.0
+      },
+      "46": {
+        "footprint_ok": 0.2375,
+        "square_fit": 0.175,
+        "safe_landing": 0.0
+      },
+      "47": {
+        "footprint_ok": 0.225,
+        "square_fit": 0.1625,
+        "safe_landing": 0.0
+      },
+      "48": {
+        "footprint_ok": 0.225,
+        "square_fit": 0.15,
+        "safe_landing": 0.0
+      },
+      "49": {
+        "footprint_ok": 0.225,
+        "square_fit": 0.15,
+        "safe_landing": 0.0
+      },
+      "50": {
+        "footprint_ok": 0.225,
+        "square_fit": 0.1375,
+        "safe_landing": 0.0
+      },
+      "51": {
+        "footprint_ok": 0.225,
+        "square_fit": 0.1375,
+        "safe_landing": 0.0
+      },
+      "52": {
+        "footprint_ok": 0.2,
+        "square_fit": 0.1375,
+        "safe_landing": 0.0
+      },
+      "53": {
+        "footprint_ok": 0.2,
+        "square_fit": 0.1375,
+        "safe_landing": 0.0
+      },
+      "54": {
+        "footprint_ok": 0.2,
+        "square_fit": 0.1375,
+        "safe_landing": 0.0
+      },
+      "55": {
+        "footprint_ok": 0.2,
+        "square_fit": 0.125,
+        "safe_landing": 0.0
+      },
+      "56": {
+        "footprint_ok": 0.2,
+        "square_fit": 0.125,
+        "safe_landing": 0.0
+      },
+      "57": {
+        "footprint_ok": 0.1875,
+        "square_fit": 0.125,
+        "safe_landing": 0.0
+      },
+      "58": {
+        "footprint_ok": 0.175,
+        "square_fit": 0.125,
+        "safe_landing": 0.0
+      },
+      "59": {
+        "footprint_ok": 0.1625,
+        "square_fit": 0.1125,
+        "safe_landing": 0.0
+      },
+      "60": {
+        "footprint_ok": 0.15,
+        "square_fit": 0.1,
         "safe_landing": 0.0
       }
     }
   },
   "L_star": {
-    "grad_shadow": 9,
+    "bright": 9,
+    "grad_shadow": 5,
     "grad": 5
   },
   "ci95": {
-    "grad_shadow": {
+    "bright": {
       "20": {
         "square_fit": [
-          0.15,
-          0.3375
+          0.3,
+          0.525
         ],
         "safe_landing": [
-          0.125,
-          0.3
+          0.1625,
+          0.3625
         ]
       },
       "25": {
         "square_fit": [
-          0.025,
-          0.1375
+          0.1125,
+          0.2875
         ],
         "safe_landing": [
-          0.025,
-          0.1375
+          0.0625,
+          0.2
         ]
       },
       "30": {
         "square_fit": [
-          0.0,
-          0.0375
+          0.025,
+          0.1375
         ],
         "safe_landing": [
           0.0,
-          0.0375
+          0.0625
         ]
       },
       "35": {
@@ -734,41 +1055,41 @@
         ]
       }
     },
-    "grad": {
+    "grad_shadow": {
       "20": {
         "square_fit": [
-          0.325,
-          0.55
+          0.3375,
+          0.5625
         ],
         "safe_landing": [
-          0.0875,
-          0.25
+          0.1125,
+          0.2875
         ]
       },
       "25": {
         "square_fit": [
-          0.1875,
-          0.3875
+          0.2375,
+          0.4375
         ],
         "safe_landing": [
-          0.0,
-          0.0875
+          0.025,
+          0.15
         ]
       },
       "30": {
         "square_fit": [
-          0.1625,
-          0.3378124999999983
+          0.1875,
+          0.375
         ],
         "safe_landing": [
           0.0,
-          0.0
+          0.0625
         ]
       },
       "35": {
         "square_fit": [
-          0.1625,
-          0.3378124999999983
+          0.15,
+          0.325
         ],
         "safe_landing": [
           0.0,
@@ -777,8 +1098,8 @@
       },
       "40": {
         "square_fit": [
-          0.1625,
-          0.3378124999999983
+          0.1375,
+          0.3125
         ],
         "safe_landing": [
           0.0,
@@ -787,8 +1108,70 @@
       },
       "50": {
         "square_fit": [
-          0.1625,
-          0.3378124999999983
+          0.0625,
+          0.2125
+        ],
+        "safe_landing": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "grad": {
+      "20": {
+        "square_fit": [
+          0.3375,
+          0.5625
+        ],
+        "safe_landing": [
+          0.1125,
+          0.2875
+        ]
+      },
+      "25": {
+        "square_fit": [
+          0.2375,
+          0.4375
+        ],
+        "safe_landing": [
+          0.025,
+          0.15
+        ]
+      },
+      "30": {
+        "square_fit": [
+          0.1875,
+          0.375
+        ],
+        "safe_landing": [
+          0.0,
+          0.0625
+        ]
+      },
+      "35": {
+        "square_fit": [
+          0.15,
+          0.325
+        ],
+        "safe_landing": [
+          0.0,
+          0.0
+        ]
+      },
+      "40": {
+        "square_fit": [
+          0.1375,
+          0.3125
+        ],
+        "safe_landing": [
+          0.0,
+          0.0
+        ]
+      },
+      "50": {
+        "square_fit": [
+          0.0625,
+          0.2125
         ],
         "safe_landing": [
           0.0,

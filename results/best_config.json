@@ -5,9 +5,17 @@
     },
     "V_grad_shadow": {
         "tau": 60,
-        "a_min": 100,
+        "a_min": 500,
         "theta": 0.2,
         "min_component_area": 100
+    },
+    "V_bright": {
+        "tau": 60,
+        "a_min": 500,
+        "theta": 0.2,
+        "min_component_area": 100,
+        "kappa": 50,
+        "ksize": 15
     },
     "V_fft_ablation": {
         "theta": 0.2,

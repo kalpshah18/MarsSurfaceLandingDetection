@@ -83,26 +83,32 @@ def generate_footprint_envelope_figure(sweep_path='results/footprint_sweep.json'
         sweep = json.load(f)
     fine = sweep['fine']
     Ls = sorted(int(L) for L in fine['grad_shadow'])
-    max_side = sweep['box_summary']['grad_shadow']['max_min_side']
+    main = 'bright' if 'bright' in fine else 'grad_shadow'
+    max_side = sweep['box_summary'][main]['max_min_side']
 
     def series(method, key):
         return [fine[method][str(L)][key] for L in Ls]
 
+    lab = r'$V_{\mathrm{full}}$' if main == 'bright' else r'$V_{\mathrm{grad+shadow}}$'
     lines = [
-        ('grad_shadow', 'footprint_ok', r'$V_{\mathrm{grad+shadow}}$ Footprint OK', '#2a78d6', '-', 'o'),
-        ('grad_shadow', 'square_fit', r'$V_{\mathrm{grad+shadow}}$ Square Fit', '#eb6834', '--', 's'),
-        ('grad_shadow', 'safe_landing', r'$V_{\mathrm{grad+shadow}}$ Safe Landing', '#1baf7a', '-', '^'),
-        ('grad', 'safe_landing', r'$V_{\mathrm{grad}}$ Safe Landing', '#6b6b66', ':', 'D'),
+        (main, 'footprint_ok', lab + ' Footprint OK', '#2a78d6', '-', 'o'),
+        (main, 'square_fit', lab + ' Square Fit', '#eb6834', '--', 's'),
+        (main, 'safe_landing', lab + ' Safe Landing', '#1baf7a', '-', '^'),
     ]
+    if main == 'bright':
+        lines.append(('grad_shadow', 'safe_landing', r'$V_{\mathrm{grad+shadow}}$ Safe Landing', '#6b6b66', ':', 'D'))
+    else:
+        lines.append(('grad', 'safe_landing', r'$V_{\mathrm{grad}}$ Safe Landing', '#6b6b66', ':', 'D'))
 
     plt.rcParams.update({'font.size': 8, 'axes.titlesize': 8, 'axes.labelsize': 8,
                          'legend.fontsize': 7, 'xtick.labelsize': 7, 'ytick.labelsize': 7,
                          'pdf.fonttype': 42})
     fig, ax = plt.subplots(figsize=(3.5, 3.1))
 
-    ax.axvspan(max_side + 0.5, Ls[-1] + 0.5, color='#d9d9d4', alpha=0.6, lw=0, zorder=0)
-    ax.text(max_side + 1.2, 0.97, f'no box fits an\n$L\\times L$ square\n($L>{max_side}$ m)',
-            va='top', ha='left', fontsize=6.5, color='#3d3d3a')
+    if max_side < Ls[-1]:
+        ax.axvspan(max_side + 0.5, Ls[-1] + 0.5, color='#d9d9d4', alpha=0.6, lw=0, zorder=0)
+        ax.text(max_side + 1.2, 0.97, f'no box fits an\n$L\\times L$ square\n($L>{max_side}$ m)',
+                va='top', ha='left', fontsize=6.5, color='#3d3d3a')
     ax.axvline(50, color='#3d3d3a', ls='--', lw=1.0, zorder=1)
     ax.text(50.8, 0.55, 'large-lander\nrequirement\n(50 m)', va='center', ha='left',
             fontsize=6.5, color='#3d3d3a')

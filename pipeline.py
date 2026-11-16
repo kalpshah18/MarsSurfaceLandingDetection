@@ -122,3 +122,25 @@ def run_v_fft_ablation(image_gray, theta=0.35, min_component_area=1500, tau=40, 
     texture_score = compute_fft_texture_ablation(image_gray)
     return fuse_and_select(G_aug, texture_score=texture_score, theta=theta, min_component_area=min_component_area)
 
+
+
+def compute_brightness_hazard(image_gray, kappa=30.0, ksize=9):
+    """Photometric slope cue: deviation of local mean brightness from level ground.
+
+    Under Lambertian shading a level surface has intensity proportional to sin(sun
+    elevation); a surface tilted toward or away from the sun is brighter or darker.
+    The level-ground brightness is estimated as the median of the box-filtered image
+    (most of a landing tile is near level), which also absorbs the unknown albedo.
+    B = min(1, |I_blur - I_ref| / kappa).
+    """
+    I_blur = cv2.blur(image_gray.astype(np.float32), (ksize, ksize))
+    I_ref = float(np.median(I_blur))
+    return np.minimum(1.0, np.abs(I_blur - I_ref) / kappa)
+
+
+def run_v_bright(image_gray, theta=0.2, min_component_area=100, tau=60, a_min=500, kappa=30.0, ksize=9):
+    """V_grad+shadow+bright: max of the shadow-augmented gradient hazard and the brightness cue."""
+    G = compute_gradient_hazard(image_gray)
+    G_aug, _ = augment_shadow(image_gray, G, tau=tau, a_min=a_min)
+    H = np.maximum(G_aug, compute_brightness_hazard(image_gray, kappa=kappa, ksize=ksize))
+    return fuse_and_select(H, texture_score=None, theta=theta, min_component_area=min_component_area)

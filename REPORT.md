@@ -150,3 +150,57 @@ equivalent (0.793-0.800): any tau above the painted value 30 works.
 2. Whether to adopt the largest-inscribed-square selector as the headline selector (contradicts the
    earlier instruction not to change the headline method).
 3. Whether the outcome taxonomy should credit correct rejection (rocky tiles have no safe 25 m site).
+
+## Physical-rendering revision (branch `physical-rendering`, 2026-11-16)
+
+Trigger: reviewer pointed out that at 30 deg sun elevation a simple crater (d/D ~ 0.2) shows
+a crescent shadow inside the sun-side rim with the far wall and most of the floor lit, so the
+nearly all-dark crater of Fig. 1(a) is unphysical, and asked for the assumed D and depth.
+
+### What was wrong (v1)
+- `generate_synthetic.py` clamped every crater pixel deeper than 10 m to intensity <= 30,
+  independent of the sun ("painted shadow"); it darkened 86% of each crater interior.
+- Craters were rimless cones of constant 26.6 deg slope (D 200-600 m, depth 50-150 m,
+  d/D 0.25). Below the 30 deg sun elevation, so physically they cast no shadow at all.
+- The paper's inversion (AUROC 0.350) and correction (0.796) both came from the painted disc.
+
+### What changed
+- `render.py` (new): Lambertian shading + ray-marched cast shadows (bilinear, 0.5 px steps),
+  shared by the generator and the sun sweeps. Checked against the analytic shadow length of
+  a paraboloid: 27.3% of D vs 27.8% analytic at d/D 0.2, none below d/D 0.144.
+- `generate_synthetic.py`: paraboloidal bowl, d/D ~ U[0.10, 0.20], rim height 0.04 D,
+  ejecta (R/r)^3; crater geometry and cast-shadow fraction written to MANIFEST.csv.
+  v1 data kept locally in `data/synthetic_v1_painted/` and `results_v1_painted/` (git-ignored).
+- `run_tuning.py`: 8 DEV tiles are now two per terrain (v1: `dev_tiles[:8]`, all crater_1);
+  tau grid {20, 40, 60, 80} x A_min {100, 500} (v1 grid {20, 40} could not produce the
+  tau = 60 in best_config.json). New config: theta 0.2, mca 100, tau 60, A_min 500.
+- `compute_final_metrics.py` writes `results/final_metrics.json`; `run_footprint_sweep.py`
+  checks against it instead of hard-coded v1 values.
+- New: `run_crater_diagnosis.py`, `generate_crater_model_figure.py`; Fig. 1 regenerated
+  on crater_2_8 with sun arrow, rim, cast-shadow outline and crater D/depth annotated.
+
+### Headline results (v2, TEST)
+- Pooled AUROC / PR-AUC: V_grad 0.529 / 0.098; V_grad+shadow 0.598 / 0.194; B1 0.503 / 0.124;
+  chance PR-AUC 0.081.
+- Crater tiles: within-tile AUROC raw 0.435 -> augmented 0.575. Unsafe crater pixels:
+  4.9% in true cast shadow, 25.7% in the tau = 60 dark mask.
+- Boxes identical for both methods on 78/80 tiles. Every crater box is on the sun-facing wall
+  (99.9% sun-facing pixels, mean intensity 196, 89-100% unsafe), although every crater tile
+  has a safe 50 m square on the plain. Sun-facing walls show little texture contrast
+  (mean raw G 0.254 vs 0.353 on safe terrain).
+- Safe Landing: 0.50 at 5 m, 0.40 at 10 m, 0.20 at 20 m, 0.088 at 25 m, 0 from 31 m; all
+  successes on smooth/dune tiles. L* = 5 m (v1: 9 m).
+
+### Brightness (photometric slope) cue, V_full (added 2026-11-16 at the authors' request)
+- `pipeline.compute_brightness_hazard`: B = min(1, |box_blur_k(I) - median| / kappa); V_full hazard
+  H = max(shadow-augmented G, B). Tuned on the same 8 DEV tiles with tau/A_min/theta fixed:
+  kappa in {20,30,40,50,70}, k in {5,9,15} -> kappa 50, k 15. Evaluated once on TEST.
+- TEST: AUROC 0.750, PR-AUC 0.359 (V_grad+shadow 0.598 / 0.194). Crater within-tile AUROC 0.875.
+- Safe Landing: 57.5% at 5 m, 47.5% at 10 m, 26.3% at 20 m, 12.5% at 25 m, 0 from 31 m; L* = 9 m.
+  Crater safe sites on 30% of tiles up to 15 m (0% for V_grad / V_grad+shadow).
+- Remaining unsafe crater boxes (14/20 > 5%) lie on walls sloping across the sun line:
+  mean |cos(aspect - sun az)| 0.40 vs 0.64 for random aspect.
+- Sun sweep (params tuned at 30 deg): V_full best at every elevation (AUROC 0.630 / 0.750 / 0.724 /
+  0.669 at 15 / 30 / 45 / 60 deg); shadow cue matters at low sun, brightness at high sun.
+- An exploratory DEV-only run with kappa = 30, k = 9 was done before the tuning grid was added;
+  it informed the decision to add the cue but not the selected parameters.
