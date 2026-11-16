@@ -1,0 +1,138 @@
+{
+ "gale": {
+  "dtm_shape": [
+   16922,
+   6765
+  ],
+  "map_scale_m": 1.0117630165416,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",137.49],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   1.5000000000001654,
+   1.4999999999947717
+  ],
+  "stretch": null,
+  "n_valid_tiles": 104,
+  "n_selected": 20
+ },
+ "elysium_insight": {
+  "dtm_shape": [
+   24909,
+   7896
+  ],
+  "map_scale_m": 1.0117900854753,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",137.29],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   1.5000000000001368,
+   1.4999999999884512
+  ],
+  "stretch": null,
+  "n_valid_tiles": 166,
+  "n_selected": 20
+ },
+ "holden": {
+  "dtm_shape": [
+   23841,
+   7987
+  ],
+  "map_scale_m": 1.0072186763504,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3392590,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",-25],PARAMETER[\"central_meridian\",325.3],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   1.5000000000003388,
+   1.4999999999380336
+  ],
+  "stretch": null,
+  "n_valid_tiles": 170,
+  "n_selected": 20
+ },
+ "mawrth": {
+  "dtm_shape": [
+   16689,
+   7940
+  ],
+  "map_scale_m": 1.0082077197663,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3393830,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",20],PARAMETER[\"central_meridian\",341.11],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   1.5000000000001257,
+   1.5000000000100489
+  ],
+  "stretch": null,
+  "n_valid_tiles": 132,
+  "n_selected": 20
+ },
+ "jezero": {
+  "dtm_shape": [
+   14266,
+   6673
+  ],
+  "map_scale_m": 1.0096633268711,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3394839.8133163,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",15],PARAMETER[\"central_meridian\",77.44],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   1.4999999999998541,
+   1.500000000156141
+  ],
+  "stretch": null,
+  "n_valid_tiles": 94,
+  "n_selected": 20
+ },
+ "eberswalde": {
+  "dtm_shape": [
+   20482,
+   8358
+  ],
+  "map_scale_m": 1.0081884109784,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3393830,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",-20],PARAMETER[\"central_meridian\",326.9],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   1.5000000000003253,
+   1.4999999999913043
+  ],
+  "stretch": null,
+  "n_valid_tiles": 158,
+  "n_selected": 20
+ },
+ "arcadia_starship": {
+  "dtm_shape": [
+   15132,
+   7339
+  ],
+  "map_scale_m": 1.0025376361881,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3389574.3490888,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",35],PARAMETER[\"central_meridian\",195.62],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   0.0,
+   -0.0
+  ],
+  "stretch": null,
+  "n_valid_tiles": 112,
+  "n_selected": 20
+ },
+ "meridiani_dunes": {
+  "dtm_shape": [
+   12109,
+   6180
+  ],
+  "map_scale_m": 1.0118610932633,
+  "crs": "PROJCS[\"EQUIRECTANGULAR MARS\",GEOGCS[\"GCS_MARS\",DATUM[\"D_MARS\",SPHEROID[\"MARS_localRadius\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",8.41],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "ortho_dtype": "uint8",
+  "ortho_on_dtm_grid_natively": true,
+  "header_origin_offset_px": [
+   0.9999999999998795,
+   1.0000000000061713
+  ],
+  "stretch": null,
+  "n_valid_tiles": 71,
+  "n_selected": 20
+ }
+}

@@ -204,3 +204,33 @@ nearly all-dark crater of Fig. 1(a) is unphysical, and asked for the assumed D a
   0.669 at 15 / 30 / 45 / 60 deg); shadow cue matters at low sun, brightness at high sun.
 - An exploratory DEV-only run with kappa = 30, k = 9 was done before the tuning grid was added;
   it informed the decision to add the cue but not the selected parameters.
+
+## Reviewer suggestions: gradient normalization and real HiRISE data (2026-11-16, not yet in paper)
+
+### Fixed gradient normalization (`run_normalization_study.py` -> results/normalization_study.json)
+g_ref = 8 * median(I) * cot(e) * sin(15 deg) / 5 (Sobel response of a 15 deg slope change over the
+5 px label baseline). Each variant tuned on the same 8 DEV tiles, theta grid widened to
+{0.05, 0.1, 0.2, 0.35, 0.5} for all. TEST, V_full:
+| variant | AUROC | PR-AUC | SL 10/25/50 m | max box side |
+|---|---|---|---|---|
+| p99 (paper config) | 0.750 | 0.359 | 0.475/0.125/0 | 33 |
+| p99, widened theta | 0.755 | 0.373 | 0.625/0.362/0 | 51 |
+| fixed, raw Sobel | 0.801 | 0.191 | 0.375/0.037/0 | 34 |
+| p99 on 5x5-blurred image | 0.701 | 0.346 | 0.713/0.375/0.20 | 294 |
+| fixed, 5x5-blurred (fixed_b5) | 0.864 | 0.315 | 0.75/0.75/0.75 | 768 |
+fixed_b5 reaches the ceiling (rocky tiles have no safe 20 m square). Raw-Sobel fixed normalization
+fragments more: pixel-scale texture already exceeds g_ref on smooth/dune tiles.
+
+### Real HiRISE (`hirise_eval_v2.py` -> results/hirise/evaluation_v2.json)
+Same 8 sites / 160 tiles as the 2026-11-08 run; sun elevations from PDS RDR labels
+(results/hirise/sun_geometry.json, 26-57 deg). TEST (4 sites, 80 tiles, prevalence 0.086):
+| protocol | V_full AUROC / PR-AUC | within-tile | SL 20 m | random null 20 m |
+|---|---|---|---|---|
+| transfer, paper config | 0.629 / 0.134 | 0.684 | 0.72 | 0.78 |
+| transfer, fixed_b5 | 0.654 / 0.134 | 0.704 | 0.80 | 0.78 |
+| HiRISE-DEV tuned, fixed_b5 | 0.676 / 0.140 | 0.698 | 0.81 | 0.78 |
+| B1 local std | 0.643 / 0.158 | 0.658 | - | - |
+Brightness cue transfers (grad+shadow 0.605 -> full 0.654); shadow cue adds ~0 (high sun) and hurts on
+dark-toned DEV sites. Site selection is at the random-square rate (0.80 vs 0.78 at 20 m; 0.68 vs 0.73
+at 50 m); every tile has a safe 50 m square. Per site, V_full AUROC: Eberswalde 0.80, Jezero 0.76,
+Meridiani 0.72, Arcadia 0.58.
